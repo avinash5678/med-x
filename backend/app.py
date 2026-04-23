@@ -66,7 +66,7 @@ def login():
     users = read_json(USERS_FILE)
 
     for user in users:
-        if user["email"] == data["email"] and check_password_hash(user["password"], data["password"]):
+        if user["email"].lower() == data["email"].lower() and check_password_hash(user["password"], data["password"]):
             safe_user = {k: v for k, v in user.items() if k != "password"}
             return jsonify(safe_user), 200
 
@@ -84,12 +84,12 @@ def send_otp():
 
     users = read_json(USERS_FILE)
     for user in users:
-        if user["email"] == email:
+        if user["email"].lower() == email.lower():
             return jsonify({"error": "User already exists"}), 400
 
     # Generate 6-digit OTP
     otp = str(random.randint(100000, 999999))
-    otp_store[email] = {"otp": otp, "expires": time.time() + 300}
+    otp_store[email.lower()] = {"otp": otp, "expires": time.time() + 300}
 
     # Send email
     try:
@@ -134,19 +134,19 @@ def verify_otp():
     if not email or not otp:
         return jsonify({"error": "Email and OTP are required"}), 400
 
-    stored = otp_store.get(email)
+    stored = otp_store.get(email.lower())
 
     if not stored:
         return jsonify({"error": "No OTP was requested for this email"}), 400
 
     if time.time() > stored["expires"]:
-        del otp_store[email]
+        del otp_store[email.lower()]
         return jsonify({"error": "OTP has expired. Please request a new one."}), 400
 
     if stored["otp"] != otp:
         return jsonify({"error": "Invalid OTP. Please try again."}), 400
 
-    del otp_store[email]
+    del otp_store[email.lower()]
     return jsonify({"verified": True}), 200
 
 
@@ -160,14 +160,14 @@ def send_reset_otp():
         return jsonify({"error": "Email is required"}), 400
 
     users = read_json(USERS_FILE)
-    user_exists = any(user["email"] == email for user in users)
+    user_exists = any(user["email"].lower() == email.lower() for user in users)
     
     if not user_exists:
         return jsonify({"error": "No account found with this email"}), 404
 
     # Generate 6-digit OTP
     otp = str(random.randint(100000, 999999))
-    otp_store[email] = {"otp": otp, "expires": time.time() + 300}
+    otp_store[email.lower()] = {"otp": otp, "expires": time.time() + 300}
 
     # Send email
     try:
@@ -211,11 +211,11 @@ def verify_reset_otp():
     if not email or not otp:
         return jsonify({"error": "Email and OTP are required"}), 400
 
-    stored = otp_store.get(email)
+    stored = otp_store.get(email.lower())
     if not stored:
         return jsonify({"error": "No OTP requested or it expired"}), 400
     if time.time() > stored["expires"]:
-        del otp_store[email]
+        del otp_store[email.lower()]
         return jsonify({"error": "OTP has expired. Please request a new one."}), 400
     if stored["otp"] != otp:
         return jsonify({"error": "Invalid OTP. Please try again."}), 400
@@ -237,7 +237,7 @@ def reset_password():
         return jsonify({"error": "Missing required fields"}), 400
 
     # Verify OTP again to ensure the request is authorized
-    stored = otp_store.get(email)
+    stored = otp_store.get(email.lower())
     if not stored or time.time() > stored["expires"] or stored["otp"] != otp:
         return jsonify({"error": "Unauthorized or expired OTP"}), 401
 
@@ -245,7 +245,7 @@ def reset_password():
     user_found = False
 
     for user in users:
-        if user["email"] == email:
+        if user["email"].lower() == email.lower():
             user["password"] = generate_password_hash(new_password)
             user_found = True
             break
@@ -256,7 +256,7 @@ def reset_password():
     write_json(USERS_FILE, users)
     
     # Consume the OTP so it can't be reused
-    del otp_store[email]
+    del otp_store[email.lower()]
 
     return jsonify({"message": "Password successfully reset"}), 200
 
@@ -269,7 +269,7 @@ def signup():
     users = read_json(USERS_FILE)
 
     for user in users:
-        if user["email"] == data["email"]:
+        if user["email"].lower() == data["email"].lower():
             return jsonify({"error": "User already exists"}), 400
 
     new_user = {
@@ -321,7 +321,7 @@ def place_order():
 @app.route("/orders/<email>", methods=["GET"])
 def get_orders(email):
     orders = read_json(ORDERS_FILE)
-    user_orders = [o for o in orders if o["email"] == email]
+    user_orders = [o for o in orders if o["email"].lower() == email.lower()]
     return jsonify(user_orders)
 
 
@@ -338,9 +338,10 @@ def contact():
 
     try:
         msg = MIMEMultipart()
-        msg["From"] = SMTP_EMAIL
-        msg["To"] = SMTP_EMAIL # Send to the store owner
-        msg["Subject"] = f"Med Z Contact Form - Message from {name}"
+        msg["From"] = f"Med Z Pharmacy <{SMTP_EMAIL}>"
+        msg["To"] = SMTP_EMAIL
+        msg["Reply-To"] = email
+        msg["Subject"] = f"Med Z Contact - From {name}"
 
         body = f"""
         <div style="font-family: sans-serif; padding: 20px; background: #f8fafc;">

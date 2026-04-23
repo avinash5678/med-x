@@ -342,9 +342,7 @@ export default function App() {
     }
 
     setAuthStep('new-password');
-    setOtpCode(''); // clear otp code for reuse or just keep it since we need it for final step
-    // wait, backend requires otp for final step. 
-    // we'll pass otpCode state to the final step.
+    // DO NOT clear otpCode here, it is needed for the final reset step
   };
 
   const handleResetPassword = async (e) => {
