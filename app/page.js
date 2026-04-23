@@ -38,7 +38,9 @@ import {
   CreditCard,
   Truck,
   ChevronDown,
-  Receipt
+  Receipt,
+  CheckCircle2,
+  AlertCircle
 } from 'lucide-react';
 
 // --- Categories & Localized Indian Products ---
@@ -185,7 +187,8 @@ export default function App() {
   const [authMode, setAuthMode] = useState('login'); // 'login' or 'signup'
   const [authForm, setAuthForm] = useState({ name: '', email: '', password: '' });
   const [authError, setAuthError] = useState('');
-  const [authStep, setAuthStep] = useState('form'); // 'form' or 'otp'
+  const [authStep, setAuthStep] = useState('form'); // 'form', 'otp', 'reset-otp', 'new-password'
+  const [authSuccessMsg, setAuthSuccessMsg] = useState('');
   const [otpCode, setOtpCode] = useState('');
   const [otpSending, setOtpSending] = useState(false);
   const [otpCountdown, setOtpCountdown] = useState(0); 
@@ -210,6 +213,10 @@ export default function App() {
   const [cart, setCart] = useState([]);
   const [ordersHistory, setOrdersHistory] = useState([]);
   const [savedAddresses, setSavedAddresses] = useState([]);
+
+  // --- Contact Us State ---
+  const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
+  const [contactStatus, setContactStatus] = useState({ loading: false, error: '', success: '' });
 
   // --- Checkout State ---
   const [checkoutStep, setCheckoutStep] = useState(1);
@@ -287,6 +294,87 @@ export default function App() {
     }
   };
 
+  // --- Forgot Password Flow ---
+  const handleSendResetOtp = async () => {
+    if (!authForm.email) return;
+    setAuthError('');
+    setAuthSuccessMsg('');
+    setOtpSending(true);
+
+    try {
+      const res = await fetch('/api/auth/send-reset-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: authForm.email }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setAuthError(data.error);
+        setOtpSending(false);
+        return;
+      }
+
+      setAuthStep('reset-otp');
+      setOtpCountdown(60);
+    } catch (err) {
+      setAuthError('Failed to connect to server.');
+    } finally {
+      setOtpSending(false);
+    }
+  };
+
+  const handleVerifyResetOtp = async (e) => {
+    e.preventDefault();
+    if (!otpCode.trim()) return;
+    setAuthError('');
+
+    const verifyRes = await fetch('/api/auth/verify-reset-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: authForm.email, otp: otpCode }),
+    });
+    const verifyData = await verifyRes.json();
+
+    if (!verifyRes.ok) {
+      setAuthError(verifyData.error);
+      return;
+    }
+
+    setAuthStep('new-password');
+    setOtpCode(''); // clear otp code for reuse or just keep it since we need it for final step
+    // wait, backend requires otp for final step. 
+    // we'll pass otpCode state to the final step.
+  };
+
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
+    if (!authForm.password) return;
+    setAuthError('');
+
+    const resetRes = await fetch('/api/auth/reset-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        email: authForm.email, 
+        otp: otpCode, 
+        new_password: authForm.password 
+      }),
+    });
+    const resetData = await resetRes.json();
+
+    if (!resetRes.ok) {
+      setAuthError(resetData.error);
+      return;
+    }
+
+    setAuthSuccessMsg('Password successfully reset! Please sign in.');
+    setAuthMode('login');
+    setAuthStep('form');
+    setAuthForm({ ...authForm, password: '' });
+    setOtpCode('');
+  };
+
   // --- Verify OTP & Complete Signup ---
   const handleVerifyAndSignup = async (e) => {
     e.preventDefault();
@@ -361,6 +449,26 @@ const handleAuthSubmit = async (e) => {
   const handleLogout = () => {
     localStorage.removeItem("medz_user");
     setUser(null);
+  };
+
+  // --- Contact Submit ---
+  const handleContactSubmit = async (e) => {
+    e.preventDefault();
+    setContactStatus({ loading: true, error: '', success: '' });
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(contactForm),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to send message');
+      
+      setContactStatus({ loading: false, error: '', success: 'Message sent successfully! We will get back to you soon.' });
+      setContactForm({ name: '', email: '', message: '' });
+    } catch (err) {
+      setContactStatus({ loading: false, error: err.message, success: '' });
+    }
   };
 
   // --- Cart & Checkout Logic ---
@@ -652,11 +760,20 @@ const placeOrder = async () => {
             </div>
             <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Med Z</h1>
             <p className="text-slate-500 text-sm mt-1.5">
-              {authStep === 'otp'
-                ? 'Verify your email'
-                : authMode === 'login' ? 'Sign in to your account' : 'Create a new account'}
+              {authStep === 'otp' ? 'Verify your email' 
+                : authStep === 'reset-otp' ? 'Password Reset Code'
+                : authStep === 'new-password' ? 'Create New Password'
+                : authMode === 'login' ? 'Sign in to your account' 
+                : authMode === 'forgot-password' ? 'Reset your password'
+                : 'Create a new account'}
             </p>
           </div>
+
+          {authSuccessMsg && (
+            <div className="bg-emerald-50 text-emerald-600 p-3 rounded-xl text-sm font-medium text-center border border-emerald-100 mb-4 animate-fade-in">
+              {authSuccessMsg}
+            </div>
+          )}
 
           {/* --- OTP Verification Step --- */}
           {authStep === 'otp' ? (
@@ -722,10 +839,146 @@ const placeOrder = async () => {
                 ← Back to signup form
               </button>
             </form>
+          ) : authStep === 'reset-otp' ? (
+            /* --- Password Reset OTP Step --- */
+            <form onSubmit={handleVerifyResetOtp} className="space-y-4 animate-fade-in">
+              {authError && (
+                <div className="bg-red-50 text-red-600 p-3 rounded-xl text-sm font-medium text-center border border-red-100">
+                  {authError}
+                </div>
+              )}
+
+              <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 text-center">
+                <p className="text-sm text-slate-600">
+                  We sent a reset code to
+                </p>
+                <p className="text-sm font-bold text-slate-900 mt-1">{authForm.email}</p>
+              </div>
+
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <ShieldPlus size={18} className="text-slate-400 group-focus-within:text-slate-900 transition-colors" />
+                </div>
+                <input
+                  type="text"
+                  required
+                  maxLength={6}
+                  inputMode="numeric"
+                  pattern="[0-9]{6}"
+                  placeholder="Enter 6-digit code"
+                  value={otpCode}
+                  onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-200 bg-white text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all text-center tracking-[0.3em] font-bold text-lg"
+                  autoFocus
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl font-semibold text-sm transition-all shadow-[0_4px_12px_rgb(0,0,0,0.1)] active:scale-[0.98] mt-2"
+              >
+                Verify Code
+              </button>
+
+              <div className="text-center pt-2">
+                {otpCountdown > 0 ? (
+                  <p className="text-xs text-slate-400 font-medium">Resend code in {otpCountdown}s</p>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleSendResetOtp}
+                    disabled={otpSending}
+                    className="text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors disabled:opacity-50"
+                  >
+                    {otpSending ? 'Sending...' : 'Resend Code'}
+                  </button>
+                )}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => { setAuthStep('form'); setOtpCode(''); setAuthError(''); }}
+                className="w-full text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors mt-2"
+              >
+                ← Back
+              </button>
+            </form>
+          ) : authStep === 'new-password' ? (
+            /* --- New Password Step --- */
+            <form onSubmit={handleResetPassword} className="space-y-4 animate-fade-in">
+              {authError && (
+                <div className="bg-red-50 text-red-600 p-3 rounded-xl text-sm font-medium text-center border border-red-100">
+                  {authError}
+                </div>
+              )}
+
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-slate-900">
+                  <Lock size={18} className="text-slate-400 group-focus-within:text-slate-900 transition-colors" />
+                </div>
+                <input
+                  type="password"
+                  required
+                  placeholder="New Password"
+                  value={authForm.password}
+                  onChange={(e) => setAuthForm({ ...authForm, password: e.target.value })}
+                  className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-200 bg-white text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all"
+                  autoFocus
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl font-semibold text-sm transition-all shadow-[0_4px_12px_rgb(0,0,0,0.1)] active:scale-[0.98] mt-4"
+              >
+                Save New Password
+              </button>
+            </form>
+          ) : authMode === 'forgot-password' ? (
+            /* --- Forgot Password Request Form --- */
+            <form onSubmit={(e) => { e.preventDefault(); handleSendResetOtp(); }} className="space-y-4 animate-fade-in">
+              {authError && (
+                <div className="bg-red-50 text-red-600 p-3 rounded-xl text-sm font-medium text-center border border-red-100">
+                  {authError}
+                </div>
+              )}
+              
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-slate-900">
+                  <Mail size={18} className="text-slate-400 group-focus-within:text-slate-900 transition-colors" />
+                </div>
+                <input
+                  type="email"
+                  required
+                  placeholder="Email Address"
+                  value={authForm.email}
+                  onChange={(e) => setAuthForm({ ...authForm, email: e.target.value })}
+                  className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-200 bg-white text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={otpSending}
+                className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl font-semibold text-sm transition-all shadow-[0_4px_12px_rgb(0,0,0,0.1)] active:scale-[0.98] mt-4 disabled:opacity-50"
+              >
+                {otpSending ? 'Sending...' : 'Send Reset Link'}
+              </button>
+
+              <div className="mt-6 text-center">
+                <button
+                  type="button"
+                  onClick={() => { setAuthMode('login'); setAuthError(''); setAuthSuccessMsg(''); }}
+                  className="text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors"
+                >
+                  Back to login
+                </button>
+              </div>
+            </form>
           ) : (
             /* --- Login / Signup Form --- */
             <>
-              <form onSubmit={handleAuthSubmit} className="space-y-4">
+              <form onSubmit={handleAuthSubmit} className="space-y-4 animate-fade-in">
                 {authError && (
                   <div className="bg-red-50 text-red-600 p-3 rounded-xl text-sm font-medium text-center border border-red-100">
                     {authError}
@@ -775,6 +1028,18 @@ const placeOrder = async () => {
                     className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-200 bg-white text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all"
                   />
                 </div>
+
+                {authMode === 'login' && (
+                  <div className="flex justify-end">
+                    <button
+                      type="button"
+                      onClick={() => { setAuthMode('forgot-password'); setAuthError(''); setAuthSuccessMsg(''); }}
+                      className="text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors"
+                    >
+                      Forgot password?
+                    </button>
+                  </div>
+                )}
 
                 <button
                   type="submit"
@@ -880,6 +1145,12 @@ const placeOrder = async () => {
                       className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl transition-colors"
                     >
                       <MapPin size={16} /> Saved Addresses
+                    </button>
+                    <button 
+                      onClick={() => { setCurrentView('contact'); setIsProfileMenuOpen(false); }}
+                      className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl transition-colors"
+                    >
+                      <Mail size={16} /> Contact Us
                     </button>
                   </div>
                   <div className="p-1.5 border-t border-slate-100">
@@ -1032,6 +1303,9 @@ const placeOrder = async () => {
                 <button onClick={() => { setCurrentView('addresses'); setIsMobileSidebarOpen(false); }} className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm rounded-xl transition-all">
                   <MapPin size={16} /> Saved Addresses
                 </button>
+                <button onClick={() => { setCurrentView('contact'); setIsMobileSidebarOpen(false); }} className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm rounded-xl transition-all">
+                  <Mail size={16} /> Contact Us
+                </button>
                 <div className="my-1 border-t border-slate-200/60"></div>
                 <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 rounded-xl transition-all">
                   <LogOut size={16} /> Sign Out
@@ -1128,6 +1402,101 @@ const placeOrder = async () => {
                 </div>
               </div>
             </aside>
+          </div>
+        ) : currentView === 'contact' ? (
+          <div className="flex-1 overflow-y-auto bg-[#F8FAFC] p-6 lg:p-8 scrollbar-hide">
+            <div className="max-w-2xl mx-auto animate-fade-in">
+              <button 
+                onClick={() => setCurrentView('home')}
+                className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-900 font-medium mb-8 transition-colors w-fit bg-white px-4 py-2 rounded-full border border-slate-200/60 shadow-sm"
+              >
+                <ArrowLeft size={16} /> Back to Store
+              </button>
+
+              <div className="bg-white rounded-[24px] border border-slate-200/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8">
+                <div className="mb-8">
+                  <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-4">
+                    <Mail size={24} />
+                  </div>
+                  <h2 className="text-2xl font-bold tracking-tight text-slate-900">Contact Us</h2>
+                  <p className="text-slate-500 mt-2 text-sm">Have a question or need help? Send us a message and we'll get back to you as soon as possible.</p>
+                </div>
+
+                {contactStatus.success && (
+                  <div className="bg-emerald-50 text-emerald-600 p-4 rounded-xl text-sm font-medium mb-6 border border-emerald-100 flex items-center gap-3 animate-fade-in">
+                    <CheckCircle2 size={18} />
+                    {contactStatus.success}
+                  </div>
+                )}
+
+                {contactStatus.error && (
+                  <div className="bg-red-50 text-red-600 p-4 rounded-xl text-sm font-medium mb-6 border border-red-100 flex items-center gap-3 animate-fade-in">
+                    <AlertCircle size={18} />
+                    {contactStatus.error}
+                  </div>
+                )}
+
+                <form onSubmit={handleContactSubmit} className="space-y-5">
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-semibold text-slate-700 ml-1">Name</label>
+                    <div className="relative group">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-indigo-600">
+                        <User size={18} className="text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
+                      </div>
+                      <input
+                        type="text"
+                        required
+                        value={contactForm.name}
+                        onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
+                        className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-white focus:bg-white text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all"
+                        placeholder="John Doe"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-semibold text-slate-700 ml-1">Email</label>
+                    <div className="relative group">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-indigo-600">
+                        <Mail size={18} className="text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
+                      </div>
+                      <input
+                        type="email"
+                        required
+                        value={contactForm.email}
+                        onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
+                        className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-white focus:bg-white text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all"
+                        placeholder="john@example.com"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-semibold text-slate-700 ml-1">Message</label>
+                    <textarea
+                      required
+                      rows={5}
+                      value={contactForm.message}
+                      onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
+                      className="w-full p-4 rounded-xl border border-slate-200 bg-slate-50 hover:bg-white focus:bg-white text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all resize-none"
+                      placeholder="How can we help you today?"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={contactStatus.loading}
+                    className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl font-semibold text-sm transition-all shadow-[0_4px_12px_rgb(0,0,0,0.1)] active:scale-[0.98] mt-2 disabled:opacity-50 flex items-center justify-center gap-2"
+                  >
+                    {contactStatus.loading ? 'Sending...' : (
+                      <>
+                        <Send size={18} /> Send Message
+                      </>
+                    )}
+                  </button>
+                </form>
+              </div>
+            </div>
           </div>
         ) : currentView === 'cart' ? (
           <div className="flex-1 overflow-y-auto bg-[#F8FAFC] p-6 lg:p-8 scrollbar-hide">
