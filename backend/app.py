@@ -234,7 +234,11 @@ def reset_password():
     new_password = data.get("new_password", "")
 
     if not email or not otp or not new_password:
-        return jsonify({"error": "Missing required fields"}), 400
+        missing = []
+        if not email: missing.append("email")
+        if not otp: missing.append("otp")
+        if not new_password: missing.append("new_password")
+        return jsonify({"error": f"Missing required fields: {', '.join(missing)}"}), 400
 
     # Verify OTP again to ensure the request is authorized
     stored = otp_store.get(email.lower())
