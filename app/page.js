@@ -1611,7 +1611,7 @@ const placeOrder = async () => {
             </div>
           </div>
         ) : currentView === 'checkout' ? (
-          <div className="flex-1 overflow-y-auto bg-[#F8FAFC] p-6 lg:p-8 scrollbar-hide">
+          <div className="flex-1 overflow-y-auto bg-[#F8FAFC] p-6 lg:p-8 pb-28 md:pb-6 scrollbar-hide">
             <div className="max-w-5xl mx-auto">
               <button 
                 onClick={() => setCurrentView('cart')}
@@ -1751,7 +1751,7 @@ const placeOrder = async () => {
             </div>
           </div>
         ) : currentView === 'orders' ? (
-          <div className="flex-1 overflow-y-auto bg-[#F8FAFC] p-6 lg:p-8 scrollbar-hide">
+          <div className="flex-1 overflow-y-auto bg-[#F8FAFC] p-6 lg:p-8 pb-28 md:pb-6 scrollbar-hide">
             <div className="max-w-4xl mx-auto">
               <button onClick={() => setCurrentView('home')} className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-900 font-medium mb-8 transition-colors w-fit bg-white px-4 py-2 rounded-full border border-slate-200/60 shadow-sm">
                 <ArrowLeft size={16} /> Back to Medicines
@@ -1795,7 +1795,7 @@ const placeOrder = async () => {
             </div>
           </div>
         ) : currentView === 'transactions' ? (
-          <div className="flex-1 overflow-y-auto bg-[#F8FAFC] p-6 lg:p-8 scrollbar-hide">
+          <div className="flex-1 overflow-y-auto bg-[#F8FAFC] p-6 lg:p-8 pb-28 md:pb-6 scrollbar-hide">
             <div className="max-w-5xl mx-auto">
               <button onClick={() => setCurrentView('home')} className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-900 font-medium mb-8 transition-colors w-fit bg-white px-4 py-2 rounded-full border border-slate-200/60 shadow-sm">
                 <ArrowLeft size={16} /> Back to Medicines
@@ -1841,7 +1841,7 @@ const placeOrder = async () => {
             </div>
           </div>
         ) : currentView === 'addresses' ? (
-          <div className="flex-1 overflow-y-auto bg-[#F8FAFC] p-6 lg:p-8 scrollbar-hide">
+          <div className="flex-1 overflow-y-auto bg-[#F8FAFC] p-6 lg:p-8 pb-28 md:pb-6 scrollbar-hide">
             <div className="max-w-4xl mx-auto">
               <button onClick={() => setCurrentView('home')} className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-900 font-medium mb-8 transition-colors w-fit bg-white px-4 py-2 rounded-full border border-slate-200/60 shadow-sm">
                 <ArrowLeft size={16} /> Back to Medicines

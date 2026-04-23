@@ -24,6 +24,10 @@ body {
   color: var(--foreground);
 }
 
+button, a, input, select, textarea {
+  touch-action: manipulation;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
