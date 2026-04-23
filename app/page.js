@@ -1098,15 +1098,6 @@ const placeOrder = async () => {
         </div>
         
         <div className="flex items-center gap-4">
-          {currentView === 'home' && (
-            <button 
-              className="md:hidden p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900 rounded-xl transition-colors"
-              onClick={() => setIsMobileSidebarOpen(true)}
-            >
-              <Menu size={22} />
-            </button>
-          )}
-
           <div className="relative hidden sm:block">
             <button 
               onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
@@ -1184,7 +1175,7 @@ const placeOrder = async () => {
       <div className="flex-1 flex flex-col h-full overflow-hidden relative z-10">
         {currentView === 'home' ? (
           <div className="flex flex-col md:flex-row flex-1 h-full overflow-hidden">
-            <main className="flex-1 p-6 lg:p-8 w-full overflow-y-auto scrollbar-hide">
+            <main className="flex-1 p-4 md:p-6 lg:p-8 pb-28 md:pb-6 w-full overflow-y-auto scrollbar-hide">
               <div className="mb-8 flex justify-between items-end">
                 <div>
                   <h2 className="text-2xl font-bold tracking-tight text-slate-900">{activeCategory} Medicines</h2>
@@ -1217,10 +1208,10 @@ const placeOrder = async () => {
                   return (
                     <div 
                       key={product.id} 
-                      className="bg-white border border-slate-200/60 rounded-[20px] p-5 flex flex-col hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:border-slate-300 hover:-translate-y-0.5 transition-all duration-300 group"
+                      className="bg-white border border-slate-200/60 rounded-[20px] p-4 md:p-5 flex flex-col hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:border-slate-300 hover:-translate-y-0.5 transition-all duration-300 group"
                     >
-                      <div className="w-12 h-12 bg-slate-50 border border-slate-100/50 text-slate-700 rounded-2xl flex items-center justify-center mb-5 group-hover:bg-slate-100 transition-colors">
-                        <Icon size={22} strokeWidth={2} />
+                      <div className="w-10 h-10 md:w-12 md:h-12 bg-slate-50 border border-slate-100/50 text-slate-700 rounded-2xl flex items-center justify-center mb-4 md:mb-5 group-hover:bg-slate-100 transition-colors">
+                        <Icon size={20} strokeWidth={2} />
                       </div>
                       <h3 className="font-bold text-base text-slate-900 mb-1">{product.name}</h3>
                       <span className="text-[10px] font-semibold text-slate-500 mb-3 uppercase tracking-wider bg-slate-50 px-2 py-1 rounded w-fit border border-slate-100">{product.category}</span>
@@ -2064,7 +2055,7 @@ const placeOrder = async () => {
         </div>
       )}
 
-      <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end">
+      <div className="fixed bottom-[88px] md:bottom-6 right-6 z-40 flex flex-col items-end">
         {isChatOpen && (
           <div className="w-[340px] h-[520px] bg-white rounded-[24px] shadow-[0_12px_40px_rgb(0,0,0,0.12)] border border-slate-200/60 mb-4 flex flex-col overflow-hidden animate-in slide-in-from-bottom-2 duration-200">
             <div className="px-5 py-4 bg-white border-b border-slate-100 flex justify-between items-center">
@@ -2162,6 +2153,47 @@ const placeOrder = async () => {
         >
           {isChatOpen ? <X size={24} /> : <MessageCircle size={24} />}
         </button>
+      </div>
+
+      {/* --- Mobile Bottom Navigation --- */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200/60 pb-safe">
+        <div className="flex justify-around items-center h-[72px] px-2 pb-2">
+          <button 
+            onClick={() => setCurrentView('home')} 
+            className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${currentView === 'home' ? 'text-slate-900' : 'text-slate-400 hover:text-slate-600'}`}
+          >
+            <Stethoscope size={20} className={currentView === 'home' ? 'stroke-[2.5px]' : ''} />
+            <span className="text-[10px] font-semibold">Home</span>
+          </button>
+          <button 
+            onClick={() => setIsMobileSidebarOpen(true)} 
+            className="flex flex-col items-center justify-center w-full h-full space-y-1 text-slate-400 hover:text-slate-600"
+          >
+            <Search size={20} />
+            <span className="text-[10px] font-semibold">Search</span>
+          </button>
+          <button 
+            onClick={() => setCurrentView('cart')} 
+            className={`relative flex flex-col items-center justify-center w-full h-full space-y-1 ${currentView === 'cart' ? 'text-slate-900' : 'text-slate-400 hover:text-slate-600'}`}
+          >
+            <div className="relative">
+              <ShoppingCart size={20} className={currentView === 'cart' ? 'stroke-[2.5px]' : ''} />
+              {cartCount > 0 && (
+                <span className="absolute -top-1.5 -right-2 bg-slate-900 text-white text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full ring-2 ring-white">
+                  {cartCount}
+                </span>
+              )}
+            </div>
+            <span className="text-[10px] font-semibold">Cart</span>
+          </button>
+          <button 
+            onClick={() => setIsMobileSidebarOpen(true)} 
+            className="flex flex-col items-center justify-center w-full h-full space-y-1 text-slate-400 hover:text-slate-600"
+          >
+            <User size={20} />
+            <span className="text-[10px] font-semibold">Account</span>
+          </button>
+        </div>
       </div>
 
       <style dangerouslySetInnerHTML={{__html: `

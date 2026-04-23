@@ -1,0 +1,16 @@
+{
+  "name": "Med Z Pharmacy",
+  "short_name": "Med Z",
+  "description": "Your AI powered pharmacy experience.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
