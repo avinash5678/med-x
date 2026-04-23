@@ -1,5 +1,6 @@
 "use client"
 import React, { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import { 
   ShoppingCart, 
   Plus, 
@@ -756,16 +757,14 @@ const placeOrder = async () => {
     return (
       <div className="min-h-screen bg-[#F8FAFC] flex flex-col justify-center items-center p-4 font-sans relative overflow-hidden">
         <div className="fixed inset-0 pointer-events-none flex items-center justify-center z-0 opacity-[0.02]">
-          <div className="flex flex-col items-center transform -rotate-12">
-            <Stethoscope size={400} />
+          <div className="flex flex-col items-center transform -rotate-12 opacity-50">
+            <Image src="/logo.png" alt="Med Z Logo Watermark" width={400} height={400} priority />
           </div>
         </div>
 
         <div className="w-full max-w-[420px] bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 relative z-10 p-10">
           <div className="flex flex-col items-center justify-center mb-8">
-            <div className="bg-slate-900 p-3.5 rounded-2xl text-white mb-5 shadow-sm">
-              <Stethoscope size={28} />
-            </div>
+            <Image src="/logo.png" alt="Med Z Logo" width={64} height={64} className="mb-5 rounded-2xl shadow-sm" priority />
             <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Med Z</h1>
             <p className="text-slate-500 text-sm mt-1.5">
               {authStep === 'otp' ? 'Verify your email' 
@@ -1085,8 +1084,8 @@ const placeOrder = async () => {
   return (
     <div className="h-screen overflow-hidden bg-[#F8FAFC] text-slate-900 font-sans flex flex-col relative">
       <div className="fixed inset-0 pointer-events-none flex items-center justify-center overflow-hidden z-0 opacity-[0.02]">
-        <div className="flex flex-col items-center transform -rotate-6">
-          <Stethoscope size={300} />
+        <div className="flex flex-col items-center transform -rotate-6 opacity-30">
+          <Image src="/logo.png" alt="Med Z Logo Watermark" width={300} height={300} priority />
           <span className="text-[12rem] font-bold leading-none tracking-tighter mt-6">Med Z</span>
         </div>
       </div>
@@ -1096,8 +1095,8 @@ const placeOrder = async () => {
           className="flex items-center gap-3 cursor-pointer group" 
           onClick={() => setCurrentView('home')}
         >
-          <div className="bg-slate-900 group-hover:bg-slate-800 transition-colors p-2 rounded-xl text-white shadow-sm">
-            <Stethoscope size={22} />
+          <div className="flex items-center justify-center bg-white border border-slate-200/60 p-1 rounded-xl shadow-[0_2px_8px_rgb(0,0,0,0.04)] group-hover:shadow-md transition-all">
+            <Image src="/logo.png" alt="Med Z Logo" width={32} height={32} className="rounded-lg" priority />
           </div>
           <div>
             <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-none">Med Z</h1>
