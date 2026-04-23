@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
-import json
 import os
 import random
 import time
@@ -9,6 +8,8 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from dotenv import load_dotenv
+from pymongo import MongoClient
+from bson import ObjectId
 
 # Load environment variables from .env file
 load_dotenv()
@@ -27,29 +28,20 @@ SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD", "")
 # In-memory OTP store: { email: { "otp": "123456", "expires": timestamp } }
 otp_store = {}
 
-# --- Data file paths (absolute, so gunicorn doesn't break) ---
-DATA_DIR = os.path.dirname(os.path.abspath(__file__))
-USERS_FILE = os.path.join(DATA_DIR, "users.json")
-ORDERS_FILE = os.path.join(DATA_DIR, "orders.json")
-
-# 📁 Ensure data files exist
-if not os.path.exists(USERS_FILE):
-    with open(USERS_FILE, "w") as f:
-        json.dump([], f)
-
-if not os.path.exists(ORDERS_FILE):
-    with open(ORDERS_FILE, "w") as f:
-        json.dump([], f)
-
-
-# --- Helper to read/write JSON safely ---
-def read_json(filepath):
-    with open(filepath, "r") as f:
-        return json.load(f)
-
-def write_json(filepath, data):
-    with open(filepath, "w") as f:
-        json.dump(data, f, indent=2)
+# --- MongoDB Configuration ---
+MONGO_URI = os.environ.get("MONGO_URI")
+if not MONGO_URI:
+    print("WARNING: MONGO_URI not found in environment variables. Database connection will fail.")
+    client = None
+    db = None
+    users_col = None
+    orders_col = None
+else:
+    client = MongoClient(MONGO_URI)
+    db = client.get_database("medz_db")
+    users_col = db.users
+    orders_col = db.orders
+    print("✅ Connected to MongoDB Atlas")
 
 
 # 🏠 Home route
@@ -63,12 +55,14 @@ def home():
 def login():
     data = request.json
 
-    users = read_json(USERS_FILE)
+    user = users_col.find_one({"email": {"$regex": f"^{data['email']}$", "$options": "i"}})
 
-    for user in users:
-        if user["email"].lower() == data["email"].lower() and check_password_hash(user["password"], data["password"]):
-            safe_user = {k: v for k, v in user.items() if k != "password"}
-            return jsonify(safe_user), 200
+    if user and check_password_hash(user["password"], data["password"]):
+        safe_user = {
+            "name": user.get("name"),
+            "email": user["email"]
+        }
+        return jsonify(safe_user), 200
 
     return jsonify({"error": "Invalid credentials"}), 401
 
@@ -82,10 +76,9 @@ def send_otp():
     if not email:
         return jsonify({"error": "Email is required"}), 400
 
-    users = read_json(USERS_FILE)
-    for user in users:
-        if user["email"].lower() == email.lower():
-            return jsonify({"error": "User already exists"}), 400
+    user_exists = users_col.find_one({"email": {"$regex": f"^{email}$", "$options": "i"}})
+    if user_exists:
+        return jsonify({"error": "User already exists"}), 400
 
     # Generate 6-digit OTP
     otp = str(random.randint(100000, 999999))
@@ -159,8 +152,7 @@ def send_reset_otp():
     if not email:
         return jsonify({"error": "Email is required"}), 400
 
-    users = read_json(USERS_FILE)
-    user_exists = any(user["email"].lower() == email.lower() for user in users)
+    user_exists = users_col.find_one({"email": {"$regex": f"^{email}$", "$options": "i"}})
     
     if not user_exists:
         return jsonify({"error": "No account found with this email"}), 404
@@ -245,19 +237,13 @@ def reset_password():
     if not stored or time.time() > stored["expires"] or stored["otp"] != otp:
         return jsonify({"error": "Unauthorized or expired OTP"}), 401
 
-    users = read_json(USERS_FILE)
-    user_found = False
+    result = users_col.update_one(
+        {"email": {"$regex": f"^{email}$", "$options": "i"}},
+        {"$set": {"password": generate_password_hash(new_password)}}
+    )
 
-    for user in users:
-        if user["email"].lower() == email.lower():
-            user["password"] = generate_password_hash(new_password)
-            user_found = True
-            break
-
-    if not user_found:
+    if result.matched_count == 0:
          return jsonify({"error": "User not found"}), 404
-
-    write_json(USERS_FILE, users)
     
     # Consume the OTP so it can't be reused
     del otp_store[email.lower()]
@@ -270,20 +256,17 @@ def reset_password():
 def signup():
     data = request.json
 
-    users = read_json(USERS_FILE)
-
-    for user in users:
-        if user["email"].lower() == data["email"].lower():
-            return jsonify({"error": "User already exists"}), 400
+    user_exists = users_col.find_one({"email": {"$regex": f"^{data['email']}$", "$options": "i"}})
+    if user_exists:
+        return jsonify({"error": "User already exists"}), 400
 
     new_user = {
         "name": data.get("name", ""),
-        "email": data["email"],
+        "email": data["email"].lower(),
         "password": generate_password_hash(data["password"])
     }
 
-    users.append(new_user)
-    write_json(USERS_FILE, users)
+    users_col.insert_one(new_user)
 
     return jsonify({"name": new_user["name"], "email": new_user["email"]}), 200
 
@@ -306,17 +289,15 @@ def chat():
 def place_order():
     data = request.json
 
-    orders = read_json(ORDERS_FILE)
-
     new_order = {
-        "email": data["email"],
+        "email": data["email"].lower(),
         "items": data["items"],
         "total": data["total"],
-        "status": "paid"
+        "status": "paid",
+        "timestamp": time.time()
     }
 
-    orders.append(new_order)
-    write_json(ORDERS_FILE, orders)
+    orders_col.insert_one(new_order)
 
     return jsonify({"success": True}), 200
 
@@ -324,8 +305,10 @@ def place_order():
 # 📋 GET ORDERS API
 @app.route("/orders/<email>", methods=["GET"])
 def get_orders(email):
-    orders = read_json(ORDERS_FILE)
-    user_orders = [o for o in orders if o["email"].lower() == email.lower()]
+    user_orders = list(orders_col.find({"email": {"$regex": f"^{email}$", "$options": "i"}}))
+    # Convert ObjectId to string for JSON serialization
+    for order in user_orders:
+        order["_id"] = str(order["_id"])
     return jsonify(user_orders)
 
 
