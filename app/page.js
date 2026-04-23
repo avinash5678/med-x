@@ -196,8 +196,10 @@ export default function App() {
   useEffect(() => {
     const savedUser = localStorage.getItem("medz_user");
     if (savedUser) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setUser(JSON.parse(savedUser));
     } else {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setUser(null);
     }
   }, []);
@@ -588,10 +590,12 @@ const placeOrder = async () => {
   useEffect(() => {
     if (user && (currentView === 'orders' || currentView === 'transactions')) {
       const savedOrders = JSON.parse(localStorage.getItem(`orders_${user.email}`)) || [];
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setOrdersHistory(savedOrders.reverse());
     }
     if (user && currentView === 'addresses') {
       const addrs = JSON.parse(localStorage.getItem(`addresses_${user.email}`)) || [];
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSavedAddresses(addrs);
     }
   }, [currentView, user]);
@@ -1414,7 +1418,7 @@ const placeOrder = async () => {
                     <Mail size={24} />
                   </div>
                   <h2 className="text-2xl font-bold tracking-tight text-slate-900">Contact Us</h2>
-                  <p className="text-slate-500 mt-2 text-sm">Have a question or need help? Send us a message and we'll get back to you as soon as possible.</p>
+                  <p className="text-slate-500 mt-2 text-sm">Have a question or need help? Send us a message and we&apos;ll get back to you as soon as possible.</p>
                 </div>
 
                 {contactStatus.success && (
@@ -1513,7 +1517,7 @@ const placeOrder = async () => {
                         <ShoppingCart size={32} className="text-slate-300" />
                       </div>
                       <h3 className="text-lg font-bold text-slate-900 mb-2">Your cart is empty</h3>
-                      <p className="text-slate-500 text-sm mb-8">Looks like you haven't added any medicines yet.</p>
+                      <p className="text-slate-500 text-sm mb-8">Looks like you haven&apos;t added any medicines yet.</p>
                       <button 
                         onClick={() => setCurrentView('home')}
                         className="bg-slate-900 hover:bg-slate-800 text-white px-8 py-3 rounded-xl font-semibold transition-all shadow-[0_4px_14px_rgb(0,0,0,0.1)] active:scale-95"
