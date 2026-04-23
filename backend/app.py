@@ -37,11 +37,18 @@ if not MONGO_URI:
     users_col = None
     orders_col = None
 else:
-    client = MongoClient(MONGO_URI)
-    db = client.get_database("medz_db")
-    users_col = db.users
-    orders_col = db.orders
-    print("✅ Connected to MongoDB Atlas")
+    try:
+        client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
+        db = client.get_database("medz_db")
+        users_col = db.users
+        orders_col = db.orders
+        print("✅ Connected to MongoDB Atlas")
+    except Exception as e:
+        print(f"❌ Failed to connect to MongoDB: {e}")
+        client = None
+        db = None
+        users_col = None
+        orders_col = None
 
 
 # 🏠 Home route
@@ -53,6 +60,9 @@ def home():
 # 🔐 LOGIN API
 @app.route("/login", methods=["POST"])
 def login():
+    if users_col is None:
+        return jsonify({"error": "Database is not connected. Please check MONGO_URI setup."}), 500
+
     data = request.json
 
     user = users_col.find_one({"email": {"$regex": f"^{data['email']}$", "$options": "i"}})
@@ -70,6 +80,9 @@ def login():
 # 📧 SEND OTP API
 @app.route("/send-otp", methods=["POST"])
 def send_otp():
+    if users_col is None:
+        return jsonify({"error": "Database is not connected. Please check MONGO_URI setup."}), 500
+
     data = request.json
     email = data.get("email", "").strip()
 
@@ -146,6 +159,9 @@ def verify_otp():
 # 🔄 SEND RESET OTP API
 @app.route("/send-reset-otp", methods=["POST"])
 def send_reset_otp():
+    if users_col is None:
+        return jsonify({"error": "Database is not connected. Please check MONGO_URI setup."}), 500
+
     data = request.json
     email = data.get("email", "").strip()
 
@@ -254,6 +270,9 @@ def reset_password():
 # 🆕 SIGNUP API
 @app.route("/signup", methods=["POST"])
 def signup():
+    if users_col is None:
+        return jsonify({"error": "Database is not connected. Please check MONGO_URI setup."}), 500
+
     data = request.json
 
     user_exists = users_col.find_one({"email": {"$regex": f"^{data['email']}$", "$options": "i"}})
