@@ -3,3 +3,4 @@ flask-cors
 gunicorn
 werkzeug
 python-dotenv
+pymongo[srv]
