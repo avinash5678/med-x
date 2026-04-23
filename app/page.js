@@ -447,6 +447,12 @@ const handleAuthSubmit = async (e) => {
   const handleLogout = () => {
     localStorage.removeItem("medz_user");
     setUser(null);
+    setAuthMode('login');
+    setAuthStep('form');
+    setAuthForm({ name: '', email: '', password: '' });
+    setOtpCode('');
+    setAuthError('');
+    setAuthSuccessMsg('');
   };
 
   // --- Contact Submit ---
