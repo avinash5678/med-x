@@ -326,7 +326,7 @@ const DeliveryTrackingView = ({ order, setCurrentView }) => {
   }, [order?.id]);
 
   return (
-    <div className="w-full min-h-[calc(100vh-80px)] bg-slate-50 pb-20 md:pb-8 md:pt-6 lg:pt-8 md:px-8 lg:px-12 xl:px-16 font-sans flex flex-col">
+    <div className="w-full h-full overflow-y-auto bg-slate-50 pb-20 md:pb-8 md:pt-6 lg:pt-8 md:px-8 lg:px-12 xl:px-16 font-sans flex flex-col">
       
       {/* Top Header */}
       <div className="flex items-center justify-between mb-6 md:mb-8 px-6 md:px-0 mt-4 md:mt-0 flex-shrink-0">
