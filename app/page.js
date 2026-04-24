@@ -300,10 +300,10 @@ const DeliveryTrackingView = ({ order, setCurrentView }) => {
   }, []);
 
   return (
-    <div className="max-w-[1400px] mx-auto min-h-[calc(100vh-80px)] bg-slate-50 pb-20 md:pb-12 md:pt-10 md:px-8 font-sans">
+    <div className="w-full min-h-[calc(100vh-80px)] bg-slate-50 pb-20 md:pb-8 md:pt-6 lg:pt-8 md:px-8 lg:px-12 xl:px-16 font-sans flex flex-col">
       
       {/* Top Header */}
-      <div className="flex items-center justify-between mb-6 md:mb-10 px-6 md:px-0 mt-4 md:mt-0">
+      <div className="flex items-center justify-between mb-6 md:mb-8 px-6 md:px-0 mt-4 md:mt-0 flex-shrink-0">
         <div className="flex items-center gap-4 md:gap-6">
           <button onClick={() => setCurrentView('home')} className="w-10 h-10 md:w-14 md:h-14 bg-white flex items-center justify-center rounded-full shadow-sm hover:shadow-md transition-all text-slate-600 hover:text-slate-900 border border-slate-100">
             <ArrowLeft size={20} className="md:w-6 md:h-6" />
@@ -319,10 +319,10 @@ const DeliveryTrackingView = ({ order, setCurrentView }) => {
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-0 md:gap-8 lg:gap-12">
+      <div className="flex flex-col md:flex-row gap-0 md:gap-8 lg:gap-12 xl:gap-16 flex-grow">
         
         {/* Map Section */}
-        <div className="relative h-[450px] md:h-[760px] flex-grow bg-slate-200 md:rounded-[40px] overflow-hidden shadow-lg md:shadow-2xl border-0 md:border-8 border-white z-0">
+        <div className="relative h-[450px] md:h-auto min-h-[600px] flex-grow bg-slate-200 md:rounded-[40px] overflow-hidden shadow-lg md:shadow-2xl border-0 md:border-8 border-white z-0">
           <div id="delivery-map" className="w-full h-full z-0"></div>
           {!mapLoaded && (
             <div className="absolute inset-0 flex items-center justify-center bg-slate-100/80 backdrop-blur-sm z-10">
