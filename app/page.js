@@ -921,7 +921,10 @@ const placeOrder = async () => {
     setCart([]);
     setCheckoutStep(1);
     setActiveDeliveryOrder(newOrder);
-    setCurrentView('delivery');
+    setShowOrderModal(true);
+    setTimeout(() => {
+      setCurrentView('delivery');
+    }, 3000);
   };
 
   useEffect(() => {
