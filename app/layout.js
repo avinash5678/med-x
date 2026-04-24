@@ -14,16 +14,9 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "Med Z - Smart pharmacy",
   description: "Your AI powered pharmacy experience",
-  manifest: "/manifest.json",
-  appleWebApp: {
-    capable: true,
-    title: "Med Z",
-    statusBarStyle: "black-translucent",
-  },
 };
 
 export const viewport = {
-  themeColor: "#0f172a",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
