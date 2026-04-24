@@ -262,12 +262,11 @@ const DeliveryTrackingView = ({ order, setCurrentView }) => {
       let agentLng = 77.2110;
       const deliveryMarker = L.marker([agentLat, agentLng], { icon: deliveryIcon, zIndexOffset: 1000 }).addTo(map);
 
-      // Simple Animation
+      // Simple Animation for map ONLY
       const targetLat = 28.6010;
       const targetLng = 77.2190;
-      const steps = 600; // 10 minutes at 1 update per second
+      const steps = 600; 
       let currentStep = 0;
-
       const latStep = (targetLat - agentLat) / steps;
       const lngStep = (targetLng - agentLng) / steps;
 
@@ -276,16 +275,7 @@ const DeliveryTrackingView = ({ order, setCurrentView }) => {
           agentLat += latStep;
           agentLng += lngStep;
           deliveryMarker.setLatLng([agentLat, agentLng]);
-          
-          // Update ETA down
-          const remainingMins = Math.max(1, Math.ceil(14 - (14 * (currentStep / steps))));
-          setEta(`${remainingMins} mins`);
-
           currentStep++;
-        } else {
-          clearInterval(interval);
-          setStatus(3);
-          setEta('Delivered');
         }
       }, 1000);
 
@@ -294,10 +284,41 @@ const DeliveryTrackingView = ({ order, setCurrentView }) => {
       map.fitBounds(group.getBounds().pad(0.3));
     }
 
+    // Real-time status polling
+    const pollStatus = async () => {
+      if (!order?.id) return;
+      try {
+        const res = await fetch(`/api/orders/${order.id}`);
+        if (res.ok) {
+          const data = await res.json();
+          let newStatus = 0; // default placed
+          
+          if (data.retailer_status === 'accepted') newStatus = 1;
+          if (data.delivery_status === 'packing') newStatus = 1;
+          if (data.delivery_status === 'packed') newStatus = 1;
+          if (data.delivery_status === 'out_for_delivery') newStatus = 2;
+          if (data.delivery_status === 'delivered') newStatus = 3;
+          
+          setStatus(newStatus);
+          
+          if (newStatus === 3) setEta('Delivered');
+          else if (newStatus === 2) setEta('On the way');
+          else if (newStatus === 1) setEta('Packing');
+          else setEta('Waiting for confirmation');
+        }
+      } catch (err) {
+        console.error("Poll error:", err);
+      }
+    };
+    
+    pollStatus();
+    const statusInterval = setInterval(pollStatus, 3000);
+
     return () => {
       if (interval) clearInterval(interval);
+      clearInterval(statusInterval);
     };
-  }, []);
+  }, [order?.id]);
 
   return (
     <div className="w-full min-h-[calc(100vh-80px)] bg-slate-50 pb-20 md:pb-8 md:pt-6 lg:pt-8 md:px-8 lg:px-12 xl:px-16 font-sans flex flex-col">
@@ -841,25 +862,31 @@ const handleAuthSubmit = async (e) => {
   };
 const placeOrder = async () => {
   try {
-    await fetch('/api/orders', {
+    const res = await fetch('/api/orders', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         email: user?.email,
         items: cart,
-        total: cartTotal
+        total: cartTotal,
+        address: addressForm
       })
     });
+    const data = await res.json();
+    return data.order_id || `ORD-${Math.floor(Math.random() * 10000)}`;
   } catch (err) {
     console.error('Order error:', err);
+    return `ORD-${Math.floor(Math.random() * 10000)}`;
   }
 };
   // --- Pure LocalStorage Order Processing ---
   const executeOrder = async () => {
     if (cart.length === 0) return;
 
+    const realOrderId = await placeOrder();
+
     const newOrder = {
-      id: `ORD-${Math.floor(Math.random() * 10000)}`,
+      id: realOrderId,
       date: new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
       items: cart,
       total: cartTotal,
@@ -880,8 +907,6 @@ const placeOrder = async () => {
       localStorage.setItem(userAddressKey, JSON.stringify([...existingAddresses, addressForm]));
     }
 
-
-    await placeOrder();
     setCart([]);
     setCheckoutStep(1);
     setActiveDeliveryOrder(newOrder);
