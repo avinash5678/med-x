@@ -300,9 +300,9 @@ const DeliveryTrackingView = ({ order, setCurrentView }) => {
   }, []);
 
   return (
-    <div className="max-w-md mx-auto min-h-[calc(100vh-80px)] bg-slate-50 pb-20 md:pb-0">
+    <div className="max-w-6xl mx-auto min-h-[calc(100vh-80px)] bg-slate-50 pb-20 md:pb-8 md:pt-8 md:px-6">
       {/* Header */}
-      <div className="bg-white px-6 py-5 sticky top-0 z-50 flex items-center shadow-sm">
+      <div className="bg-white px-6 py-5 md:rounded-2xl md:mb-6 sticky top-0 md:relative z-50 flex items-center shadow-sm">
         <button onClick={() => setCurrentView('home')} className="p-2 -ml-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors mr-3">
           <ArrowLeft size={24} />
         </button>
@@ -312,117 +312,119 @@ const DeliveryTrackingView = ({ order, setCurrentView }) => {
         </div>
       </div>
 
-      {/* Map Section */}
-      <div className="relative h-[350px] w-full bg-slate-200">
-        <div id="delivery-map" className="w-full h-full z-0"></div>
-        {!mapLoaded && (
-          <div className="absolute inset-0 flex items-center justify-center bg-slate-100/80 backdrop-blur-sm z-10">
-            <div className="w-8 h-8 border-4 border-slate-300 border-t-emerald-500 rounded-full animate-spin"></div>
-          </div>
-        )}
-        
-        {/* ETA Overlay */}
-        <div className="absolute top-6 inset-x-0 flex justify-center z-20 pointer-events-none">
-          <div className="bg-slate-900/90 backdrop-blur text-white px-6 py-3 rounded-full shadow-lg flex flex-col items-center pointer-events-auto">
-            <span className="text-[11px] font-bold uppercase tracking-widest text-emerald-400 mb-0.5">Estimated Time</span>
-            <span className="text-xl font-bold">{eta}</span>
+      <div className="flex flex-col md:flex-row gap-0 md:gap-6">
+        {/* Map Section */}
+        <div className="relative h-[400px] md:h-[700px] w-full md:w-2/3 bg-slate-200 md:rounded-[32px] overflow-hidden shadow-sm z-0">
+          <div id="delivery-map" className="w-full h-full z-0"></div>
+          {!mapLoaded && (
+            <div className="absolute inset-0 flex items-center justify-center bg-slate-100/80 backdrop-blur-sm z-10">
+              <div className="w-8 h-8 border-4 border-slate-300 border-t-emerald-500 rounded-full animate-spin"></div>
+            </div>
+          )}
+          
+          {/* ETA Overlay */}
+          <div className="absolute top-6 inset-x-0 flex justify-center z-20 pointer-events-none">
+            <div className="bg-slate-900/90 backdrop-blur text-white px-6 py-3 rounded-full shadow-lg flex flex-col items-center pointer-events-auto">
+              <span className="text-[11px] font-bold uppercase tracking-widest text-emerald-400 mb-0.5">Estimated Time</span>
+              <span className="text-xl font-bold">{eta}</span>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Delivery Details Bottom Sheet style */}
-      <div className="bg-white rounded-t-[32px] -mt-6 relative z-30 pt-8 pb-10 px-6 shadow-[0_-10px_40px_rgb(0,0,0,0.08)]">
-        
-        {/* Status Timeline */}
-        <div className="mb-8">
-          <div className="flex justify-between relative">
-            <div className="absolute top-4 left-[10%] right-[10%] h-[3px] bg-slate-100 z-0">
-              <div 
-                className="h-full bg-emerald-500 transition-all duration-1000 ease-out z-0" 
-                style={{ width: `${(status / 3) * 100}%` }}
-              />
-            </div>
+        {/* Delivery Details Sidebar */}
+        <div className="bg-white rounded-t-[32px] md:rounded-[32px] -mt-6 md:mt-0 relative z-30 pt-8 pb-10 px-6 shadow-[0_-10px_40px_rgb(0,0,0,0.08)] md:shadow-md w-full md:w-1/3 flex flex-col h-fit">
+          
+          {/* Status Timeline */}
+          <div className="mb-8">
+            <div className="flex justify-between relative">
+              <div className="absolute top-4 left-[10%] right-[10%] h-[3px] bg-slate-100 z-0">
+                <div 
+                  className="h-full bg-emerald-500 transition-all duration-1000 ease-out z-0" 
+                  style={{ width: `${(status / 3) * 100}%` }}
+                />
+              </div>
 
-            {['Placed', 'Packed', 'On the way', 'Delivered'].map((step, idx) => (
-              <div key={idx} className="flex flex-col items-center relative z-10 w-1/4">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-500 mb-2 shadow-sm ${idx <= status ? 'bg-emerald-500 text-white shadow-emerald-500/30' : 'bg-white border-2 border-slate-200 text-slate-300'}`}>
-                  {idx < status ? <CheckCircle2 size={16} /> : 
-                   idx === 0 ? <Receipt size={16} /> :
-                   idx === 1 ? <Package size={16} /> :
-                    idx === 2 ? <Truck size={16} /> : <MapPin size={16} />}
+              {['Placed', 'Packed', 'On the way', 'Delivered'].map((step, idx) => (
+                <div key={idx} className="flex flex-col items-center relative z-10 w-1/4">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-500 mb-2 shadow-sm ${idx <= status ? 'bg-emerald-500 text-white shadow-emerald-500/30' : 'bg-white border-2 border-slate-200 text-slate-300'}`}>
+                    {idx < status ? <CheckCircle2 size={16} /> : 
+                     idx === 0 ? <Receipt size={16} /> :
+                     idx === 1 ? <Package size={16} /> :
+                     idx === 2 ? <Truck size={16} /> : <MapPin size={16} />}
+                  </div>
+                  <span className={`text-[11px] font-bold text-center ${idx <= status ? 'text-slate-900' : 'text-slate-400'}`}>{step}</span>
                 </div>
-                <span className={`text-[11px] font-bold text-center ${idx <= status ? 'text-slate-900' : 'text-slate-400'}`}>{step}</span>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
 
-        {/* Delivery Agent Profile */}
-        <div className="bg-slate-50 border border-slate-100 rounded-[24px] p-5 mb-4 flex items-center justify-between shadow-sm">
-          <div className="flex items-center gap-4">
-            <div className="relative">
-              <div className="w-14 h-14 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 border border-emerald-200">
-                <User size={24} />
+          {/* Delivery Agent Profile */}
+          <div className="bg-slate-50 border border-slate-100 rounded-[24px] p-5 mb-4 flex items-center justify-between shadow-sm hover:shadow-md transition-shadow">
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <div className="w-14 h-14 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 border border-emerald-200">
+                  <User size={24} />
+                </div>
+                <div className="absolute -bottom-1 -right-1 bg-emerald-500 border-2 border-white w-5 h-5 rounded-full flex items-center justify-center">
+                  <CheckCircle2 size={10} className="text-white" />
+                </div>
               </div>
-              <div className="absolute -bottom-1 -right-1 bg-emerald-500 border-2 border-white w-5 h-5 rounded-full flex items-center justify-center">
-                <CheckCircle2 size={10} className="text-white" />
+              <div>
+                <p className="font-bold text-slate-900 text-base">Rajesh Kumar</p>
+                <p className="text-slate-500 text-xs font-medium flex items-center gap-1.5 mt-0.5">
+                  <Truck size={12} /> Delivery Partner
+                </p>
+                <div className="flex items-center gap-1 mt-1.5">
+                  {[1,2,3,4,5].map(star => <svg key={star} className="w-3 h-3 text-amber-400 fill-amber-400" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>)}
+                  <span className="text-[11px] font-bold text-slate-600 ml-1">4.9</span>
+                </div>
               </div>
             </div>
-            <div>
-              <p className="font-bold text-slate-900 text-base">Rajesh Kumar</p>
-              <p className="text-slate-500 text-xs font-medium flex items-center gap-1.5 mt-0.5">
-                <Truck size={12} /> Delivery Partner
-              </p>
-              <div className="flex items-center gap-1 mt-1.5">
-                {[1,2,3,4,5].map(star => <svg key={star} className="w-3 h-3 text-amber-400 fill-amber-400" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>)}
-                <span className="text-[11px] font-bold text-slate-600 ml-1">4.9</span>
-              </div>
+            <div className="flex gap-2">
+              <button className="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-100 transition-colors">
+                <MessageCircle size={18} />
+              </button>
+              <button className="w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-md shadow-emerald-500/20 hover:bg-emerald-600 transition-colors">
+                <Phone size={18} />
+              </button>
             </div>
           </div>
-          <div className="flex gap-2">
-            <button className="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-100 transition-colors">
-              <MessageCircle size={18} />
-            </button>
-            <button className="w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-md shadow-emerald-500/20 hover:bg-emerald-600 transition-colors">
+
+          {/* Shop Info */}
+          <div className="bg-white border border-slate-100 rounded-[24px] p-5 flex items-center justify-between shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-md transition-shadow">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-slate-900 rounded-full flex items-center justify-center text-white">
+                <Store size={20} />
+              </div>
+              <div>
+                <p className="font-bold text-slate-900 text-sm">Med Z Central Pharmacy</p>
+                <p className="text-slate-500 text-xs font-medium mt-0.5">Connaught Place, New Delhi</p>
+              </div>
+            </div>
+            <button className="text-slate-400 hover:text-emerald-500 transition-colors">
               <Phone size={18} />
             </button>
           </div>
-        </div>
 
-        {/* Shop Info */}
-        <div className="bg-white border border-slate-100 rounded-[24px] p-5 flex items-center justify-between shadow-[0_4px_20px_rgb(0,0,0,0.03)]">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-slate-900 rounded-full flex items-center justify-center text-white">
-              <Store size={20} />
+          {/* Order Details Snippet */}
+          <div className="mt-6 border-t border-slate-100 pt-6">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="font-bold text-slate-900">Order Details</h3>
+              <span className="text-emerald-600 font-bold text-sm">₹{order?.total || 0}</span>
             </div>
-            <div>
-              <p className="font-bold text-slate-900 text-sm">Med Z Central Pharmacy</p>
-              <p className="text-slate-500 text-xs font-medium mt-0.5">Connaught Place, New Delhi</p>
+            <div className="space-y-3">
+              {order?.items?.slice(0, 2).map((item, i) => (
+                <div key={i} className="flex justify-between text-sm">
+                  <span className="text-slate-600 font-medium">{item.quantity}x {item.name}</span>
+                  <span className="text-slate-900 font-semibold">₹{item.price * item.quantity}</span>
+                </div>
+              ))}
+              {order?.items?.length > 2 && (
+                <div className="text-xs text-slate-400 font-medium pt-1">
+                  + {order.items.length - 2} more items
+                </div>
+              )}
             </div>
-          </div>
-          <button className="text-slate-400 hover:text-emerald-500 transition-colors">
-            <Phone size={18} />
-          </button>
-        </div>
-
-        {/* Order Details Snippet */}
-        <div className="mt-6 border-t border-slate-100 pt-6">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="font-bold text-slate-900">Order Details</h3>
-            <span className="text-emerald-600 font-bold text-sm">₹{order?.total || 0}</span>
-          </div>
-          <div className="space-y-3">
-            {order?.items?.slice(0, 2).map((item, i) => (
-              <div key={i} className="flex justify-between text-sm">
-                <span className="text-slate-600 font-medium">{item.quantity}x {item.name}</span>
-                <span className="text-slate-900 font-semibold">₹{item.price * item.quantity}</span>
-              </div>
-            ))}
-            {order?.items?.length > 2 && (
-              <div className="text-xs text-slate-400 font-medium pt-1">
-                + {order.items.length - 2} more items
-              </div>
-            )}
           </div>
         </div>
       </div>
