@@ -572,9 +572,17 @@ def retailer_accept_order(order_id):
     if orders_col is None:
         return jsonify({"error": "Database is not connected."}), 500
 
+    data = request.json or {}
+    retailer_info = data.get("retailer_info", {})
+
     result = orders_col.update_one(
         {"order_id": order_id},
-        {"$set": {"retailer_status": "accepted", "status": "confirmed", "accepted_at": time.time()}}
+        {"$set": {
+            "retailer_status": "accepted", 
+            "status": "confirmed", 
+            "accepted_at": time.time(),
+            "retailer_info": retailer_info
+        }}
     )
     if result.matched_count == 0:
         return jsonify({"error": "Order not found"}), 404

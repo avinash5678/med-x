@@ -188,9 +188,10 @@ for(let i = 0; i < 500; i++) {
 const PRODUCTS = [...BASE_PRODUCTS, ...extraMedicines];
 
 const DeliveryTrackingView = ({ order, setCurrentView }) => {
-  const [status, setStatus] = useState(2); // 0: Placed, 1: Packed, 2: Out for Delivery, 3: Delivered
-  const [eta, setEta] = useState('14 mins');
+  const [status, setStatus] = useState(0); // 0: Placed, 1: Packed, 2: Out for Delivery, 3: Delivered
+  const [eta, setEta] = useState('Waiting for confirmation');
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [retailerInfo, setRetailerInfo] = useState(null);
 
   useEffect(() => {
     let interval;
@@ -301,10 +302,14 @@ const DeliveryTrackingView = ({ order, setCurrentView }) => {
           
           setStatus(newStatus);
           
+          if (data.retailer_info) {
+             setRetailerInfo(data.retailer_info);
+          }
+          
           if (newStatus === 3) setEta('Delivered');
-          else if (newStatus === 2) setEta('On the way');
-          else if (newStatus === 1) setEta('Packing');
-          else setEta('Waiting for confirmation');
+          else if (newStatus === 2) setEta('14 mins');
+          else if (newStatus === 1) setEta('Preparing');
+          else setEta('Pending');
         }
       } catch (err) {
         console.error("Poll error:", err);
@@ -354,7 +359,9 @@ const DeliveryTrackingView = ({ order, setCurrentView }) => {
           {/* ETA Overlay on Map */}
           <div className="absolute top-8 inset-x-0 flex justify-center z-20 pointer-events-none">
             <div className="bg-slate-900/90 backdrop-blur-md text-white px-10 py-4 rounded-full shadow-2xl flex flex-col items-center pointer-events-auto border border-slate-800/50 transform hover:scale-[1.02] transition-transform cursor-default">
-              <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.25em] text-emerald-400 mb-1">Arriving In</span>
+              <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.25em] text-emerald-400 mb-1">
+                {status === 3 ? 'Order Status' : status === 0 ? 'Order Status' : 'Arriving In'}
+              </span>
               <span className="text-2xl md:text-3xl font-black tracking-tight">{eta}</span>
             </div>
           </div>
@@ -387,38 +394,38 @@ const DeliveryTrackingView = ({ order, setCurrentView }) => {
             </div>
           </div>
 
-          <h3 className="font-bold text-slate-900 text-lg md:text-xl mb-5 tracking-tight">Delivery Partner</h3>
+          <h3 className="font-bold text-slate-900 text-lg md:text-xl mb-5 tracking-tight">Assigned Partner</h3>
 
-          {/* Delivery Agent Profile */}
+          {/* Delivery Agent Profile / Retailer Profile */}
           <div className="bg-slate-50/50 hover:bg-slate-50 border border-slate-100 rounded-[28px] p-5 md:p-6 mb-8 flex items-center justify-between shadow-sm hover:shadow-md transition-all group">
             <div className="flex items-center gap-4">
               <div className="relative">
                 <div className="w-14 h-14 md:w-16 md:h-16 bg-emerald-100/50 rounded-full flex items-center justify-center text-emerald-600 border-2 border-emerald-200 shadow-inner group-hover:bg-emerald-100 transition-colors">
-                  <User size={28} />
+                  {retailerInfo ? <Store size={28} /> : <User size={28} />}
                 </div>
                 <div className="absolute -bottom-1 -right-1 bg-emerald-500 border-2 border-white w-6 h-6 rounded-full flex items-center justify-center shadow-sm">
                   <CheckCircle2 size={12} className="text-white" strokeWidth={3} />
                 </div>
               </div>
               <div>
-                <p className="font-bold text-slate-900 text-base md:text-lg tracking-tight">Rajesh Kumar</p>
+                <p className="font-bold text-slate-900 text-base md:text-lg tracking-tight">
+                  {retailerInfo ? retailerInfo.shop_name : (status > 0 ? 'Assigned Partner' : 'Waiting...')}
+                </p>
                 <div className="flex items-center gap-2 mt-1.5">
                   <span className="bg-amber-100 text-amber-700 text-[10px] md:text-xs font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
                     <svg className="w-3 h-3 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
                     4.9
                   </span>
-                  <span className="text-slate-400 text-xs md:text-sm font-semibold tracking-wide">• 1,240 deliveries</span>
+                  <span className="text-slate-400 text-xs md:text-sm font-semibold tracking-wide">
+                    {retailerInfo ? `• ${retailerInfo.city}` : '• Local Delivery'}
+                  </span>
                 </div>
               </div>
             </div>
             <div className="flex gap-2.5 md:gap-3">
-              <button className="w-11 h-11 md:w-12 md:h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-100 hover:scale-105 transition-all shadow-sm">
-                <MessageCircle size={20} fill="currentColor" className="opacity-20 absolute" />
-                <MessageCircle size={20} className="relative z-10" />
-              </button>
-              <button className="w-11 h-11 md:w-12 md:h-12 rounded-full bg-slate-900 text-white flex items-center justify-center shadow-lg hover:bg-emerald-500 hover:shadow-emerald-500/30 hover:scale-105 transition-all">
+              <a href={`tel:${retailerInfo ? retailerInfo.phone : ''}`} className="w-11 h-11 md:w-12 md:h-12 rounded-full bg-slate-900 text-white flex items-center justify-center shadow-lg hover:bg-emerald-500 hover:shadow-emerald-500/30 hover:scale-105 transition-all">
                 <Phone size={20} />
-              </button>
+              </a>
             </div>
           </div>
 
@@ -431,13 +438,17 @@ const DeliveryTrackingView = ({ order, setCurrentView }) => {
                 <Store size={24} />
               </div>
               <div>
-                <p className="font-bold text-slate-900 text-sm md:text-base tracking-tight">Med Z Central Pharmacy</p>
-                <p className="text-slate-500 text-xs md:text-sm font-semibold mt-1">Connaught Place, New Delhi</p>
+                <p className="font-bold text-slate-900 text-sm md:text-base tracking-tight">
+                  {retailerInfo ? retailerInfo.shop_name : 'Med Z Central Pharmacy'}
+                </p>
+                <p className="text-slate-500 text-xs md:text-sm font-semibold mt-1">
+                  {retailerInfo ? `${retailerInfo.address?.slice(0, 40)}...` : 'Connecting to nearby store...'}
+                </p>
               </div>
             </div>
-            <button className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 rounded-full transition-all">
+            <a href={`tel:${retailerInfo ? retailerInfo.phone : ''}`} className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 rounded-full transition-all">
               <Phone size={20} />
-            </button>
+            </a>
           </div>
 
           {/* Order Details Snippet */}
