@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Package, MapPin, Clock, Check, X, Loader2, AlertTriangle, Phone } from 'lucide-react';
 
-export default function Orders() {
+export default function Orders({ retailer }) {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(null);
@@ -29,8 +29,11 @@ export default function Orders() {
   const handleAction = async (orderId, action) => {
     setActionLoading(`${orderId}-${action}`);
     try {
+      const body = action === 'accept' ? { retailer_info: retailer?.shop_details } : {};
       const res = await fetch(`/api/retailer/orders/${orderId}/${action}`, {
-        method: 'POST'
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
       });
       if (res.ok) {
         fetchOrders(); // Refresh instantly
