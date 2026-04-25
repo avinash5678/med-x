@@ -203,6 +203,10 @@ const DeliveryTrackingView = ({ order, setCurrentView }) => {
   const [status, setStatus] = useState(0); // 0: Placed, 1: Packed, 2: Out for Delivery, 3: Delivered
   const [eta, setEta] = useState('Waiting for confirmation');
   const [retailerInfo, setRetailerInfo] = useState(null);
+  const [mapLoaded, setMapLoaded] = useState(false);
+
+  const mapRef = useRef(null);
+  const deliveryMarkerRef = useRef(null);
 
   useEffect(() => {
     // Real-time status polling
@@ -244,6 +248,121 @@ const DeliveryTrackingView = ({ order, setCurrentView }) => {
     };
   }, [order?.id]);
 
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !window.L) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+      document.head.appendChild(link);
+
+      const script = document.createElement('script');
+      script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+      script.async = true;
+      script.onload = () => {
+        setMapLoaded(true);
+      };
+      document.head.appendChild(script);
+    } else if (window.L) {
+      setMapLoaded(true);
+    }
+
+    return () => {
+      if (window.deliveryInterval) clearInterval(window.deliveryInterval);
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!mapLoaded || !window.L) return;
+    const L = window.L;
+
+    const shopLat = retailerInfo?.latitude || 28.6200;
+    const shopLng = retailerInfo?.longitude || 77.2100;
+    const customerLat = order?.address?.latitude || 28.6000;
+    const customerLng = order?.address?.longitude || 77.2200;
+
+    if (!mapRef.current) {
+      const mapContainer = document.getElementById('delivery-map');
+      if (!mapContainer || mapContainer._leaflet_id) return;
+
+      const map = L.map('delivery-map', { zoomControl: false, attributionControl: false });
+      mapRef.current = map;
+      
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        maxZoom: 19
+      }).addTo(map);
+
+      // Shop Marker
+      const shopIcon = L.divIcon({
+        className: 'custom-div-icon',
+        html: `<div style="background-color:#0f172a;width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 6px rgba(0,0,0,0.3);border:2px solid white;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></div>`,
+        iconSize: [32, 32],
+        iconAnchor: [16, 16]
+      });
+      const shopMarker = L.marker([shopLat, shopLng], { icon: shopIcon }).addTo(map);
+
+      // Customer Marker
+      const customerIcon = L.divIcon({
+        className: 'custom-div-icon',
+        html: `<div style="background-color:#3b82f6;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 6px rgba(0,0,0,0.3);border:2px solid white;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>`,
+        iconSize: [32, 32],
+        iconAnchor: [16, 32]
+      });
+      const customerMarker = L.marker([customerLat, customerLng], { icon: customerIcon }).addTo(map);
+
+      // Pathline from shop to customer
+      const latlngs = [[shopLat, shopLng], [customerLat, customerLng]];
+      L.polyline(latlngs, {color: '#10b981', weight: 4, dashArray: '8, 8', opacity: 0.7}).addTo(map);
+
+      // Delivery Agent Marker
+      const deliveryIcon = L.divIcon({
+        className: 'custom-div-icon',
+        html: `<div style="background-color:#10b981;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(16,185,129,0.4);border:3px solid white;z-index:1000;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg></div>`,
+        iconSize: [40, 40],
+        iconAnchor: [20, 20]
+      });
+
+      deliveryMarkerRef.current = L.marker([shopLat, shopLng], { icon: deliveryIcon, zIndexOffset: 1000 }).addTo(map);
+
+      const group = new L.featureGroup([shopMarker, customerMarker]);
+      map.fitBounds(group.getBounds().pad(0.3));
+    }
+
+    // Handle marker position based on status
+    if (window.deliveryInterval) {
+      clearInterval(window.deliveryInterval);
+    }
+
+    if (status === 3) {
+      // Delivered: snap to customer
+      deliveryMarkerRef.current.setLatLng([customerLat, customerLng]);
+    } else if (status === 2) {
+      // Out for delivery: animate towards customer
+      let currentLat = shopLat;
+      let currentLng = shopLng;
+      const steps = 600; 
+      let currentStep = 0;
+      const latStep = (customerLat - shopLat) / steps;
+      const lngStep = (customerLng - shopLng) / steps;
+
+      window.deliveryInterval = setInterval(() => {
+        if (currentStep < steps) {
+          currentLat += latStep;
+          currentLng += lngStep;
+          deliveryMarkerRef.current.setLatLng([currentLat, currentLng]);
+          currentStep++;
+        }
+      }, 1000);
+    } else {
+      // Placed / Packed: stay at shop
+      deliveryMarkerRef.current.setLatLng([shopLat, shopLng]);
+    }
+
+  }, [mapLoaded, status, retailerInfo, order]);
+
   return (
     <div className="flex-1 flex flex-col h-full bg-[#F8FAFC] overflow-y-auto font-sans relative z-10 p-4 md:p-6 lg:p-8">
       {/* Top Header */}
@@ -268,6 +387,16 @@ const DeliveryTrackingView = ({ order, setCurrentView }) => {
 
       <div className="max-w-2xl mx-auto w-full space-y-6 pb-20">
         
+        {/* Map Card */}
+        <div className="bg-slate-200 border border-slate-200/60 rounded-[20px] overflow-hidden shadow-[0_2px_8px_rgb(0,0,0,0.02)] h-64 md:h-80 relative z-0">
+          <div id="delivery-map" className="w-full h-full z-0"></div>
+          {!mapLoaded && (
+            <div className="absolute inset-0 flex items-center justify-center bg-slate-100/80 backdrop-blur-sm z-10">
+              <div className="w-8 h-8 border-4 border-slate-300 border-t-emerald-500 rounded-full animate-spin"></div>
+            </div>
+          )}
+        </div>
+
         {/* Status Card */}
         <div className="bg-white border border-slate-200/60 rounded-[20px] p-6 shadow-[0_2px_8px_rgb(0,0,0,0.02)]">
           <div className="flex flex-col items-center justify-center text-center mb-8">
