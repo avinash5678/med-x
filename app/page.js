@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import Image from 'next/image';
 import { 
   ShoppingCart, 
@@ -167,25 +167,37 @@ const BASE_PRODUCTS = [
   { id: 108, name: 'Dettol Soap', price: 120, category: 'Personal Care', description: 'Pack of 3 antibacterial soaps.', icon: PlusSquare }
 ];
 
-// --- Procedurally Generate 500 More Medicines ---
-const extraMedicines = [];
+// --- Procedurally Generate 500 More Medicines (deterministic seeded values) ---
 const genericNames = ['Paracetamol', 'Ibuprofen', 'Cetirizine', 'Amoxicillin', 'Azithromycin', 'Omeprazole', 'Pantoprazole', 'Metformin', 'Glimepiride', 'Aspirin', 'Atorvastatin', 'Rosuvastatin', 'Amlodipine', 'Telmisartan', 'Losartan', 'Levocetirizine', 'Montelukast', 'Diclofenac', 'Aceclofenac', 'Rabeprazole'];
 const brands = ['Cipla', 'Sun Pharma', 'Lupin', 'Dr.Reddys', 'Mankind', 'Alkem', 'Intas', 'Torrent', 'Zydus', 'Glenmark'];
-for(let i = 0; i < 500; i++) {
+const catOptions = CATEGORIES.filter(c => c !== 'All');
+const extraMedicines = Array.from({ length: 500 }, (_, i) => {
   const generic = genericNames[i % genericNames.length];
   const brand = brands[i % brands.length];
-  const catOptions = CATEGORIES.filter(c => c !== 'All');
-  extraMedicines.push({
+  // Deterministic pseudo-random using index-based seeds instead of Math.random()
+  const mg = ((i * 137 + 83) % 500) + 100;
+  const price = ((i * 73 + 41) % 300) + 15;
+  const catIdx = ((i * 53 + 17) % catOptions.length);
+  return {
     id: 200 + i,
-    name: `${brand} ${generic} ${Math.floor(Math.random() * 500 + 100)}mg`,
-    price: Math.floor(Math.random() * 300) + 15,
-    category: catOptions[Math.floor(Math.random() * catOptions.length)],
+    name: `${brand} ${generic} ${mg}mg`,
+    price,
+    category: catOptions[catIdx],
     description: `Generic ${generic} formulated and manufactured by ${brand}.`,
     icon: Pill
-  });
-}
+  };
+});
 
 const PRODUCTS = [...BASE_PRODUCTS, ...extraMedicines];
+
+// Pre-compute lowercase search fields once at module level
+const PRODUCTS_SEARCH_DATA = PRODUCTS.map(p => ({
+  id: p.id,
+  nameLower: p.name.toLowerCase(),
+  descLower: p.description.toLowerCase(),
+}));
+
+const PRODUCTS_PER_PAGE = 40;
 
 const DeliveryTrackingView = ({ order, setCurrentView }) => {
   const [status, setStatus] = useState(0); // 0: Placed, 1: Packed, 2: Out for Delivery, 3: Delivered
@@ -317,7 +329,7 @@ const DeliveryTrackingView = ({ order, setCurrentView }) => {
     };
     
     pollStatus();
-    const statusInterval = setInterval(pollStatus, 3000);
+    const statusInterval = setInterval(pollStatus, 10000);
 
     return () => {
       if (interval) clearInterval(interval);
@@ -534,6 +546,8 @@ export default function App() {
 
   // --- AI State ---
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [visibleCount, setVisibleCount] = useState(PRODUCTS_PER_PAGE);
   const [explainerModal, setExplainerModal] = useState({ isOpen: false, product: null, text: '', isLoading: false });
   const [interactionModal, setInteractionModal] = useState({ isOpen: false, text: '', isLoading: false });
 
@@ -553,18 +567,45 @@ export default function App() {
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
 
-  // --- Derived Data ---
-  const searchedProducts = PRODUCTS.filter(p => 
-    p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    p.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // --- Debounce search query (300ms) ---
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(searchQuery), 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
-  const filteredProducts = activeCategory === 'All' 
-    ? searchedProducts 
-    : searchedProducts.filter(p => p.category === activeCategory);
+  // Reset visible count when filters change
+  useEffect(() => {
+    setVisibleCount(PRODUCTS_PER_PAGE);
+  }, [debouncedSearch, activeCategory]);
 
-  const cartTotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
-  const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
+  // --- Derived Data (memoized) ---
+  const filteredProducts = useMemo(() => {
+    const query = debouncedSearch.toLowerCase();
+    let results;
+    if (query) {
+      const matchingIds = new Set(
+        PRODUCTS_SEARCH_DATA
+          .filter(p => p.nameLower.includes(query) || p.descLower.includes(query))
+          .map(p => p.id)
+      );
+      results = PRODUCTS.filter(p => matchingIds.has(p.id));
+    } else {
+      results = PRODUCTS;
+    }
+    if (activeCategory !== 'All') {
+      results = results.filter(p => p.category === activeCategory);
+    }
+    return results;
+  }, [debouncedSearch, activeCategory]);
+
+  const visibleProducts = useMemo(() => filteredProducts.slice(0, visibleCount), [filteredProducts, visibleCount]);
+
+  const cartTotal = useMemo(() => cart.reduce((total, item) => total + item.price * item.quantity, 0), [cart]);
+  const cartCount = useMemo(() => cart.reduce((total, item) => total + item.quantity, 0), [cart]);
+
+  const loadMore = useCallback(() => {
+    setVisibleCount(prev => Math.min(prev + PRODUCTS_PER_PAGE, filteredProducts.length));
+  }, [filteredProducts.length]);
 
   // --- OTP Countdown Timer ---
   useEffect(() => {
@@ -1533,7 +1574,7 @@ const placeOrder = async () => {
               <div className="mb-8 flex justify-between items-end">
                 <div>
                   <h2 className="text-2xl font-bold tracking-tight text-slate-900">{activeCategory} Medicines</h2>
-                  <p className="text-slate-500 text-sm mt-1 font-medium">Showing {filteredProducts.length} results</p>
+                  <p className="text-slate-500 text-sm mt-1 font-medium">Showing {visibleProducts.length} of {filteredProducts.length} results</p>
                 </div>
               </div>
 
@@ -1556,8 +1597,8 @@ const placeOrder = async () => {
                 </div>
               </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 pb-24">
-                {filteredProducts.map((product) => {
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 pb-6">
+                {visibleProducts.map((product) => {
                   const Icon = product.icon;
                   return (
                     <div 
@@ -1596,6 +1637,18 @@ const placeOrder = async () => {
                   );
                 })}
               </div>
+
+              {/* Load More Button */}
+              {visibleCount < filteredProducts.length && (
+                <div className="flex justify-center py-8">
+                  <button
+                    onClick={loadMore}
+                    className="bg-white border border-slate-200 hover:border-slate-300 text-slate-700 hover:text-slate-900 px-8 py-3 rounded-xl font-semibold text-sm transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] hover:shadow-md active:scale-[0.98]"
+                  >
+                    Load More ({filteredProducts.length - visibleCount} remaining)
+                  </button>
+                </div>
+              )}
               
               {filteredProducts.length === 0 && (
                 <div className="text-center py-32 text-slate-500 flex flex-col items-center">

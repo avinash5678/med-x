@@ -19,14 +19,13 @@ export default function RetailerPortal() {
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
-          // Fetch latest profile to ensure shop_verified is up to date
           const res = await fetch(`/api/retailer/profile/${parsed.email}`);
           if (res.ok) {
             const data = await res.json();
             setRetailer(data);
             localStorage.setItem('medz_retailer', JSON.stringify(data));
           } else {
-            setRetailer(parsed); // Fallback to local storage
+            setRetailer(parsed);
           }
         } catch (e) {
           console.error(e);
@@ -44,94 +43,91 @@ export default function RetailerPortal() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center text-emerald-500">
-        <Loader2 className="animate-spin w-12 h-12" />
+      <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center">
+        <Loader2 className="animate-spin w-10 h-10 text-slate-400" />
       </div>
     );
   }
 
-  // View 1: Auth
   if (!retailer) {
     return <Auth onLoginSuccess={(data) => setRetailer(data)} />;
   }
 
-  // View 2: Shop Verification
   if (!retailer.shop_verified) {
     return (
-      <ShopVerification 
-        retailerEmail={retailer.email} 
+      <ShopVerification
+        retailerEmail={retailer.email}
         onVerified={(shopDetails) => {
           const updated = { ...retailer, shop_verified: true, shop_details: shopDetails };
           setRetailer(updated);
           localStorage.setItem('medz_retailer', JSON.stringify(updated));
-        }} 
+        }}
       />
     );
   }
 
-  // View 3: Authenticated Portal (Dashboard, Orders, Delivery)
+  const navItems = [
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'orders',    label: 'Orders',    icon: Package },
+    { id: 'delivery',  label: 'Delivery',  icon: Truck },
+    { id: 'history',   label: 'History',   icon: HistoryIcon },
+  ];
+
   return (
-    <div className="flex h-screen overflow-hidden bg-slate-950 font-sans">
-      
+    <div className="flex h-screen overflow-hidden bg-[#F8FAFC] font-sans">
+
       {/* Sidebar */}
-      <aside className="w-64 bg-slate-900 border-r border-slate-800 flex flex-col flex-shrink-0">
-        <div className="p-6 border-b border-slate-800 flex items-center gap-3">
-          <div className="w-10 h-10 bg-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center border border-emerald-500/30">
-            <Store size={20} />
+      <aside className="w-64 bg-white border-r border-slate-100 flex flex-col flex-shrink-0 shadow-[1px_0_0_0_rgb(241,245,249)]">
+        {/* Logo */}
+        <div className="px-6 py-5 border-b border-slate-100 flex items-center gap-3">
+          <div className="w-9 h-9 bg-slate-900 rounded-xl flex items-center justify-center">
+            <Store size={18} className="text-white" />
           </div>
           <div>
-            <h2 className="text-white font-black tracking-tight leading-none mb-1">MedZ</h2>
-            <p className="text-[10px] text-emerald-400 font-bold uppercase tracking-widest">Retailer Portal</p>
+            <h2 className="text-slate-900 font-black tracking-tight leading-none">MedZ</h2>
+            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">Retailer Portal</p>
           </div>
         </div>
 
-        <nav className="flex-1 p-4 space-y-2">
-          <button 
-            onClick={() => setActiveTab('dashboard')}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'dashboard' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
-          >
-            <LayoutDashboard size={20} /> Dashboard
-          </button>
-          <button 
-            onClick={() => setActiveTab('orders')}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'orders' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
-          >
-            <Package size={20} /> Orders
-          </button>
-          <button 
-            onClick={() => setActiveTab('delivery')}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'delivery' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
-          >
-            <Truck size={20} /> Delivery
-          </button>
-          <button 
-            onClick={() => setActiveTab('history')}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'history' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
-          >
-            <HistoryIcon size={20} /> History
-          </button>
+        {/* Nav */}
+        <nav className="flex-1 p-3 space-y-1">
+          {navItems.map(({ id, label, icon: Icon }) => (
+            <button
+              key={id}
+              onClick={() => setActiveTab(id)}
+              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-semibold text-sm transition-all ${
+                activeTab === id
+                  ? 'bg-slate-900 text-white shadow-sm'
+                  : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
+              }`}
+            >
+              <Icon size={18} />
+              {label}
+            </button>
+          ))}
         </nav>
 
-        <div className="p-4 border-t border-slate-800">
-          <div className="bg-slate-950 rounded-xl p-3 border border-slate-800 mb-2">
-            <p className="text-xs text-slate-500 font-medium mb-1">Logged in as</p>
-            <p className="text-sm text-white font-bold truncate">{retailer.email}</p>
+        {/* Footer */}
+        <div className="p-4 border-t border-slate-100">
+          <div className="bg-slate-50 rounded-xl p-3 border border-slate-100 mb-3">
+            <p className="text-[10px] text-slate-400 font-medium uppercase tracking-wider mb-1">Logged in as</p>
+            <p className="text-sm text-slate-900 font-bold truncate">{retailer.email}</p>
           </div>
-          <button 
+          <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-bold text-red-400 hover:bg-red-500/10 rounded-xl transition-colors justify-center"
+            className="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-slate-500 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all justify-center"
           >
             <LogOut size={16} /> Sign Out
           </button>
         </div>
       </aside>
 
-      {/* Main Content Area */}
-      <main className="flex-1 overflow-y-auto bg-slate-950">
+      {/* Main Content */}
+      <main className="flex-1 overflow-y-auto bg-[#F8FAFC]">
         {activeTab === 'dashboard' && <Dashboard retailer={retailer} />}
-        {activeTab === 'orders' && <Orders retailer={retailer} />}
-        {activeTab === 'delivery' && <Delivery />}
-        {activeTab === 'history' && <History />}
+        {activeTab === 'orders'    && <Orders retailer={retailer} />}
+        {activeTab === 'delivery'  && <Delivery />}
+        {activeTab === 'history'   && <History />}
       </main>
 
     </div>
