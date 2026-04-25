@@ -202,101 +202,9 @@ const PRODUCTS_PER_PAGE = 40;
 const DeliveryTrackingView = ({ order, setCurrentView }) => {
   const [status, setStatus] = useState(0); // 0: Placed, 1: Packed, 2: Out for Delivery, 3: Delivered
   const [eta, setEta] = useState('Waiting for confirmation');
-  const [mapLoaded, setMapLoaded] = useState(false);
   const [retailerInfo, setRetailerInfo] = useState(null);
 
   useEffect(() => {
-    let interval;
-    if (typeof window !== 'undefined' && !window.L) {
-      const link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-      document.head.appendChild(link);
-
-      const script = document.createElement('script');
-      script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-      script.async = true;
-      script.onload = () => {
-        setMapLoaded(true);
-        initializeMap();
-      };
-      document.head.appendChild(script);
-    } else if (window.L) {
-      setMapLoaded(true);
-      initializeMap();
-    }
-
-    function initializeMap() {
-      const L = window.L;
-      if (!L) return;
-      
-      const mapContainer = document.getElementById('delivery-map');
-      if (!mapContainer) return;
-
-      // Handle React strict mode hot reloading
-      const existingMap = mapContainer._leaflet_id;
-      if (existingMap) {
-        return; // already initialized
-      }
-
-      const map = L.map('delivery-map', { zoomControl: false, attributionControl: false }).setView([28.6139, 77.2090], 13);
-      
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        maxZoom: 19
-      }).addTo(map);
-
-      // Shop Marker
-      const shopIcon = L.divIcon({
-        className: 'custom-div-icon',
-        html: `<div style="background-color:#0f172a;width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 6px rgba(0,0,0,0.3);border:2px solid white;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></div>`,
-        iconSize: [32, 32],
-        iconAnchor: [16, 16]
-      });
-      const shopMarker = L.marker([28.6200, 77.2100], { icon: shopIcon }).addTo(map);
-
-      // Customer Marker
-      const customerIcon = L.divIcon({
-        className: 'custom-div-icon',
-        html: `<div style="background-color:#3b82f6;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 6px rgba(0,0,0,0.3);border:2px solid white;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>`,
-        iconSize: [32, 32],
-        iconAnchor: [16, 32]
-      });
-      const customerMarker = L.marker([28.6000, 77.2200], { icon: customerIcon }).addTo(map);
-
-      // Delivery Agent Marker
-      const deliveryIcon = L.divIcon({
-        className: 'custom-div-icon',
-        html: `<div style="background-color:#10b981;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(16,185,129,0.4);border:3px solid white;z-index:1000;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg></div>`,
-        iconSize: [40, 40],
-        iconAnchor: [20, 20]
-      });
-
-      let agentLat = 28.6180;
-      let agentLng = 77.2110;
-      const deliveryMarker = L.marker([agentLat, agentLng], { icon: deliveryIcon, zIndexOffset: 1000 }).addTo(map);
-
-      // Simple Animation for map ONLY
-      const targetLat = 28.6010;
-      const targetLng = 77.2190;
-      const steps = 600; 
-      let currentStep = 0;
-      const latStep = (targetLat - agentLat) / steps;
-      const lngStep = (targetLng - agentLng) / steps;
-
-      interval = setInterval(() => {
-        if (currentStep < steps) {
-          agentLat += latStep;
-          agentLng += lngStep;
-          deliveryMarker.setLatLng([agentLat, agentLng]);
-          currentStep++;
-        }
-      }, 1000);
-
-      // Fit bounds
-      const group = new L.featureGroup([shopMarker, customerMarker, deliveryMarker]);
-      map.fitBounds(group.getBounds().pad(0.3));
-    }
-
     // Real-time status polling
     const pollStatus = async () => {
       if (!order?.id) return;
@@ -332,70 +240,57 @@ const DeliveryTrackingView = ({ order, setCurrentView }) => {
     const statusInterval = setInterval(pollStatus, 10000);
 
     return () => {
-      if (interval) clearInterval(interval);
       clearInterval(statusInterval);
     };
   }, [order?.id]);
 
   return (
-    <div className="w-full h-full overflow-y-auto bg-slate-50 pb-20 md:pb-8 md:pt-6 lg:pt-8 md:px-8 lg:px-12 xl:px-16 font-sans flex flex-col">
-      
+    <div className="flex-1 flex flex-col h-full bg-[#F8FAFC] overflow-y-auto font-sans relative z-10 p-4 md:p-6 lg:p-8">
       {/* Top Header */}
-      <div className="flex items-center justify-between mb-6 md:mb-8 px-6 md:px-0 mt-4 md:mt-0 flex-shrink-0">
-        <div className="flex items-center gap-4 md:gap-6">
-          <button onClick={() => setCurrentView('home')} className="w-10 h-10 md:w-14 md:h-14 bg-white flex items-center justify-center rounded-full shadow-sm hover:shadow-md transition-all text-slate-600 hover:text-slate-900 border border-slate-100">
-            <ArrowLeft size={20} className="md:w-6 md:h-6" />
+      <div className="mb-6 md:mb-8 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <button 
+            onClick={() => setCurrentView('home')} 
+            className="w-10 h-10 bg-white border border-slate-200/60 rounded-xl flex items-center justify-center text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors shadow-[0_2px_8px_rgb(0,0,0,0.02)]"
+          >
+            <ArrowLeft size={20} />
           </button>
           <div>
-            <h1 className="text-2xl md:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight">Track Your Order</h1>
-            <p className="text-sm md:text-base text-slate-500 font-bold mt-0.5 md:mt-1">Order #{order?.id || 'ORD-1234'}</p>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900">Track Order</h1>
+            <p className="text-sm font-medium text-slate-500 mt-0.5">Order #{order?.id || 'ORD-1234'}</p>
           </div>
         </div>
-        <div className="hidden md:flex bg-white px-5 py-2.5 rounded-full shadow-sm items-center gap-3 border border-slate-100">
-          <div className="w-3 h-3 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_12px_rgba(16,185,129,0.8)]" />
-          <span className="font-bold text-slate-700 text-sm uppercase tracking-[0.15em]">Live Tracking</span>
+        <div className="hidden sm:flex bg-white px-4 py-2 rounded-full shadow-[0_2px_8px_rgb(0,0,0,0.02)] border border-slate-200/60 items-center gap-2">
+          <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+          <span className="font-semibold text-slate-600 text-xs uppercase tracking-wider">Live Status</span>
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-0 md:gap-8 lg:gap-12 xl:gap-16 flex-grow">
+      <div className="max-w-2xl mx-auto w-full space-y-6 pb-20">
         
-        {/* Map Section */}
-        <div className="relative h-[450px] md:h-auto min-h-[600px] flex-grow bg-slate-200 md:rounded-[40px] overflow-hidden shadow-lg md:shadow-2xl border-0 md:border-8 border-white z-0">
-          <div id="delivery-map" className="w-full h-full z-0"></div>
-          {!mapLoaded && (
-            <div className="absolute inset-0 flex items-center justify-center bg-slate-100/80 backdrop-blur-sm z-10">
-              <div className="w-10 h-10 border-4 border-slate-300 border-t-emerald-500 rounded-full animate-spin"></div>
-            </div>
-          )}
-          
-          {/* ETA Overlay on Map */}
-          <div className="absolute top-8 inset-x-0 flex justify-center z-20 pointer-events-none">
-            <div className="bg-slate-900/90 backdrop-blur-md text-white px-10 py-4 rounded-full shadow-2xl flex flex-col items-center pointer-events-auto border border-slate-800/50 transform hover:scale-[1.02] transition-transform cursor-default">
-              <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.25em] text-emerald-400 mb-1">
-                {status === 3 ? 'Order Status' : status === 0 ? 'Order Status' : 'Arriving In'}
-              </span>
-              <span className="text-2xl md:text-3xl font-black tracking-tight">{eta}</span>
-            </div>
+        {/* Status Card */}
+        <div className="bg-white border border-slate-200/60 rounded-[20px] p-6 shadow-[0_2px_8px_rgb(0,0,0,0.02)]">
+          <div className="flex flex-col items-center justify-center text-center mb-8">
+             <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full mb-3 border border-emerald-100">
+               {status === 3 ? 'Delivered' : status === 0 ? 'Placed' : 'Arriving Soon'}
+             </span>
+             <h2 className="text-3xl md:text-4xl font-black tracking-tight text-slate-900">{eta}</h2>
           </div>
-        </div>
 
-        {/* Delivery Details Sidebar */}
-        <div className="bg-white rounded-t-[40px] md:rounded-[40px] -mt-8 md:mt-0 relative z-30 pt-10 pb-12 px-6 md:px-8 shadow-[0_-20px_40px_rgb(0,0,0,0.08)] md:shadow-[0_20px_60px_rgb(0,0,0,0.05)] w-full md:w-[420px] lg:w-[480px] flex-shrink-0 flex flex-col h-fit border border-slate-100/60">
-          
-          {/* Status Timeline */}
-          <div className="mb-10">
-            <div className="flex justify-between relative">
-              <div className="absolute top-4 left-[10%] right-[10%] h-[4px] bg-slate-100 z-0 rounded-full">
-                <div 
-                  className="h-full bg-emerald-500 rounded-full transition-all duration-1000 ease-out z-0 relative shadow-[0_0_12px_rgba(16,185,129,0.5)]" 
-                  style={{ width: `${(status / 3) * 100}%` }}
-                />
-              </div>
+          {/* Clean Status Timeline */}
+          <div className="relative pt-4 pb-2">
+            <div className="absolute top-8 left-[10%] right-[10%] h-[3px] bg-slate-100 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-emerald-500 rounded-full transition-all duration-700 ease-out" 
+                style={{ width: `${(status / 3) * 100}%` }}
+              />
+            </div>
 
-              {['Placed', 'Packed', 'On the way', 'Delivered'].map((step, idx) => (
-                <div key={idx} className="flex flex-col items-center relative z-10 w-1/4">
-                  <div className={`w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-all duration-500 mb-3 shadow-sm ${idx <= status ? 'bg-emerald-500 text-white shadow-emerald-500/40 ring-4 ring-emerald-50' : 'bg-white border-2 border-slate-100 text-slate-300'}`}>
-                    {idx < status ? <CheckCircle2 size={18} strokeWidth={3} /> : 
+            <div className="flex justify-between relative z-10">
+              {['Placed', 'Packed', 'On Way', 'Delivered'].map((step, idx) => (
+                <div key={idx} className="flex flex-col items-center w-1/4">
+                  <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-all duration-500 mb-3 text-sm md:text-base ${idx <= status ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/20 ring-4 ring-white' : 'bg-white border-2 border-slate-100 text-slate-300'}`}>
+                    {idx < status ? <CheckCircle2 size={18} strokeWidth={2.5} /> : 
                      idx === 0 ? <Receipt size={16} /> :
                      idx === 1 ? <Package size={16} /> :
                      idx === 2 ? <Truck size={16} /> : <MapPin size={16} />}
@@ -405,92 +300,64 @@ const DeliveryTrackingView = ({ order, setCurrentView }) => {
               ))}
             </div>
           </div>
-
-          <h3 className="font-bold text-slate-900 text-lg md:text-xl mb-5 tracking-tight">Assigned Partner</h3>
-
-          {/* Delivery Agent Profile / Retailer Profile */}
-          <div className="bg-slate-50/50 hover:bg-slate-50 border border-slate-100 rounded-[28px] p-5 md:p-6 mb-8 flex items-center justify-between shadow-sm hover:shadow-md transition-all group">
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <div className="w-14 h-14 md:w-16 md:h-16 bg-emerald-100/50 rounded-full flex items-center justify-center text-emerald-600 border-2 border-emerald-200 shadow-inner group-hover:bg-emerald-100 transition-colors">
-                  {retailerInfo ? <Store size={28} /> : <User size={28} />}
-                </div>
-                <div className="absolute -bottom-1 -right-1 bg-emerald-500 border-2 border-white w-6 h-6 rounded-full flex items-center justify-center shadow-sm">
-                  <CheckCircle2 size={12} className="text-white" strokeWidth={3} />
-                </div>
-              </div>
-              <div>
-                <p className="font-bold text-slate-900 text-base md:text-lg tracking-tight">
-                  {retailerInfo ? retailerInfo.shop_name : (status > 0 ? 'Assigned Partner' : 'Waiting...')}
-                </p>
-                <div className="flex items-center gap-2 mt-1.5">
-                  <span className="bg-amber-100 text-amber-700 text-[10px] md:text-xs font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
-                    <svg className="w-3 h-3 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
-                    4.9
-                  </span>
-                  <span className="text-slate-400 text-xs md:text-sm font-semibold tracking-wide">
-                    {retailerInfo ? `• ${retailerInfo.city}` : '• Local Delivery'}
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div className="flex gap-2.5 md:gap-3">
-              <a href={`tel:${retailerInfo ? retailerInfo.phone : ''}`} className="w-11 h-11 md:w-12 md:h-12 rounded-full bg-slate-900 text-white flex items-center justify-center shadow-lg hover:bg-emerald-500 hover:shadow-emerald-500/30 hover:scale-105 transition-all">
-                <Phone size={20} />
-              </a>
-            </div>
-          </div>
-
-          <h3 className="font-bold text-slate-900 text-lg md:text-xl mb-5 tracking-tight">Store Details</h3>
-
-          {/* Shop Info */}
-          <div className="bg-white border border-slate-100 rounded-[24px] p-5 md:p-6 flex items-center justify-between shadow-sm hover:shadow-md transition-all group">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 md:w-14 md:h-14 bg-slate-100 rounded-full flex items-center justify-center text-slate-600 group-hover:bg-slate-200 transition-colors shadow-inner">
-                <Store size={24} />
-              </div>
-              <div>
-                <p className="font-bold text-slate-900 text-sm md:text-base tracking-tight">
-                  {retailerInfo ? retailerInfo.shop_name : 'Med Z Central Pharmacy'}
-                </p>
-                <p className="text-slate-500 text-xs md:text-sm font-semibold mt-1">
-                  {retailerInfo ? `${retailerInfo.address?.slice(0, 40)}...` : 'Connecting to nearby store...'}
-                </p>
-              </div>
-            </div>
-            <a href={`tel:${retailerInfo ? retailerInfo.phone : ''}`} className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 rounded-full transition-all">
-              <Phone size={20} />
-            </a>
-          </div>
-
-          {/* Order Details Snippet */}
-          <div className="mt-8 border-t-2 border-dashed border-slate-100 pt-8">
-            <div className="flex justify-between items-end mb-6">
-              <div>
-                <h3 className="font-bold text-slate-900 text-lg md:text-xl tracking-tight">Receipt</h3>
-                <p className="text-xs md:text-sm text-slate-400 font-semibold mt-1">{order?.items?.length || 0} items</p>
-              </div>
-              <span className="text-emerald-500 font-black text-2xl md:text-3xl tracking-tight">₹{order?.total || 0}</span>
-            </div>
-            <div className="space-y-4">
-              {order?.items?.slice(0, 3).map((item, i) => (
-                <div key={i} className="flex justify-between text-sm md:text-base group">
-                  <span className="text-slate-600 font-semibold flex gap-3 items-center">
-                    <span className="bg-slate-100 text-slate-500 px-2.5 py-1 rounded-md font-bold text-xs">{item.quantity}x</span>
-                    <span className="group-hover:text-slate-900 transition-colors line-clamp-1">{item.name}</span>
-                  </span>
-                  <span className="text-slate-900 font-bold whitespace-nowrap ml-4">₹{item.price * item.quantity}</span>
-                </div>
-              ))}
-              {order?.items?.length > 3 && (
-                <button className="w-full text-center text-xs md:text-sm text-slate-400 font-bold uppercase tracking-[0.15em] pt-4 hover:text-emerald-500 transition-colors">
-                  View {order.items.length - 3} More Items
-                </button>
-              )}
-            </div>
-          </div>
-
         </div>
+
+        {/* Assigned Partner & Store */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-white border border-slate-200/60 rounded-[20px] p-5 shadow-[0_2px_8px_rgb(0,0,0,0.02)] flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center border border-emerald-100/50">
+                {retailerInfo ? <Store size={22} /> : <User size={22} />}
+              </div>
+              <div>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-0.5">Partner</p>
+                <p className="font-bold text-slate-900 text-sm">
+                  {retailerInfo ? retailerInfo.shop_name : (status > 0 ? 'Delivery Agent' : 'Assigning...')}
+                </p>
+              </div>
+            </div>
+            {retailerInfo?.phone && (
+              <a href={`tel:${retailerInfo.phone}`} className="w-10 h-10 bg-slate-50 hover:bg-slate-100 border border-slate-200/50 rounded-xl flex items-center justify-center text-slate-700 transition-colors">
+                <Phone size={18} />
+              </a>
+            )}
+          </div>
+
+          <div className="bg-white border border-slate-200/60 rounded-[20px] p-5 shadow-[0_2px_8px_rgb(0,0,0,0.02)] flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center border border-indigo-100/50">
+                <Store size={22} />
+              </div>
+              <div>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-0.5">Store</p>
+                <p className="font-bold text-slate-900 text-sm line-clamp-1">
+                  {retailerInfo ? retailerInfo.shop_name : 'Med Z Pharmacy'}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Receipt / Order Items */}
+        <div className="bg-white border border-slate-200/60 rounded-[20px] p-6 shadow-[0_2px_8px_rgb(0,0,0,0.02)]">
+          <div className="flex justify-between items-center mb-5 pb-4 border-b border-slate-100">
+            <h3 className="font-bold text-slate-900 text-lg">Order Details</h3>
+            <span className="text-lg font-black text-slate-900">₹{order?.total || 0}</span>
+          </div>
+          
+          <div className="space-y-3">
+            {order?.items?.map((item, i) => (
+              <div key={i} className="flex justify-between items-center text-sm">
+                <div className="flex items-center gap-3">
+                  <span className="bg-slate-50 border border-slate-100 text-slate-600 px-2 py-1 rounded-lg font-bold text-xs">{item.quantity}x</span>
+                  <span className="text-slate-700 font-medium">{item.name}</span>
+                </div>
+                <span className="text-slate-900 font-bold">₹{item.price * item.quantity}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
       </div>
     </div>
   );
