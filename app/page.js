@@ -46,6 +46,8 @@ import {
   Navigation,
   Clock,
   Store,
+  Sun,
+  Moon,
   Map as MapIcon
 } from 'lucide-react';
 
@@ -331,29 +333,29 @@ const DeliveryTrackingView = ({ order, setCurrentView }) => {
   }, [order?.id]);
 
   return (
-    <div className="w-full h-full overflow-y-auto bg-slate-50 pb-20 md:pb-8 md:pt-6 lg:pt-8 md:px-8 lg:px-12 xl:px-16 font-sans flex flex-col">
+    <div className="w-full h-full overflow-y-auto bg-slate-50 dark:bg-[#090d16] pb-20 md:pb-8 md:pt-6 lg:pt-8 md:px-8 lg:px-12 xl:px-16 font-sans flex flex-col text-slate-900 dark:text-slate-100">
       
       {/* Top Header */}
       <div className="flex items-center justify-between mb-6 md:mb-8 px-6 md:px-0 mt-4 md:mt-0 flex-shrink-0">
         <div className="flex items-center gap-4 md:gap-6">
-          <button onClick={() => setCurrentView('home')} className="w-10 h-10 md:w-14 md:h-14 bg-white flex items-center justify-center rounded-full shadow-sm hover:shadow-md transition-all text-slate-600 hover:text-slate-900 border border-slate-100">
+          <button onClick={() => setCurrentView('home')} className="w-10 h-10 md:w-14 md:h-14 bg-white dark:bg-slate-900 flex items-center justify-center rounded-full shadow-sm hover:shadow-md transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 border border-slate-100 dark:border-slate-850">
             <ArrowLeft size={20} className="md:w-6 md:h-6" />
           </button>
           <div>
-            <h1 className="text-2xl md:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight">Track Your Order</h1>
-            <p className="text-sm md:text-base text-slate-500 font-bold mt-0.5 md:mt-1">Order #{order?.id || 'ORD-1234'}</p>
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-black text-slate-900 dark:text-slate-100 tracking-tight">Track Your Order</h1>
+            <p className="text-sm md:text-base text-slate-500 dark:text-slate-400 font-bold mt-0.5 md:mt-1">Order #{order?.id || 'ORD-1234'}</p>
           </div>
         </div>
-        <div className="hidden md:flex bg-white px-5 py-2.5 rounded-full shadow-sm items-center gap-3 border border-slate-100">
+        <div className="hidden md:flex bg-white dark:bg-slate-900 px-5 py-2.5 rounded-full shadow-sm items-center gap-3 border border-slate-100 dark:border-slate-850">
           <div className="w-3 h-3 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_12px_rgba(16,185,129,0.8)]" />
-          <span className="font-bold text-slate-700 text-sm uppercase tracking-[0.15em]">Live Tracking</span>
+          <span className="font-bold text-slate-700 dark:text-slate-350 text-sm uppercase tracking-[0.15em]">Live Tracking</span>
         </div>
       </div>
 
       <div className="flex flex-col md:flex-row gap-0 md:gap-8 lg:gap-12 xl:gap-16 flex-grow">
         
         {/* Map Section */}
-        <div className="relative h-[450px] md:h-auto min-h-[600px] flex-grow bg-slate-200 md:rounded-[40px] overflow-hidden shadow-lg md:shadow-2xl border-0 md:border-8 border-white z-0">
+        <div className="relative h-[450px] md:h-auto min-h-[600px] flex-grow bg-slate-200 md:rounded-[40px] overflow-hidden shadow-lg md:shadow-2xl border-0 md:border-8 border-white dark:border-slate-900 z-0">
           <div id="delivery-map" className="w-full h-full z-0"></div>
           {!mapLoaded && (
             <div className="absolute inset-0 flex items-center justify-center bg-slate-100/80 backdrop-blur-sm z-10">
@@ -373,12 +375,12 @@ const DeliveryTrackingView = ({ order, setCurrentView }) => {
         </div>
 
         {/* Delivery Details Sidebar */}
-        <div className="bg-white rounded-t-[40px] md:rounded-[40px] -mt-8 md:mt-0 relative z-30 pt-10 pb-12 px-6 md:px-8 shadow-[0_-20px_40px_rgb(0,0,0,0.08)] md:shadow-[0_20px_60px_rgb(0,0,0,0.05)] w-full md:w-[420px] lg:w-[480px] flex-shrink-0 flex flex-col h-fit border border-slate-100/60">
+        <div className="bg-white dark:bg-slate-900 rounded-t-[40px] md:rounded-[40px] -mt-8 md:mt-0 relative z-30 pt-10 pb-12 px-6 md:px-8 shadow-[0_-20px_40px_rgb(0,0,0,0.08)] md:shadow-[0_20px_60px_rgb(0,0,0,0.05)] w-full md:w-[420px] lg:w-[480px] flex-shrink-0 flex flex-col h-fit border border-slate-100/60 dark:border-slate-800/80">
           
           {/* Status Timeline */}
           <div className="mb-10">
             <div className="flex justify-between relative">
-              <div className="absolute top-4 left-[10%] right-[10%] h-[4px] bg-slate-100 z-0 rounded-full">
+              <div className="absolute top-4 left-[10%] right-[10%] h-[4px] bg-slate-100 dark:bg-slate-800 z-0 rounded-full">
                 <div 
                   className="h-full bg-emerald-500 rounded-full transition-all duration-1000 ease-out z-0 relative shadow-[0_0_12px_rgba(16,185,129,0.5)]" 
                   style={{ width: `${(status / 3) * 100}%` }}
@@ -387,22 +389,22 @@ const DeliveryTrackingView = ({ order, setCurrentView }) => {
 
               {['Placed', 'Packed', 'On the way', 'Delivered'].map((step, idx) => (
                 <div key={idx} className="flex flex-col items-center relative z-10 w-1/4">
-                  <div className={`w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-all duration-500 mb-3 shadow-sm ${idx <= status ? 'bg-emerald-500 text-white shadow-emerald-500/40 ring-4 ring-emerald-50' : 'bg-white border-2 border-slate-100 text-slate-300'}`}>
+                  <div className={`w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-all duration-500 mb-3 shadow-sm ${idx <= status ? 'bg-emerald-500 text-white shadow-emerald-500/40 ring-4 ring-emerald-50' : 'bg-white dark:bg-slate-950 border-2 border-slate-100 dark:border-slate-850 text-slate-300 dark:text-slate-600'}`}>
                     {idx < status ? <CheckCircle2 size={18} strokeWidth={3} /> : 
                      idx === 0 ? <Receipt size={16} /> :
                      idx === 1 ? <Package size={16} /> :
                      idx === 2 ? <Truck size={16} /> : <MapPin size={16} />}
                   </div>
-                  <span className={`text-[10px] md:text-xs font-bold text-center uppercase tracking-wider ${idx <= status ? 'text-slate-900' : 'text-slate-400'}`}>{step}</span>
+                  <span className={`text-[10px] md:text-xs font-bold text-center uppercase tracking-wider ${idx <= status ? 'text-slate-900 dark:text-slate-100' : 'text-slate-400 dark:text-slate-500'}`}>{step}</span>
                 </div>
               ))}
             </div>
           </div>
 
-          <h3 className="font-bold text-slate-900 text-lg md:text-xl mb-5 tracking-tight">Assigned Partner</h3>
+          <h3 className="font-bold text-slate-900 dark:text-slate-100 text-lg md:text-xl mb-5 tracking-tight">Assigned Partner</h3>
 
           {/* Delivery Agent Profile / Retailer Profile */}
-          <div className="bg-slate-50/50 hover:bg-slate-50 border border-slate-100 rounded-[28px] p-5 md:p-6 mb-8 flex items-center justify-between shadow-sm hover:shadow-md transition-all group">
+          <div className="bg-slate-50/50 dark:bg-slate-950/60 hover:bg-slate-50 dark:hover:bg-slate-950 border border-slate-100 dark:border-slate-850 rounded-[28px] p-5 md:p-6 mb-8 flex items-center justify-between shadow-sm hover:shadow-md transition-all group">
             <div className="flex items-center gap-4">
               <div className="relative">
                 <div className="w-14 h-14 md:w-16 md:h-16 bg-emerald-100/50 rounded-full flex items-center justify-center text-emerald-600 border-2 border-emerald-200 shadow-inner group-hover:bg-emerald-100 transition-colors">
@@ -413,70 +415,70 @@ const DeliveryTrackingView = ({ order, setCurrentView }) => {
                 </div>
               </div>
               <div>
-                <p className="font-bold text-slate-900 text-base md:text-lg tracking-tight">
+                <p className="font-bold text-slate-900 dark:text-slate-100 text-base md:text-lg tracking-tight">
                   {retailerInfo ? retailerInfo.shop_name : (status > 0 ? 'Assigned Partner' : 'Waiting...')}
                 </p>
                 <div className="flex items-center gap-2 mt-1.5">
-                  <span className="bg-amber-100 text-amber-700 text-[10px] md:text-xs font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
+                  <span className="bg-amber-100 dark:bg-amber-955/40 text-amber-700 dark:text-amber-400 text-[10px] md:text-xs font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
                     <svg className="w-3 h-3 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
                     4.9
                   </span>
-                  <span className="text-slate-400 text-xs md:text-sm font-semibold tracking-wide">
+                  <span className="text-slate-400 dark:text-slate-500 text-xs md:text-sm font-semibold tracking-wide">
                     {retailerInfo ? `• ${retailerInfo.city}` : '• Local Delivery'}
                   </span>
                 </div>
               </div>
             </div>
             <div className="flex gap-2.5 md:gap-3">
-              <a href={`tel:${retailerInfo ? retailerInfo.phone : ''}`} className="w-11 h-11 md:w-12 md:h-12 rounded-full bg-slate-900 text-white flex items-center justify-center shadow-lg hover:bg-emerald-500 hover:shadow-emerald-500/30 hover:scale-105 transition-all">
+              <a href={`tel:${retailerInfo ? retailerInfo.phone : ''}`} className="w-11 h-11 md:w-12 md:h-12 rounded-full bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-950 flex items-center justify-center shadow-lg hover:bg-emerald-500 hover:shadow-emerald-500/30 hover:scale-105 transition-all">
                 <Phone size={20} />
               </a>
             </div>
           </div>
 
-          <h3 className="font-bold text-slate-900 text-lg md:text-xl mb-5 tracking-tight">Store Details</h3>
+          <h3 className="font-bold text-slate-900 dark:text-slate-100 text-lg md:text-xl mb-5 tracking-tight">Store Details</h3>
 
           {/* Shop Info */}
-          <div className="bg-white border border-slate-100 rounded-[24px] p-5 md:p-6 flex items-center justify-between shadow-sm hover:shadow-md transition-all group">
+          <div className="bg-white dark:bg-slate-950/60 border border-slate-100 dark:border-slate-850 rounded-[24px] p-5 md:p-6 flex items-center justify-between shadow-sm hover:shadow-md transition-all group">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 md:w-14 md:h-14 bg-slate-100 rounded-full flex items-center justify-center text-slate-600 group-hover:bg-slate-200 transition-colors shadow-inner">
+              <div className="w-12 h-12 md:w-14 md:h-14 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center text-slate-600 dark:text-slate-300 group-hover:bg-slate-200 transition-colors shadow-inner">
                 <Store size={24} />
               </div>
               <div>
-                <p className="font-bold text-slate-900 text-sm md:text-base tracking-tight">
+                <p className="font-bold text-slate-900 dark:text-slate-100 text-sm md:text-base tracking-tight">
                   {retailerInfo ? retailerInfo.shop_name : 'Med Z Central Pharmacy'}
                 </p>
-                <p className="text-slate-500 text-xs md:text-sm font-semibold mt-1">
+                <p className="text-slate-500 dark:text-slate-400 text-xs md:text-sm font-semibold mt-1">
                   {retailerInfo ? `${retailerInfo.address?.slice(0, 40)}...` : 'Connecting to nearby store...'}
                 </p>
               </div>
             </div>
-            <a href={`tel:${retailerInfo ? retailerInfo.phone : ''}`} className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 rounded-full transition-all">
+            <a href={`tel:${retailerInfo ? retailerInfo.phone : ''}`} className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950/25 rounded-full transition-all">
               <Phone size={20} />
             </a>
           </div>
 
           {/* Order Details Snippet */}
-          <div className="mt-8 border-t-2 border-dashed border-slate-100 pt-8">
+          <div className="mt-8 border-t-2 border-dashed border-slate-100 dark:border-slate-800 pt-8">
             <div className="flex justify-between items-end mb-6">
               <div>
-                <h3 className="font-bold text-slate-900 text-lg md:text-xl tracking-tight">Receipt</h3>
-                <p className="text-xs md:text-sm text-slate-400 font-semibold mt-1">{order?.items?.length || 0} items</p>
+                <h3 className="font-bold text-slate-900 dark:text-slate-100 text-lg md:text-xl tracking-tight">Receipt</h3>
+                <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400 font-semibold mt-1">{order?.items?.length || 0} items</p>
               </div>
-              <span className="text-emerald-500 font-black text-2xl md:text-3xl tracking-tight">₹{order?.total || 0}</span>
+              <span className="text-emerald-500 dark:text-emerald-400 font-black text-2xl md:text-3xl tracking-tight">₹{order?.total || 0}</span>
             </div>
             <div className="space-y-4">
               {order?.items?.slice(0, 3).map((item, i) => (
                 <div key={i} className="flex justify-between text-sm md:text-base group">
-                  <span className="text-slate-600 font-semibold flex gap-3 items-center">
-                    <span className="bg-slate-100 text-slate-500 px-2.5 py-1 rounded-md font-bold text-xs">{item.quantity}x</span>
-                    <span className="group-hover:text-slate-900 transition-colors line-clamp-1">{item.name}</span>
+                  <span className="text-slate-600 dark:text-slate-400 font-semibold flex gap-3 items-center">
+                    <span className="bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-2.5 py-1 rounded-md font-bold text-xs">{item.quantity}x</span>
+                    <span className="group-hover:text-slate-900 dark:group-hover:text-slate-100 transition-colors line-clamp-1">{item.name}</span>
                   </span>
-                  <span className="text-slate-900 font-bold whitespace-nowrap ml-4">₹{item.price * item.quantity}</span>
+                  <span className="text-slate-900 dark:text-slate-100 font-bold whitespace-nowrap ml-4">₹{item.price * item.quantity}</span>
                 </div>
               ))}
               {order?.items?.length > 3 && (
-                <button className="w-full text-center text-xs md:text-sm text-slate-400 font-bold uppercase tracking-[0.15em] pt-4 hover:text-emerald-500 transition-colors">
+                <button className="w-full text-center text-xs md:text-sm text-slate-500 dark:text-slate-400 font-bold uppercase tracking-[0.15em] pt-4 hover:text-emerald-500 transition-colors cursor-pointer">
                   View {order.items.length - 3} More Items
                 </button>
               )}
@@ -513,7 +515,28 @@ export default function App() {
   }, []);
 
   // --- View State ---
+  const [theme, setTheme] = useState('light');
   const [currentView, setCurrentView] = useState('home'); // 'home', 'cart', 'checkout', 'orders', 'transactions', 'addresses'
+
+  useEffect(() => {
+    // Sync React state with the class set on the HTML element by the layout head script
+    const isDark = document.documentElement.classList.contains('dark');
+    setTheme(isDark ? 'dark' : 'light');
+  }, []);
+
+  const toggleTheme = () => {
+    const nextTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(nextTheme);
+    if (nextTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
+      localStorage.setItem('theme', 'light');
+    }
+  };
   const [activeCategory, setActiveCategory] = useState('All');
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
@@ -1434,7 +1457,7 @@ const placeOrder = async () => {
 
   // --- Main App Views ---
   return (
-    <div className="h-screen overflow-hidden bg-[#F8FAFC] text-slate-900 font-sans flex flex-col relative">
+    <div className="h-screen overflow-hidden bg-[#F8FAFC] dark:bg-[#090d16] text-slate-900 dark:text-slate-100 font-sans flex flex-col relative">
       <div className="fixed inset-0 pointer-events-none flex items-center justify-center overflow-hidden z-0 opacity-[0.02]">
         <div className="flex flex-col items-center transform -rotate-6 opacity-30">
           <Image src="/logo.png" alt="Med Z Logo Watermark" width={300} height={300} priority />
@@ -1442,7 +1465,7 @@ const placeOrder = async () => {
         </div>
       </div>
 
-      <header className="bg-white/70 backdrop-blur-md border-b border-slate-200/20 shadow-sm px-6 md:px-12 py-4 flex justify-between items-center sticky top-0 z-40">
+      <header className="bg-white/70 dark:bg-slate-950/70 backdrop-blur-md border-b border-slate-200/20 dark:border-slate-800/40 shadow-sm px-6 md:px-12 py-4 flex justify-between items-center sticky top-0 z-40">
         <div className="flex items-center gap-3 md:gap-12 cursor-pointer group">
           <div className="flex items-center gap-3" onClick={() => setCurrentView('home')}>
             <span className="text-xl font-black text-teal-600 tracking-tight">Med Z Pharmacy</span>
@@ -1450,87 +1473,95 @@ const placeOrder = async () => {
           <div className="hidden md:flex gap-8">
             <button 
               onClick={() => setCurrentView('medicines')} 
-              className="text-sm font-semibold text-slate-600 hover:text-teal-600 transition-colors cursor-pointer"
+              className="text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400 transition-colors cursor-pointer"
             >
               Medicines
             </button>
-            <button onClick={() => setIsDoctorOpen(true)} className="text-sm font-semibold text-slate-600 hover:text-teal-600 transition-colors cursor-pointer">Consultations</button>
-            <button onClick={() => setCurrentView('contact')} className="text-sm font-semibold text-slate-600 hover:text-teal-600 transition-colors cursor-pointer">Contact Us</button>
+            <button onClick={() => setIsDoctorOpen(true)} className="text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400 transition-colors cursor-pointer">Consultations</button>
+            <button onClick={() => setCurrentView('contact')} className="text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400 transition-colors cursor-pointer">Contact Us</button>
           </div>
         </div>
         
         <div className="flex items-center gap-4">
           <button 
             onClick={() => setIsChatOpen(true)}
-            className="flex items-center gap-2 px-3.5 py-1.5 bg-teal-50 text-teal-600 rounded-full hover:bg-teal-100 transition-all font-semibold text-xs active:scale-95 border border-teal-100/50 cursor-pointer"
+            className="flex items-center gap-2 px-3.5 py-1.5 bg-teal-50 dark:bg-teal-950/30 text-teal-600 dark:text-teal-400 rounded-full hover:bg-teal-100 dark:hover:bg-teal-900/40 transition-all font-semibold text-xs active:scale-95 border border-teal-100/50 dark:border-teal-900/30 cursor-pointer"
           >
             <Sparkles size={14} />
             <span>Ask AI</span>
           </button>
 
           <button 
-            className="relative px-4 py-2 bg-white border border-slate-200/80 hover:bg-slate-50 hover:border-slate-300 text-slate-700 rounded-xl transition-all duration-200 flex items-center gap-2.5 font-medium text-sm shadow-[0_2px_8px_rgb(0,0,0,0.02)] cursor-pointer"
+            className="relative px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-700 dark:text-slate-200 rounded-xl transition-all duration-200 flex items-center gap-2.5 font-medium text-sm shadow-[0_2px_8px_rgb(0,0,0,0.02)] cursor-pointer"
             onClick={() => setCurrentView('cart')}
           >
             <ShoppingCart size={18} />
             <span className="hidden sm:inline">Cart</span>
             {cartCount > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 bg-slate-900 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full shadow-sm ring-2 ring-white">
+              <span className="absolute -top-1.5 -right-1.5 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full shadow-sm ring-2 ring-white dark:ring-slate-950">
                 {cartCount}
               </span>
             )}
           </button>
 
+          <button
+            onClick={toggleTheme}
+            className="p-2 bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-xl transition-all duration-200 flex items-center justify-center shadow-[0_2px_8px_rgb(0,0,0,0.02)] cursor-pointer"
+            aria-label="Toggle theme"
+          >
+            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
+
           <div className="relative">
             <button 
               onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-              className="flex items-center gap-2.5 px-3 py-1.5 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
+              className="flex items-center gap-2.5 px-3 py-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors cursor-pointer"
             >
-              <div className="w-7 h-7 bg-slate-100 text-slate-700 rounded-full flex items-center justify-center text-xs font-semibold uppercase border border-slate-200/60">
+              <div className="w-7 h-7 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-full flex items-center justify-center text-xs font-semibold uppercase border border-slate-200/60 dark:border-slate-700">
                 {user?.name?.charAt(0) || "U"}
               </div>
-              <span className="text-sm font-medium text-slate-700 hidden sm:inline">{user.name}</span>
+              <span className="text-sm font-medium text-slate-700 dark:text-slate-300 hidden sm:inline">{user?.name}</span>
               <ChevronDown size={14} className="text-slate-400" />
             </button>
 
             {isProfileMenuOpen && (
               <>
                 <div className="fixed inset-0 z-40" onClick={() => setIsProfileMenuOpen(false)} />
-                <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-slate-200/60 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] z-50 overflow-hidden animate-in fade-in slide-in-from-top-2">
-                  <div className="p-4 border-b border-slate-100 bg-slate-50/50">
-                    <p className="text-sm font-semibold text-slate-900">{user.name}</p>
-                    <p className="text-xs text-slate-500 truncate mt-0.5">{user.email}</p>
+                <div className="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] z-50 overflow-hidden animate-in fade-in slide-in-from-top-2">
+                  <div className="p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
+                    <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{user?.name}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5">{user?.email}</p>
                   </div>
                   <div className="p-1.5">
                     <button 
                       onClick={() => { setCurrentView('orders'); setIsProfileMenuOpen(false); }}
-                      className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl transition-colors cursor-pointer"
+                      className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-450 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 rounded-xl transition-colors cursor-pointer"
                     >
                       <Package size={16} /> Order History
                     </button>
                     <button 
                       onClick={() => { setCurrentView('transactions'); setIsProfileMenuOpen(false); }}
-                      className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl transition-colors cursor-pointer"
+                      className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-450 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 rounded-xl transition-colors cursor-pointer"
                     >
                       <Receipt size={16} /> Transaction History
                     </button>
                     <button 
                       onClick={() => { setCurrentView('addresses'); setIsProfileMenuOpen(false); }}
-                      className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl transition-colors cursor-pointer"
+                      className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-450 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 rounded-xl transition-colors cursor-pointer"
                     >
                       <MapPin size={16} /> Saved Addresses
                     </button>
                     <button 
                       onClick={() => { setCurrentView('contact'); setIsProfileMenuOpen(false); }}
-                      className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl transition-colors cursor-pointer"
+                      className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-450 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 rounded-xl transition-colors cursor-pointer"
                     >
                       <Mail size={16} /> Contact Us
                     </button>
                   </div>
-                  <div className="p-1.5 border-t border-slate-100">
+                  <div className="p-1.5 border-t border-slate-100 dark:border-slate-800">
                     <button 
                       onClick={() => { handleLogout(); setIsProfileMenuOpen(false); }}
-                      className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 rounded-xl transition-colors cursor-pointer"
+                      className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-xl transition-colors cursor-pointer"
                     >
                       <LogOut size={16} /> Sign Out
                     </button>
@@ -1551,11 +1582,11 @@ const placeOrder = async () => {
               <div className="absolute top-1/2 -right-20 w-80 h-80 bg-slate-500/10 rounded-full blur-3xl"></div>
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                 <div className="lg:col-span-6 z-10">
-                  <span className="inline-block py-1 px-4 rounded-full bg-teal-100 text-teal-800 font-semibold text-xs tracking-wider mb-6">NEXT-GEN HEALTHCARE</span>
-                  <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6 leading-tight">
+                  <span className="inline-block py-1 px-4 rounded-full bg-teal-100 dark:bg-teal-950/40 text-teal-800 dark:text-teal-400 font-semibold text-xs tracking-wider mb-6">NEXT-GEN HEALTHCARE</span>
+                  <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-slate-100 mb-6 leading-tight">
                     Your Trusted <span className="text-gradient">Online Pharmacy</span>
                   </h1>
-                  <p className="text-base md:text-lg text-slate-500 mb-10 max-w-lg leading-relaxed">
+                  <p className="text-base md:text-lg text-slate-500 dark:text-slate-400 mb-10 max-w-lg leading-relaxed">
                     Order medicines, consult certified doctors, and get healthcare delivered to your doorstep with clinical precision and digital speed.
                   </p>
                   <div className="flex flex-wrap gap-4">
@@ -1568,7 +1599,7 @@ const placeOrder = async () => {
                     </button>
                     <button 
                       onClick={() => setIsDoctorOpen(true)}
-                      className="px-8 py-4 bg-white border border-teal-600/20 text-teal-700 rounded-xl font-bold hover:bg-teal-50/50 transition-all duration-300 cursor-pointer"
+                      className="px-8 py-4 bg-white dark:bg-slate-900 border border-teal-600/20 dark:border-teal-900/30 text-teal-700 dark:text-teal-400 rounded-xl font-bold hover:bg-teal-50/50 dark:hover:bg-slate-800 transition-all duration-300 cursor-pointer"
                     >
                       Consult a Doctor
                     </button>
@@ -1598,28 +1629,28 @@ const placeOrder = async () => {
 
             {/* AI Triage Banner */}
             <section className="px-6 md:px-12 py-12 max-w-7xl mx-auto">
-              <div className="bg-gradient-to-br from-teal-600/5 to-slate-500/5 border border-teal-600/10 rounded-[40px] p-8 md:p-12 card-shadow flex flex-col lg:flex-row gap-12 items-center">
+              <div className="bg-gradient-to-br from-teal-600/5 to-slate-500/5 dark:from-teal-950/10 dark:to-slate-900/10 border border-teal-600/10 dark:border-teal-900/40 rounded-[40px] p-8 md:p-12 card-shadow flex flex-col lg:flex-row gap-12 items-center">
                 <div className="lg:w-1/2">
                   <div className="flex items-center gap-2 mb-6">
                     <span className="px-3 py-1 bg-teal-600 text-white text-[10px] font-bold rounded-full uppercase tracking-wider">New Feature</span>
                     <span className="text-teal-600 font-bold text-sm">AI-Powered Triage</span>
                   </div>
-                  <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-6 leading-tight">Not Sure Which Medicine You Need?</h2>
-                  <p className="text-slate-500 text-base md:text-lg mb-8 leading-relaxed">Describe your symptoms and get instant AI-powered guidance, medicine recommendations, dosage information, and triage advice.</p>
+                  <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-slate-100 mb-6 leading-tight">Not Sure Which Medicine You Need?</h2>
+                  <p className="text-slate-500 dark:text-slate-400 text-base md:text-lg mb-8 leading-relaxed">Describe your symptoms and get instant AI-powered guidance, medicine recommendations, dosage information, and triage advice.</p>
                   <div className="grid grid-cols-2 gap-4 mb-10">
-                    <div className="flex items-center gap-2 text-slate-600">
+                    <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
                       <CheckCircle size={18} className="text-teal-600" />
                       <span className="text-sm font-semibold">Symptom Checker</span>
                     </div>
-                    <div className="flex items-center gap-2 text-slate-600">
+                    <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
                       <CheckCircle size={18} className="text-teal-600" />
                       <span className="text-sm font-semibold">Dosage Guidance</span>
                     </div>
-                    <div className="flex items-center gap-2 text-slate-600">
+                    <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
                       <CheckCircle size={18} className="text-teal-600" />
                       <span className="text-sm font-semibold">Drug Interactions</span>
                     </div>
-                    <div className="flex items-center gap-2 text-slate-600">
+                    <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
                       <CheckCircle size={18} className="text-teal-600" />
                       <span className="text-sm font-semibold">Doctor Referrals</span>
                     </div>
@@ -1643,7 +1674,7 @@ const placeOrder = async () => {
                         <div className="w-8 h-8 bg-teal-600 rounded-full flex-shrink-0 flex items-center justify-center text-white">
                           <Sparkles size={16} className="animate-pulse" />
                         </div>
-                        <div className="bg-white border border-slate-200/50 px-4 py-3 rounded-2xl rounded-tl-none max-w-[80%] text-sm shadow-sm">
+                        <div className="bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800/80 px-4 py-3 rounded-2xl rounded-tl-none max-w-[80%] text-sm shadow-sm dark:text-slate-200">
                           <p className="text-teal-600 font-bold text-xs mb-1">AI Pharmacist</p>
                           Based on your symptoms, here are possible causes and suitable OTC medicines. Consult a doctor if symptoms persist.
                         </div>
@@ -1653,62 +1684,62 @@ const placeOrder = async () => {
                 </div>
               </div>
             </section>
-
             {/* Integrated Health Ecosystem Bento Grid */}
             <section className="px-6 md:px-12 py-24 max-w-7xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-extrabold text-slate-950 text-center mb-16">Integrated Health <span className="text-teal-600">Ecosystem</span></h2>
+              <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-slate-100 text-center mb-16">Integrated Health <span className="text-teal-600">Ecosystem</span></h2>
               <div className="grid grid-cols-1 md:grid-cols-6 gap-6 auto-rows-[180px]">
-                <div className="md:col-span-3 md:row-span-2 glass rounded-3xl p-8 flex flex-col justify-between card-shadow hover-lift bg-teal-600/5 border-teal-600/10">
+                <div className="md:col-span-3 md:row-span-2 glass rounded-3xl p-8 flex flex-col justify-between card-shadow hover-lift bg-teal-600/5 border-teal-600/10 dark:border-teal-900/30">
                   <div>
                     <div className="w-14 h-14 bg-teal-600 text-white rounded-2xl flex items-center justify-center mb-6 shadow-md shadow-teal-600/20">
                       <Sparkles size={28} />
                     </div>
-                    <h3 className="text-xl font-bold text-slate-900 mb-4">AI Health Assistant</h3>
-                    <p className="text-slate-500 text-sm leading-relaxed">Our advanced neural network analyzes your symptoms and provides immediate, data-backed guidance before you even see a doctor.</p>
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">AI Health Assistant</h3>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">Our advanced neural network analyzes your symptoms and provides immediate, data-backed guidance before you even see a doctor.</p>
                   </div>
                   <button onClick={() => setIsChatOpen(true)} className="text-teal-600 font-bold flex items-center gap-2 group hover:text-teal-700 cursor-pointer">
                     Try Assistant <span className="group-hover:translate-x-1 transition-transform">→</span>
                   </button>
                 </div>
-                <div onClick={() => setIsDoctorOpen(true)} className="md:col-span-3 glass rounded-3xl p-6 card-shadow hover-lift border-slate-100 flex items-center gap-6 cursor-pointer">
+                <div onClick={() => setIsDoctorOpen(true)} className="md:col-span-3 glass rounded-3xl p-6 card-shadow hover-lift border-slate-100/50 dark:border-slate-800/80 flex items-center gap-6 cursor-pointer">
                   <div className="w-14 h-14 bg-slate-900 text-white rounded-2xl flex-shrink-0 flex items-center justify-center shadow-md">
                     <Stethoscope size={28} />
                   </div>
                   <div>
-                    <h3 className="font-bold text-slate-900 text-base">Online Doctor Consultation</h3>
-                    <p className="text-xs text-slate-500 mt-1">Connect with specialists in under 5 minutes.</p>
+                    <h3 className="font-bold text-slate-900 dark:text-slate-100 text-base">Online Doctor Consultation</h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Connect with specialists in under 5 minutes.</p>
                   </div>
                 </div>
-                <div onClick={() => setIsChatOpen(true)} className="md:col-span-3 glass rounded-3xl p-6 card-shadow hover-lift border-slate-100 flex items-center gap-6 cursor-pointer">
-                  <div className="w-14 h-14 bg-teal-100 text-teal-700 rounded-2xl flex-shrink-0 flex items-center justify-center border border-teal-200">
+                <div onClick={() => setIsChatOpen(true)} className="md:col-span-3 glass rounded-3xl p-6 card-shadow hover-lift border-slate-100/50 dark:border-slate-800/80 flex items-center gap-6 cursor-pointer">
+                  <div className="w-14 h-14 bg-teal-100 dark:bg-teal-950 text-teal-700 dark:text-teal-400 rounded-2xl flex-shrink-0 flex items-center justify-center border border-teal-200 dark:border-teal-900">
                     <PlusSquare size={28} />
                   </div>
                   <div>
-                    <h3 className="font-bold text-slate-900 text-base">Prescription Upload</h3>
-                    <p className="text-xs text-slate-500 mt-1">Instant AI verification for quick fulfillment.</p>
+                    <h3 className="font-bold text-slate-900 dark:text-slate-100 text-base">Prescription Upload</h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Instant AI verification for quick fulfillment.</p>
                   </div>
                 </div>
-                <div className="md:col-span-2 glass rounded-3xl p-6 card-shadow hover-lift border-slate-100 flex flex-col justify-center text-center">
-                  <div className="w-10 h-10 bg-teal-50 text-teal-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                <div className="md:col-span-2 glass rounded-3xl p-6 card-shadow hover-lift border-slate-100/50 dark:border-slate-800/80 flex flex-col justify-center text-center">
+                  <div className="w-10 h-10 bg-teal-50 dark:bg-teal-950/30 text-teal-600 dark:text-teal-400 rounded-full flex items-center justify-center mx-auto mb-3">
                     <Truck size={20} />
                   </div>
-                  <h3 className="font-bold text-slate-950 text-sm">Fast Delivery</h3>
-                  <p className="text-xs text-slate-500 mt-1">Doorstep in 2 hours.</p>
+                  <h3 className="font-bold text-slate-900 dark:text-slate-100 text-sm">Fast Delivery</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Doorstep in 2 hours.</p>
                 </div>
-                <div className="md:col-span-4 glass rounded-3xl p-6 card-shadow hover-lift border-slate-100 flex items-center justify-between">
+                <div className="md:col-span-4 glass rounded-3xl p-6 card-shadow hover-lift border-slate-100/50 dark:border-slate-800/80 flex items-center justify-between">
                   <div className="flex items-center gap-6">
-                    <div className="w-14 h-14 bg-slate-100 text-slate-700 rounded-2xl flex-shrink-0 flex items-center justify-center shadow-inner">
+                    <div className="w-14 h-14 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-2xl flex-shrink-0 flex items-center justify-center shadow-inner">
                       <Activity size={28} />
                     </div>
                     <div>
-                      <h3 className="font-bold text-slate-955 text-base">Health Records Management</h3>
-                      <p className="text-xs text-slate-500 mt-1">Encrypted vault for all your medical history.</p>
+                      <h3 className="font-bold text-slate-900 dark:text-slate-100 text-base">Health Records Management</h3>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Encrypted vault for all your medical history.</p>
                     </div>
                   </div>
-                  <button onClick={() => setCurrentView('orders')} className="bg-slate-100 hover:bg-slate-200 px-5 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer">Manage</button>
+                  <button onClick={() => setCurrentView('orders')} className="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 px-5 py-2 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 transition-colors cursor-pointer">Manage</button>
                 </div>
               </div>
             </section>
+
 
             {/* Why Choose Us */}
             <section className="bg-slate-100/60 py-20">
@@ -1793,8 +1824,8 @@ const placeOrder = async () => {
             <main className="flex-1 p-4 md:p-6 lg:p-8 pb-28 md:pb-6 w-full overflow-y-auto scrollbar-hide">
               <div className="mb-8 flex justify-between items-end">
                 <div>
-                  <h2 className="text-2xl font-bold tracking-tight text-slate-900">{activeCategory} Medicines</h2>
-                  <p className="text-slate-500 text-sm mt-1 font-medium">Showing {filteredProducts.length} results</p>
+                  <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">{activeCategory} Medicines</h2>
+                  <p className="text-slate-500 dark:text-slate-400 text-sm mt-1 font-medium">Showing {filteredProducts.length} results</p>
                 </div>
               </div>
 
@@ -1807,8 +1838,8 @@ const placeOrder = async () => {
                       className={`
                         whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border
                         ${activeCategory === category 
-                          ? 'bg-slate-900 text-white border-slate-900 shadow-md shadow-slate-900/10' 
-                          : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300 hover:text-slate-900 shadow-[0_2px_8px_rgb(0,0,0,0.02)]'}
+                          ? 'bg-slate-900 text-white border-slate-900 dark:bg-slate-100 dark:text-slate-950 dark:border-slate-100 shadow-md shadow-slate-900/10' 
+                          : 'bg-white text-slate-600 border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800 dark:hover:border-slate-700 dark:hover:text-slate-100 hover:border-slate-300 hover:text-slate-900 shadow-[0_2px_8px_rgb(0,0,0,0.02)]'}
                       `}
                     >
                       {category}
@@ -1823,32 +1854,32 @@ const placeOrder = async () => {
                   return (
                     <div 
                       key={product.id} 
-                      className="bg-white border border-slate-200/60 rounded-[20px] p-4 md:p-5 flex flex-col hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:border-slate-300 hover:-translate-y-0.5 transition-all duration-300 group"
+                      className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/60 rounded-[20px] p-4 md:p-5 flex flex-col hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:hover:shadow-[0_8px_30px_rgba(0,0,0,0.4)] hover:border-slate-300 dark:hover:border-slate-700 hover:-translate-y-0.5 transition-all duration-300 group"
                     >
-                      <div className="w-10 h-10 md:w-12 md:h-12 bg-slate-50 border border-slate-100/50 text-slate-700 rounded-2xl flex items-center justify-center mb-4 md:mb-5 group-hover:bg-slate-100 transition-colors">
+                      <div className="w-10 h-10 md:w-12 md:h-12 bg-slate-50 dark:bg-slate-800 border border-slate-100/50 dark:border-slate-700/50 text-slate-700 dark:text-slate-300 rounded-2xl flex items-center justify-center mb-4 md:mb-5 group-hover:bg-slate-100 dark:group-hover:bg-slate-750 transition-colors">
                         <Icon size={20} strokeWidth={2} />
                       </div>
-                      <h3 className="font-bold text-base text-slate-900 mb-1">{product.name}</h3>
-                      <span className="text-[10px] font-semibold text-slate-500 mb-3 uppercase tracking-wider bg-slate-50 px-2 py-1 rounded w-fit border border-slate-100">{product.category}</span>
+                      <h3 className="font-bold text-base text-slate-900 dark:text-slate-100 mb-1">{product.name}</h3>
+                      <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-wider bg-slate-50 dark:bg-slate-800 px-2 py-1 rounded w-fit border border-slate-100 dark:border-slate-700">{product.category}</span>
                       <div className="mb-6 flex-1">
-                        <p className="text-slate-600 text-sm leading-relaxed mb-4 line-clamp-2">
+                        <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4 line-clamp-2">
                           {product.description}
                         </p>
                         <button 
                           onClick={() => handleAiExplain(product)}
-                          className="text-xs text-indigo-600 font-medium flex items-center gap-1.5 hover:text-indigo-700 transition-colors bg-indigo-50/50 hover:bg-indigo-50 px-3 py-2 rounded-lg w-fit border border-indigo-100/50"
+                          className="text-xs text-indigo-600 dark:text-indigo-400 font-medium flex items-center gap-1.5 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors bg-indigo-50/50 dark:bg-indigo-950/20 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 px-3 py-2 rounded-lg w-fit border border-indigo-100/50 dark:border-indigo-900/30"
                         >
                           <Sparkles size={14} /> AI Explain
                         </button>
                       </div>
                       
-                      <div className="flex items-center justify-between mt-auto border-t border-slate-100/80 pt-4">
-                        <span className="text-xl font-bold tracking-tight text-slate-900">
+                      <div className="flex items-center justify-between mt-auto border-t border-slate-100/80 dark:border-slate-800/80 pt-4">
+                        <span className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
                           ₹{product.price}
                         </span>
                         <button 
                           onClick={() => addToCart(product)}
-                          className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all shadow-[0_2px_10px_rgb(0,0,0,0.08)] active:scale-95 flex items-center gap-1.5"
+                          className="bg-slate-900 dark:bg-slate-100 hover:bg-slate-800 dark:hover:bg-slate-200 text-white dark:text-slate-950 px-4 py-2 rounded-xl text-sm font-semibold transition-all shadow-[0_2px_10px_rgb(0,0,0,0.08)] active:scale-95 flex items-center gap-1.5"
                         >
                           <Plus size={16} /> Add
                         </button>
@@ -1859,11 +1890,11 @@ const placeOrder = async () => {
               </div>
               
               {filteredProducts.length === 0 && (
-                <div className="text-center py-32 text-slate-500 flex flex-col items-center">
-                  <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mb-4">
+                <div className="text-center py-32 text-slate-500 dark:text-slate-400 flex flex-col items-center">
+                  <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4">
                     <Package size={32} className="text-slate-400" />
                   </div>
-                  <p className="text-lg font-bold text-slate-900 mb-1">No products found</p>
+                  <p className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-1">No products found</p>
                   <p className="text-sm">Try searching for a different medicine or category.</p>
                 </div>
               )}
@@ -1877,77 +1908,77 @@ const placeOrder = async () => {
             )}
             
             <aside className={`
-              fixed md:static top-0 right-0 z-50 w-full md:w-[340px] h-full bg-white border-l border-slate-200/60 shadow-2xl md:shadow-none flex flex-col transition-transform duration-300 ease-in-out
+              fixed md:static top-0 right-0 z-50 w-full md:w-[340px] h-full bg-white dark:bg-slate-950 border-l border-slate-200/60 dark:border-slate-800/80 shadow-2xl md:shadow-none flex flex-col transition-transform duration-300 ease-in-out
               ${isMobileSidebarOpen ? 'translate-x-0' : 'translate-x-full md:translate-x-0'}
             `}>
-              <div className="p-4 border-b border-slate-100 flex justify-between items-center md:hidden">
-                <h2 className="text-base font-bold text-slate-900">Tools & Search</h2>
+              <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center md:hidden">
+                <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">Tools & Search</h2>
                 <button 
-                  className="p-2 text-slate-400 hover:bg-slate-50 hover:text-slate-900 rounded-xl transition-colors"
+                  className="p-2 text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 rounded-xl transition-colors"
                   onClick={() => setIsMobileSidebarOpen(false)}
                 >
                   <X size={20} />
                 </button>
               </div>
 
-              <div className="p-2 border-b border-slate-100 md:hidden flex flex-col gap-1 bg-slate-50/50">
+              <div className="p-2 border-b border-slate-100 dark:border-slate-800 md:hidden flex flex-col gap-1 bg-slate-50/50 dark:bg-slate-900/30">
                 <div className="flex items-center gap-3 px-4 py-3 mb-1">
-                  <div className="w-8 h-8 bg-white border border-slate-200 text-slate-700 rounded-full flex items-center justify-center text-xs font-semibold uppercase shadow-sm">
+                  <div className="w-8 h-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-350 rounded-full flex items-center justify-center text-xs font-semibold uppercase shadow-sm">
                     {user?.name?.charAt(0)}
                   </div>
                   <div>
-                    <p className="text-[10px] text-slate-500 font-medium leading-none mb-1 uppercase tracking-wider">Account</p>
-                    <p className="text-sm font-bold text-slate-900 leading-none">{user?.name}</p>
+                    <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium leading-none mb-1 uppercase tracking-wider">Account</p>
+                    <p className="text-sm font-bold text-slate-900 dark:text-slate-100 leading-none">{user?.name}</p>
                   </div>
                 </div>
-                <button onClick={() => { setCurrentView('orders'); setIsMobileSidebarOpen(false); }} className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm rounded-xl transition-all">
+                <button onClick={() => { setCurrentView('orders'); setIsMobileSidebarOpen(false); }} className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800 hover:shadow-sm rounded-xl transition-all">
                   <Package size={16} /> Order History
                 </button>
-                <button onClick={() => { setCurrentView('transactions'); setIsMobileSidebarOpen(false); }} className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm rounded-xl transition-all">
+                <button onClick={() => { setCurrentView('transactions'); setIsMobileSidebarOpen(false); }} className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800 hover:shadow-sm rounded-xl transition-all">
                   <Receipt size={16} /> Transaction History
                 </button>
-                <button onClick={() => { setCurrentView('addresses'); setIsMobileSidebarOpen(false); }} className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm rounded-xl transition-all">
+                <button onClick={() => { setCurrentView('addresses'); setIsMobileSidebarOpen(false); }} className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800 hover:shadow-sm rounded-xl transition-all">
                   <MapPin size={16} /> Saved Addresses
                 </button>
-                <button onClick={() => { setCurrentView('contact'); setIsMobileSidebarOpen(false); }} className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm rounded-xl transition-all">
+                <button onClick={() => { setCurrentView('contact'); setIsMobileSidebarOpen(false); }} className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800 hover:shadow-sm rounded-xl transition-all">
                   <Mail size={16} /> Contact Us
                 </button>
-                <div className="my-1 border-t border-slate-200/60"></div>
-                <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 rounded-xl transition-all">
+                <div className="my-1 border-t border-slate-200/60 dark:border-slate-800"></div>
+                <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-xl transition-all">
                   <LogOut size={16} /> Sign Out
                 </button>
               </div>
 
               <div className="flex-1 overflow-y-auto p-6 space-y-8 scrollbar-hide">
                 <div>
-                  <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
+                  <h2 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
                     <Search size={14} /> Search Medicines
                   </h2>
                   <div className="relative group">
                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                      <Search size={16} className="text-slate-400 group-focus-within:text-slate-900 transition-colors" />
+                      <Search size={16} className="text-slate-400 group-focus-within:text-slate-900 dark:group-focus-within:text-slate-100 transition-colors" />
                     </div>
                     <input
                       type="text"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder="Search by name or generic..."
-                      className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all bg-slate-50 hover:bg-white"
+                      className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 text-sm focus:outline-none focus:border-slate-900 focus:border-slate-100 focus:ring-4 focus:ring-slate-900/5 dark:focus:ring-white/5 transition-all bg-slate-50 dark:bg-slate-900 hover:bg-white dark:hover:bg-slate-850 text-slate-900 dark:text-slate-100"
                     />
                   </div>
                 </div>
 
-                <div className="bg-gradient-to-b from-teal-50/50 to-teal-50/80 border border-teal-100/60 rounded-[20px] p-5 flex flex-col gap-3">
+                <div className="bg-gradient-to-b from-teal-50/50 to-teal-50/80 dark:from-teal-950/20 dark:to-teal-950/40 border border-teal-100/60 dark:border-teal-900/30 rounded-[20px] p-5 flex flex-col gap-3">
                   <div className="flex items-center gap-3">
                     <div className="bg-teal-600 p-2 rounded-xl text-white shadow-sm shadow-teal-600/20">
                       <Stethoscope size={20} />
                     </div>
                     <div>
-                      <h3 className="font-bold text-slate-900 text-sm">AI Doctor</h3>
-                      <p className="text-[10px] text-teal-600 font-bold uppercase tracking-wider">Free Consult</p>
+                      <h3 className="font-bold text-slate-900 dark:text-slate-100 text-sm">AI Doctor</h3>
+                      <p className="text-[10px] text-teal-600 dark:text-teal-400 font-bold uppercase tracking-wider">Free Consult</p>
                     </div>
                   </div>
-                  <p className="text-sm text-slate-600 leading-relaxed mt-1">
+                  <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mt-1">
                     Describe your symptoms for preliminary triage and home care advice.
                   </p>
                   <button
@@ -1958,33 +1989,33 @@ const placeOrder = async () => {
                   </button>
                 </div>
 
-                <div className="bg-white border border-slate-200/60 rounded-[20px] p-5 shadow-[0_4px_20px_rgb(0,0,0,0.02)] flex flex-col gap-4">
+                <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/60 rounded-[20px] p-5 shadow-[0_4px_20px_rgb(0,0,0,0.02)] flex flex-col gap-4">
                   <div className="flex items-center justify-between">
-                    <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
+                    <h3 className="font-bold text-slate-900 dark:text-slate-100 text-sm flex items-center gap-2">
                       <ShoppingCart size={16} className="text-slate-400" /> Quick Cart
                     </h3>
                     {cartCount > 0 && (
-                      <span className="bg-slate-100 text-slate-700 text-[10px] px-2 py-0.5 rounded-md font-bold uppercase tracking-wider">
+                      <span className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-350 text-[10px] px-2 py-0.5 rounded-md font-bold uppercase tracking-wider">
                         {cartCount} Items
                       </span>
                     )}
                   </div>
 
                   {cart.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-8 text-slate-400 gap-3 bg-slate-50/50 rounded-xl border border-slate-100 border-dashed">
+                    <div className="flex flex-col items-center justify-center py-8 text-slate-400 gap-3 bg-slate-50/50 dark:bg-slate-900/30 rounded-xl border border-slate-100 dark:border-slate-800 border-dashed">
                       <Package size={24} className="text-slate-300" />
-                      <p className="text-xs font-medium text-slate-500">Your cart is empty</p>
+                      <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Your cart is empty</p>
                     </div>
                   ) : (
                     <div className="space-y-4">
                       <div className="space-y-3">
                         {cart.slice(0, 3).map(item => (
                           <div key={item.id} className="flex justify-between items-center text-sm group">
-                            <span className="text-slate-600 truncate pr-2 flex items-center gap-2.5">
-                              <span className="text-[10px] font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded-md">{item.quantity}x</span> 
-                              <span className="group-hover:text-slate-900 transition-colors">{item.name}</span>
+                            <span className="text-slate-600 dark:text-slate-400 truncate pr-2 flex items-center gap-2.5">
+                              <span className="text-[10px] font-bold text-slate-500 dark:text-slate-450 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded-md">{item.quantity}x</span> 
+                              <span className="group-hover:text-slate-900 dark:group-hover:text-slate-100 transition-colors">{item.name}</span>
                             </span>
-                            <span className="font-semibold text-slate-900">₹{item.price * item.quantity}</span>
+                            <span className="font-semibold text-slate-900 dark:text-slate-100">₹{item.price * item.quantity}</span>
                           </div>
                         ))}
                         {cart.length > 3 && (
@@ -1992,14 +2023,14 @@ const placeOrder = async () => {
                         )}
                       </div>
                       
-                      <div className="border-t border-slate-100 pt-4 flex justify-between items-center">
-                        <span className="font-medium text-slate-500 text-sm">Total</span>
-                        <span className="font-bold tracking-tight text-slate-900 text-lg">₹{cartTotal}</span>
+                      <div className="border-t border-slate-100 dark:border-slate-800 pt-4 flex justify-between items-center">
+                        <span className="font-medium text-slate-500 dark:text-slate-400 text-sm">Total</span>
+                        <span className="font-bold tracking-tight text-slate-900 dark:text-slate-100 text-lg">₹{cartTotal}</span>
                       </div>
                       
                       <button
                         onClick={() => { setCurrentView('cart'); setIsMobileSidebarOpen(false); }}
-                        className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 rounded-xl font-semibold text-sm transition-all shadow-[0_2px_10px_rgb(0,0,0,0.08)] active:scale-95 flex items-center justify-center gap-2 mt-2"
+                        className="w-full bg-slate-900 dark:bg-slate-100 hover:bg-slate-800 dark:hover:bg-slate-200 text-white dark:text-slate-950 py-3 rounded-xl font-semibold text-sm transition-all shadow-[0_2px_10px_rgb(0,0,0,0.08)] active:scale-95 flex items-center justify-center gap-2 mt-2"
                       >
                         View Full Cart
                       </button>
@@ -2010,33 +2041,33 @@ const placeOrder = async () => {
             </aside>
           </div>
         ) : currentView === 'contact' ? (
-          <div className="flex-1 overflow-y-auto bg-[#F8FAFC] p-6 lg:p-8 scrollbar-hide">
+          <div className="flex-1 overflow-y-auto bg-[#F8FAFC] dark:bg-[#090d16] p-6 lg:p-8 scrollbar-hide">
             <div className="max-w-2xl mx-auto animate-fade-in">
               <button 
                 onClick={() => setCurrentView('home')}
-                className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-900 font-medium mb-8 transition-colors w-fit bg-white px-4 py-2 rounded-full border border-slate-200/60 shadow-sm"
+                className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 font-medium mb-8 transition-colors w-fit bg-white dark:bg-slate-900 px-4 py-2 rounded-full border border-slate-200/60 dark:border-slate-850 shadow-sm"
               >
                 <ArrowLeft size={16} /> Back to Store
               </button>
 
-              <div className="bg-white rounded-[24px] border border-slate-200/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8">
+              <div className="bg-white dark:bg-slate-900 rounded-[24px] border border-slate-200/60 dark:border-slate-800/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.4)] p-8">
                 <div className="mb-8">
-                  <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-4">
+                  <div className="w-12 h-12 bg-indigo-50 dark:bg-indigo-950/20 text-indigo-600 dark:text-indigo-400 rounded-2xl flex items-center justify-center mb-4">
                     <Mail size={24} />
                   </div>
-                  <h2 className="text-2xl font-bold tracking-tight text-slate-900">Contact Us</h2>
-                  <p className="text-slate-500 mt-2 text-sm">Have a question or need help? Send us a message and we&apos;ll get back to you as soon as possible.</p>
+                  <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Contact Us</h2>
+                  <p className="text-slate-500 dark:text-slate-400 mt-2 text-sm">Have a question or need help? Send us a message and we&apos;ll get back to you as soon as possible.</p>
                 </div>
 
                 {contactStatus.success && (
-                  <div className="bg-emerald-50 text-emerald-600 p-4 rounded-xl text-sm font-medium mb-6 border border-emerald-100 flex items-center gap-3 animate-fade-in">
+                  <div className="bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 p-4 rounded-xl text-sm font-medium mb-6 border border-emerald-100 dark:border-emerald-900/30 flex items-center gap-3 animate-fade-in">
                     <CheckCircle2 size={18} />
                     {contactStatus.success}
                   </div>
                 )}
 
                 {contactStatus.error && (
-                  <div className="bg-red-50 text-red-600 p-4 rounded-xl text-sm font-medium mb-6 border border-red-100 flex items-center gap-3 animate-fade-in">
+                  <div className="bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 p-4 rounded-xl text-sm font-medium mb-6 border border-red-100 dark:border-red-900/30 flex items-center gap-3 animate-fade-in">
                     <AlertCircle size={18} />
                     {contactStatus.error}
                   </div>
@@ -2044,7 +2075,7 @@ const placeOrder = async () => {
 
                 <form onSubmit={handleContactSubmit} className="space-y-5">
                   <div className="space-y-1.5">
-                    <label className="text-sm font-semibold text-slate-700 ml-1">Name</label>
+                    <label className="text-sm font-semibold text-slate-700 dark:text-slate-350 ml-1">Name</label>
                     <div className="relative group">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-indigo-600">
                         <User size={18} className="text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
@@ -2054,14 +2085,14 @@ const placeOrder = async () => {
                         required
                         value={contactForm.name}
                         onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
-                        className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-white focus:bg-white text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all"
+                        className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 hover:bg-white dark:hover:bg-slate-850 focus:bg-white dark:focus:bg-slate-900 text-slate-900 dark:text-slate-100 text-sm placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-4 focus:ring-indigo-500/10 dark:focus:ring-indigo-400/5 transition-all"
                         placeholder="John Doe"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-sm font-semibold text-slate-700 ml-1">Email</label>
+                    <label className="text-sm font-semibold text-slate-700 dark:text-slate-350 ml-1">Email</label>
                     <div className="relative group">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-indigo-600">
                         <Mail size={18} className="text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
@@ -2071,20 +2102,20 @@ const placeOrder = async () => {
                         required
                         value={contactForm.email}
                         onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
-                        className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-white focus:bg-white text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all"
+                        className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 hover:bg-white dark:hover:bg-slate-850 focus:bg-white dark:focus:bg-slate-900 text-slate-900 dark:text-slate-100 text-sm placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-4 focus:ring-indigo-500/10 dark:focus:ring-indigo-400/5 transition-all"
                         placeholder="john@example.com"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-sm font-semibold text-slate-700 ml-1">Message</label>
+                    <label className="text-sm font-semibold text-slate-700 dark:text-slate-350 ml-1">Message</label>
                     <textarea
                       required
                       rows={5}
                       value={contactForm.message}
                       onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
-                      className="w-full p-4 rounded-xl border border-slate-200 bg-slate-50 hover:bg-white focus:bg-white text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all resize-none"
+                      className="w-full p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 hover:bg-white dark:hover:bg-slate-850 focus:bg-white dark:focus:bg-slate-900 text-slate-900 dark:text-slate-100 text-sm placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-4 focus:ring-indigo-500/10 dark:focus:ring-indigo-400/5 transition-all resize-none"
                       placeholder="How can we help you today?"
                     />
                   </div>
@@ -2092,7 +2123,7 @@ const placeOrder = async () => {
                   <button
                     type="submit"
                     disabled={contactStatus.loading}
-                    className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl font-semibold text-sm transition-all shadow-[0_4px_12px_rgb(0,0,0,0.1)] active:scale-[0.98] mt-2 disabled:opacity-50 flex items-center justify-center gap-2"
+                    className="w-full bg-slate-900 dark:bg-slate-100 hover:bg-slate-800 dark:hover:bg-slate-200 text-white dark:text-slate-950 py-3.5 rounded-xl font-semibold text-sm transition-all shadow-[0_4px_12px_rgb(0,0,0,0.1)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.4)] active:scale-[0.98] mt-2 disabled:opacity-50 flex items-center justify-center gap-2"
                   >
                     {contactStatus.loading ? 'Sending...' : (
                       <>
@@ -2105,29 +2136,29 @@ const placeOrder = async () => {
             </div>
           </div>
         ) : currentView === 'cart' ? (
-          <div className="flex-1 overflow-y-auto bg-[#F8FAFC] p-6 lg:p-8 scrollbar-hide">
+          <div className="flex-1 overflow-y-auto bg-[#F8FAFC] dark:bg-[#090d16] p-6 lg:p-8 scrollbar-hide">
             <div className="max-w-5xl mx-auto">
               <button 
                 onClick={() => setCurrentView('home')}
-                className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-900 font-medium mb-8 transition-colors w-fit bg-white px-4 py-2 rounded-full border border-slate-200/60 shadow-sm"
+                className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 font-medium mb-8 transition-colors w-fit bg-white dark:bg-slate-900 px-4 py-2 rounded-full border border-slate-200/60 dark:border-slate-850 shadow-sm"
               >
                 <ArrowLeft size={16} /> Back to Medicines
               </button>
               
-              <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-8">Your Cart</h2>
+              <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-8">Your Cart</h2>
               
               <div className="flex flex-col lg:flex-row gap-8">
                 <div className="flex-1">
                   {cart.length === 0 ? (
-                    <div className="bg-white border border-slate-200/60 rounded-[24px] p-16 flex flex-col items-center justify-center text-center shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
-                      <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-5">
+                    <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 rounded-[24px] p-16 flex flex-col items-center justify-center text-center shadow-[0_8px_30px_rgb(0,0,0,0.02)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.4)]">
+                      <div className="w-20 h-20 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-5">
                         <ShoppingCart size={32} className="text-slate-300" />
                       </div>
-                      <h3 className="text-lg font-bold text-slate-900 mb-2">Your cart is empty</h3>
-                      <p className="text-slate-500 text-sm mb-8">Looks like you haven&apos;t added any medicines yet.</p>
+                      <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2">Your cart is empty</h3>
+                      <p className="text-slate-500 dark:text-slate-400 text-sm mb-8">Looks like you haven&apos;t added any medicines yet.</p>
                       <button 
                         onClick={() => setCurrentView('home')}
-                        className="bg-slate-900 hover:bg-slate-800 text-white px-8 py-3 rounded-xl font-semibold transition-all shadow-[0_4px_14px_rgb(0,0,0,0.1)] active:scale-95"
+                        className="bg-slate-900 dark:bg-slate-100 hover:bg-slate-800 dark:hover:bg-slate-200 text-white dark:text-slate-950 px-8 py-3 rounded-xl font-semibold transition-all shadow-[0_4px_14px_rgb(0,0,0,0.1)] active:scale-95"
                       >
                         Start Shopping
                       </button>
@@ -2137,29 +2168,29 @@ const placeOrder = async () => {
                       {cart.map((item) => {
                         const Icon = item.icon;
                         return (
-                          <div key={item.id} className="flex flex-col sm:flex-row gap-5 p-5 bg-white border border-slate-200/60 rounded-[20px] shadow-[0_2px_12px_rgb(0,0,0,0.02)] items-start sm:items-center group hover:border-slate-300 transition-colors">
-                            <div className="w-16 h-16 bg-slate-50 border border-slate-100 text-slate-700 rounded-2xl flex items-center justify-center shrink-0 group-hover:bg-slate-100 transition-colors">
+                          <div key={item.id} className="flex flex-col sm:flex-row gap-5 p-5 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 rounded-[20px] shadow-[0_2px_12px_rgb(0,0,0,0.02)] items-start sm:items-center group hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
+                            <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700/60 text-slate-700 dark:text-slate-300 rounded-2xl flex items-center justify-center shrink-0 group-hover:bg-slate-100 dark:group-hover:bg-slate-750 transition-colors">
                               <Icon size={24} strokeWidth={2} />
                             </div>
                             <div className="flex-1 min-w-0 w-full sm:w-auto">
-                              <h4 className="font-bold text-base text-slate-900 truncate">{item.name}</h4>
-                              <p className="text-slate-500 text-xs mt-0.5 mb-1.5 uppercase tracking-wider font-medium">{item.category}</p>
-                              <p className="text-slate-900 font-bold text-lg">₹{item.price}</p>
+                              <h4 className="font-bold text-base text-slate-900 dark:text-slate-100 truncate">{item.name}</h4>
+                              <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5 mb-1.5 uppercase tracking-wider font-medium">{item.category}</p>
+                              <p className="text-slate-900 dark:text-slate-100 font-bold text-lg">₹{item.price}</p>
                             </div>
                             
-                            <div className="flex sm:flex-col flex-row items-center sm:items-end gap-4 justify-between w-full sm:w-auto mt-4 sm:mt-0 border-t sm:border-0 border-slate-100 pt-4 sm:pt-0">
-                              <div className="flex items-center gap-1 bg-white border border-slate-200 rounded-xl p-1 shadow-sm">
-                                <button onClick={() => updateQuantity(item.id, -1)} className="p-1.5 hover:bg-slate-50 rounded-lg text-slate-500 hover:text-slate-900 transition-colors">
+                            <div className="flex sm:flex-col flex-row items-center sm:items-end gap-4 justify-between w-full sm:w-auto mt-4 sm:mt-0 border-t sm:border-0 border-slate-100 dark:border-slate-800 pt-4 sm:pt-0">
+                              <div className="flex items-center gap-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-1 shadow-sm">
+                                <button onClick={() => updateQuantity(item.id, -1)} className="p-1.5 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors">
                                   <Minus size={16} />
                                 </button>
-                                <span className="w-8 text-center text-sm font-semibold text-slate-900">{item.quantity}</span>
-                                <button onClick={() => updateQuantity(item.id, 1)} className="p-1.5 hover:bg-slate-50 rounded-lg text-slate-500 hover:text-slate-900 transition-colors">
+                                <span className="w-8 text-center text-sm font-semibold text-slate-900 dark:text-slate-100">{item.quantity}</span>
+                                <button onClick={() => updateQuantity(item.id, 1)} className="p-1.5 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors">
                                   <Plus size={16} />
                                 </button>
                               </div>
                               <button 
                                 onClick={() => removeItem(item.id)}
-                                className="text-slate-400 hover:text-red-500 transition-colors flex items-center gap-1.5 text-xs font-medium bg-slate-50 hover:bg-red-50 px-3 py-1.5 rounded-lg"
+                                className="text-slate-400 hover:text-red-500 transition-colors flex items-center gap-1.5 text-xs font-medium bg-slate-50 dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-950/20 px-3 py-1.5 rounded-lg"
                               >
                                 <Trash2 size={14} /> <span className="sm:hidden">Remove</span>
                               </button>
@@ -2173,21 +2204,21 @@ const placeOrder = async () => {
 
                 {cart.length > 0 && (
                   <div className="w-full lg:w-[380px] shrink-0">
-                    <div className="bg-white border border-slate-200/60 rounded-[24px] p-6 sticky top-6 shadow-[0_8px_30px_rgb(0,0,0,0.03)]">
-                      <h3 className="text-lg font-bold text-slate-900 mb-6">Order Summary</h3>
+                    <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 rounded-[24px] p-6 sticky top-6 shadow-[0_8px_30px_rgb(0,0,0,0.03)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.4)]">
+                      <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-6">Order Summary</h3>
                       
                       <div className="space-y-4 mb-6 text-sm">
-                        <div className="flex justify-between text-slate-600">
+                        <div className="flex justify-between text-slate-600 dark:text-slate-400">
                           <span>Subtotal ({cartCount} items)</span>
-                          <span className="font-medium text-slate-900">₹{cartTotal}</span>
+                          <span className="font-medium text-slate-900 dark:text-slate-100">₹{cartTotal}</span>
                         </div>
-                        <div className="flex justify-between text-slate-600">
+                        <div className="flex justify-between text-slate-600 dark:text-slate-400">
                           <span>Delivery Fee</span>
-                          <span className="text-teal-600 font-semibold bg-teal-50 px-2 py-0.5 rounded">Free</span>
+                          <span className="text-teal-600 dark:text-teal-400 font-semibold bg-teal-50 dark:bg-teal-950/40 px-2 py-0.5 rounded">Free</span>
                         </div>
-                        <div className="border-t border-slate-100 pt-5 mt-5 flex justify-between items-center">
-                          <span className="text-base font-bold text-slate-900">Total</span>
-                          <span className="text-2xl font-bold tracking-tight text-slate-900">₹{cartTotal}</span>
+                        <div className="border-t border-slate-100 dark:border-slate-800 pt-5 mt-5 flex justify-between items-center">
+                          <span className="text-base font-bold text-slate-900 dark:text-slate-100">Total</span>
+                          <span className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">₹{cartTotal}</span>
                         </div>
                       </div>
 
@@ -2195,14 +2226,14 @@ const placeOrder = async () => {
                         {cart.length > 1 && (
                           <button 
                             onClick={handleCheckInteractions}
-                            className="w-full bg-indigo-50/50 border border-indigo-200/60 hover:bg-indigo-50 text-indigo-700 py-3 rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2"
+                            className="w-full bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-200/60 dark:border-indigo-900/30 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400 py-3 rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2"
                           >
                             <Sparkles size={16} /> AI Interaction Check
                           </button>
                         )}
                         <button 
                           onClick={proceedToCheckout}
-                          className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl font-bold text-sm transition-all shadow-[0_4px_14px_rgb(0,0,0,0.1)] active:scale-95 flex items-center justify-center gap-2"
+                          className="w-full bg-slate-900 dark:bg-slate-100 hover:bg-slate-800 dark:hover:bg-slate-200 text-white dark:text-slate-950 py-3.5 rounded-xl font-bold text-sm transition-all shadow-[0_4px_14px_rgb(0,0,0,0.1)] dark:shadow-[0_4px_14px_rgba(0,0,0,0.4)] active:scale-95 flex items-center justify-center gap-2"
                         >
                           Proceed to Checkout
                         </button>
@@ -2218,108 +2249,108 @@ const placeOrder = async () => {
             </div>
           </div>
         ) : currentView === 'checkout' ? (
-          <div className="flex-1 overflow-y-auto bg-[#F8FAFC] p-6 lg:p-8 pb-28 md:pb-6 scrollbar-hide">
+          <div className="flex-1 overflow-y-auto bg-[#F8FAFC] dark:bg-[#090d16] p-6 lg:p-8 pb-28 md:pb-6 scrollbar-hide">
             <div className="max-w-5xl mx-auto">
               <button 
                 onClick={() => setCurrentView('cart')}
-                className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-900 font-medium mb-8 transition-colors w-fit bg-white px-4 py-2 rounded-full border border-slate-200/60 shadow-sm"
+                className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 font-medium mb-8 transition-colors w-fit bg-white dark:bg-slate-900 px-4 py-2 rounded-full border border-slate-200/60 dark:border-slate-850 shadow-sm"
               >
                 <ArrowLeft size={16} /> Back to Cart
               </button>
               
-              <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-8">Checkout</h2>
+              <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-8">Checkout</h2>
               
               <div className="flex flex-col lg:flex-row gap-8">
                 <div className="flex-1 space-y-6">
-                  <div className={`bg-white border ${checkoutStep === 1 ? 'border-slate-900 shadow-[0_8px_30px_rgb(0,0,0,0.06)]' : 'border-slate-200/60 opacity-60 pointer-events-none'} rounded-[24px] p-6 lg:p-8 transition-all duration-300`}>
-                    <h3 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-3">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${checkoutStep === 1 ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-500'}`}>1</div>
+                  <div className={`bg-white dark:bg-slate-900 border ${checkoutStep === 1 ? 'border-slate-900 dark:border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.4)]' : 'border-slate-200/60 dark:border-slate-800/60 opacity-60 pointer-events-none'} rounded-[24px] p-6 lg:p-8 transition-all duration-300`}>
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-6 flex items-center gap-3">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${checkoutStep === 1 ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-950' : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'}`}>1</div>
                       Delivery Details
                     </h3>
                     <form onSubmit={handleAddressSubmit} className="space-y-5">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div className="space-y-1.5">
-                          <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Full Name</label>
-                          <input type="text" required value={addressForm.name} onChange={e => setAddressForm({...addressForm, name: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all bg-white" placeholder="John Doe" />
+                          <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Full Name</label>
+                          <input type="text" required value={addressForm.name} onChange={e => setAddressForm({...addressForm, name: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 text-sm focus:outline-none focus:border-slate-900 dark:focus:border-slate-100 focus:ring-4 focus:ring-slate-900/5 dark:focus:ring-white/5 transition-all bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100" placeholder="John Doe" />
                         </div>
                         <div className="space-y-1.5">
-                          <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Phone Number</label>
-                          <input type="tel" required value={addressForm.phone} onChange={e => setAddressForm({...addressForm, phone: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all bg-white" placeholder="+91 9876543210" />
+                          <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Phone Number</label>
+                          <input type="tel" required value={addressForm.phone} onChange={e => setAddressForm({...addressForm, phone: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 text-sm focus:outline-none focus:border-slate-900 dark:focus:border-slate-100 focus:ring-4 focus:ring-slate-900/5 dark:focus:ring-white/5 transition-all bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100" placeholder="+91 9876543210" />
                         </div>
                       </div>
                       <div className="space-y-1.5">
-                        <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Street Address</label>
-                        <textarea required value={addressForm.street} onChange={e => setAddressForm({...addressForm, street: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all bg-white" placeholder="Flat No, Building Name, Street..." rows="2" />
+                        <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Street Address</label>
+                        <textarea required value={addressForm.street} onChange={e => setAddressForm({...addressForm, street: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 text-sm focus:outline-none focus:border-slate-900 dark:focus:border-slate-100 focus:ring-4 focus:ring-slate-900/5 dark:focus:ring-white/5 transition-all bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 resize-none" placeholder="Flat No, Building Name, Street..." rows="2" />
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div className="space-y-1.5">
-                          <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">City</label>
-                          <input type="text" required value={addressForm.city} onChange={e => setAddressForm({...addressForm, city: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all bg-slate-50" placeholder="Mumbai" readOnly />
+                          <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">City</label>
+                          <input type="text" required value={addressForm.city} onChange={e => setAddressForm({...addressForm, city: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 text-sm focus:outline-none focus:border-slate-900 dark:focus:border-slate-100 focus:ring-4 focus:ring-slate-900/5 dark:focus:ring-white/5 transition-all bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100" placeholder="Mumbai" readOnly />
                         </div>
                         <div className="space-y-1.5">
-                          <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider flex justify-between">
+                          <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex justify-between">
                             <span>Pincode</span>
-                            {pincodeLoading && <span className="text-indigo-500 animate-pulse">Verifying...</span>}
+                            {pincodeLoading && <span className="text-indigo-500 dark:text-indigo-400 animate-pulse">Verifying...</span>}
                           </label>
-                          <input type="text" maxLength={6} required value={addressForm.pincode} onChange={e => setAddressForm({...addressForm, pincode: e.target.value.replace(/\\D/g, '').slice(0, 6)})} className={`w-full px-4 py-3 rounded-xl border ${pincodeError ? 'border-red-500' : 'border-slate-200'} text-sm focus:outline-none focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all bg-white`} placeholder="400001" />
+                          <input type="text" maxLength={6} required value={addressForm.pincode} onChange={e => setAddressForm({...addressForm, pincode: e.target.value.replace(/\D/g, '').slice(0, 6)})} className={`w-full px-4 py-3 rounded-xl border ${pincodeError ? 'border-red-500' : 'border-slate-200 dark:border-slate-800'} text-sm focus:outline-none focus:border-slate-900 dark:focus:border-slate-100 focus:ring-4 focus:ring-slate-900/5 dark:focus:ring-white/5 transition-all bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100`} placeholder="400001" />
                           {pincodeError && <p className="text-xs text-red-500 font-medium mt-1">{pincodeError}</p>}
                           {addressForm.state && !pincodeError && !pincodeLoading && (
-                            <p className="text-xs text-emerald-600 font-medium mt-1">✓ Verified: {addressForm.state}</p>
+                            <p className="text-xs text-emerald-600 dark:text-emerald-450 font-medium mt-1">✓ Verified: {addressForm.state}</p>
                           )}
                         </div>
                       </div>
                       <div className="pt-4 flex justify-end">
-                        <button type="submit" className="bg-slate-900 hover:bg-slate-800 text-white px-8 py-3.5 rounded-xl font-semibold text-sm transition-all shadow-[0_4px_14px_rgb(0,0,0,0.1)] active:scale-95">
+                        <button type="submit" className="bg-slate-900 dark:bg-slate-100 hover:bg-slate-800 dark:hover:bg-slate-200 text-white dark:text-slate-950 px-8 py-3.5 rounded-xl font-semibold text-sm transition-all shadow-[0_4px_14px_rgb(0,0,0,0.1)] dark:shadow-[0_4px_14px_rgba(0,0,0,0.4)] active:scale-95 cursor-pointer">
                           Continue to Payment
                         </button>
                       </div>
                     </form>
                   </div>
 
-                  <div className={`bg-white border ${checkoutStep === 2 ? 'border-slate-900 shadow-[0_8px_30px_rgb(0,0,0,0.06)]' : 'border-slate-200/60 opacity-60 pointer-events-none'} rounded-[24px] p-6 lg:p-8 transition-all duration-300`}>
+                  <div className={`bg-white dark:bg-slate-900 border ${checkoutStep === 2 ? 'border-slate-900 dark:border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.4)]' : 'border-slate-200/60 dark:border-slate-800/60 opacity-60 pointer-events-none'} rounded-[24px] p-6 lg:p-8 transition-all duration-300`}>
                     <div className="flex justify-between items-center mb-6">
-                      <h3 className="text-lg font-bold text-slate-900 flex items-center gap-3">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${checkoutStep === 2 ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-500'}`}>2</div>
+                      <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-3">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${checkoutStep === 2 ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-950' : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'}`}>2</div>
                         Payment Method
                       </h3>
                       {checkoutStep === 2 && (
-                        <button onClick={() => setCheckoutStep(1)} className="text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors">Edit Details</button>
+                        <button onClick={() => setCheckoutStep(1)} className="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors cursor-pointer">Edit Details</button>
                       )}
                     </div>
                     
                     <form onSubmit={handlePaymentSubmit} className="space-y-5">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div 
-                          className={`border-2 rounded-xl p-5 cursor-pointer transition-all duration-200 ${paymentMethod === 'razorpay' ? 'border-slate-900 bg-slate-50' : 'border-slate-100 hover:border-slate-300'}`}
+                          className={`border-2 rounded-xl p-5 cursor-pointer transition-all duration-200 ${paymentMethod === 'razorpay' ? 'border-slate-900 dark:border-slate-100 bg-slate-50 dark:bg-slate-800/40' : 'border-slate-100 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'}`}
                           onClick={() => setPaymentMethod('razorpay')}
                         >
                           <div className="flex justify-between items-center mb-3">
-                            <div className="w-5 h-5 rounded-full border-2 border-slate-300 flex items-center justify-center">
-                              {paymentMethod === 'razorpay' && <div className="w-2.5 h-2.5 bg-slate-900 rounded-full" />}
+                            <div className="w-5 h-5 rounded-full border-2 border-slate-300 dark:border-slate-700 flex items-center justify-center">
+                              {paymentMethod === 'razorpay' && <div className="w-2.5 h-2.5 bg-slate-900 dark:bg-slate-100 rounded-full" />}
                             </div>
-                            <CreditCard size={20} className={paymentMethod === 'razorpay' ? 'text-slate-900' : 'text-slate-400'} />
+                            <CreditCard size={20} className={paymentMethod === 'razorpay' ? 'text-slate-900 dark:text-slate-100' : 'text-slate-400 dark:text-slate-500'} />
                           </div>
-                          <h4 className="font-semibold text-slate-900 text-sm">Pay Online</h4>
-                          <p className="text-xs text-slate-500 mt-1">Cards, UPI, Netbanking</p>
+                          <h4 className="font-semibold text-slate-900 dark:text-slate-100 text-sm">Pay Online</h4>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Cards, UPI, Netbanking</p>
                         </div>
                         
                         <div 
-                          className={`border-2 rounded-xl p-5 cursor-pointer transition-all duration-200 ${paymentMethod === 'cod' ? 'border-slate-900 bg-slate-50' : 'border-slate-100 hover:border-slate-300'}`}
+                          className={`border-2 rounded-xl p-5 cursor-pointer transition-all duration-200 ${paymentMethod === 'cod' ? 'border-slate-900 dark:border-slate-100 bg-slate-50 dark:bg-slate-800/40' : 'border-slate-100 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'}`}
                           onClick={() => setPaymentMethod('cod')}
                         >
                           <div className="flex justify-between items-center mb-3">
-                            <div className="w-5 h-5 rounded-full border-2 border-slate-300 flex items-center justify-center">
-                              {paymentMethod === 'cod' && <div className="w-2.5 h-2.5 bg-slate-900 rounded-full" />}
+                            <div className="w-5 h-5 rounded-full border-2 border-slate-300 dark:border-slate-700 flex items-center justify-center">
+                              {paymentMethod === 'cod' && <div className="w-2.5 h-2.5 bg-slate-900 dark:bg-slate-100 rounded-full" />}
                             </div>
-                            <Truck size={20} className={paymentMethod === 'cod' ? 'text-slate-900' : 'text-slate-400'} />
+                            <Truck size={20} className={paymentMethod === 'cod' ? 'text-slate-900 dark:text-slate-100' : 'text-slate-400 dark:text-slate-500'} />
                           </div>
-                          <h4 className="font-semibold text-slate-900 text-sm">Cash on Delivery</h4>
-                          <p className="text-xs text-slate-500 mt-1">Pay at your doorstep</p>
+                          <h4 className="font-semibold text-slate-900 dark:text-slate-100 text-sm">Cash on Delivery</h4>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Pay at your doorstep</p>
                         </div>
                       </div>
 
-                      <div className="pt-6 border-t border-slate-100 mt-6">
-                        <button type="submit" className="w-full bg-slate-900 hover:bg-slate-800 text-white py-4 rounded-xl font-bold text-sm transition-all shadow-[0_4px_14px_rgb(0,0,0,0.1)] active:scale-95 flex items-center justify-center gap-2">
+                      <div className="pt-6 border-t border-slate-100 dark:border-slate-800 mt-6">
+                        <button type="submit" className="w-full bg-slate-900 dark:bg-slate-100 hover:bg-slate-800 dark:hover:bg-slate-200 text-white dark:text-slate-950 py-4 rounded-xl font-bold text-sm transition-all shadow-[0_4px_14px_rgb(0,0,0,0.1)] dark:shadow-[0_4px_14px_rgba(0,0,0,0.4)] active:scale-95 cursor-pointer">
                           {paymentMethod === 'razorpay' ? `Pay ₹${cartTotal} securely` : 'Confirm COD Order'}
                         </button>
                       </div>
@@ -2328,35 +2359,35 @@ const placeOrder = async () => {
                 </div>
 
                 <div className="w-full lg:w-[380px] shrink-0">
-                  <div className="bg-white border border-slate-200/60 rounded-[24px] p-6 sticky top-6 shadow-[0_8px_30px_rgb(0,0,0,0.03)]">
-                    <h3 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
+                  <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 rounded-[24px] p-6 sticky top-6 shadow-[0_8px_30px_rgb(0,0,0,0.03)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.4)]">
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-6 flex items-center gap-2">
                       <ShoppingCart size={18} className="text-slate-400" /> Order Summary
                     </h3>
                     
                     <div className="space-y-4 mb-6 max-h-64 overflow-y-auto pr-2 scrollbar-hide">
                       {cart.map(item => (
-                        <div key={item.id} className="flex justify-between items-start text-sm border-b border-slate-50 pb-3">
-                          <span className="text-slate-600 pr-2 leading-relaxed">
-                            <span className="font-semibold text-slate-900 bg-slate-100 px-1.5 py-0.5 rounded text-xs mr-2">{item.quantity}x</span> 
+                        <div key={item.id} className="flex justify-between items-start text-sm border-b border-slate-50 dark:border-slate-800/60 pb-3">
+                          <span className="text-slate-600 dark:text-slate-400 pr-2 leading-relaxed">
+                            <span className="font-semibold text-slate-900 dark:text-slate-100 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs mr-2">{item.quantity}x</span> 
                             {item.name}
                           </span>
-                          <span className="font-medium text-slate-900 whitespace-nowrap mt-0.5">₹{item.price * item.quantity}</span>
+                          <span className="font-medium text-slate-900 dark:text-slate-100 whitespace-nowrap mt-0.5">₹{item.price * item.quantity}</span>
                         </div>
                       ))}
                     </div>
 
-                    <div className="space-y-4 mb-2 text-sm bg-slate-50 p-4 rounded-xl">
-                      <div className="flex justify-between text-slate-600">
+                    <div className="space-y-4 mb-2 text-sm bg-slate-50 dark:bg-slate-950/60 p-4 rounded-xl">
+                      <div className="flex justify-between text-slate-600 dark:text-slate-400">
                         <span>Items Total</span>
-                        <span className="font-medium text-slate-900">₹{cartTotal}</span>
+                        <span className="font-medium text-slate-900 dark:text-slate-100">₹{cartTotal}</span>
                       </div>
-                      <div className="flex justify-between text-slate-600">
+                      <div className="flex justify-between text-slate-600 dark:text-slate-400">
                         <span>Delivery Fee</span>
-                        <span className="text-teal-600 font-semibold">Free</span>
+                        <span className="text-teal-600 dark:text-teal-400 font-semibold">Free</span>
                       </div>
-                      <div className="border-t border-slate-200/60 pt-4 mt-2 flex justify-between items-center">
-                        <span className="text-sm font-bold text-slate-900 uppercase tracking-wider">To Pay</span>
-                        <span className="text-xl font-bold tracking-tight text-slate-900">₹{cartTotal}</span>
+                      <div className="border-t border-slate-200/60 dark:border-slate-800 pt-4 mt-2 flex justify-between items-center">
+                        <span className="text-sm font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider">To Pay</span>
+                        <span className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">₹{cartTotal}</span>
                       </div>
                     </div>
                   </div>
@@ -2365,38 +2396,38 @@ const placeOrder = async () => {
             </div>
           </div>
         ) : currentView === 'orders' ? (
-          <div className="flex-1 overflow-y-auto bg-[#F8FAFC] p-6 lg:p-8 pb-28 md:pb-6 scrollbar-hide">
+          <div className="flex-1 overflow-y-auto bg-[#F8FAFC] dark:bg-[#090d16] p-6 lg:p-8 pb-28 md:pb-6 scrollbar-hide">
             <div className="max-w-4xl mx-auto">
-              <button onClick={() => setCurrentView('home')} className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-900 font-medium mb-8 transition-colors w-fit bg-white px-4 py-2 rounded-full border border-slate-200/60 shadow-sm">
+              <button onClick={() => setCurrentView('home')} className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 font-medium mb-8 transition-colors w-fit bg-white dark:bg-slate-900 px-4 py-2 rounded-full border border-slate-200/60 dark:border-slate-850 shadow-sm">
                 <ArrowLeft size={16} /> Back to Medicines
               </button>
-              <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-8">Order History</h2>
+              <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-8">Order History</h2>
 
               {ordersHistory.length === 0 ? (
-                <div className="bg-white p-12 rounded-[24px] shadow-[0_4px_20px_rgb(0,0,0,0.02)] border border-slate-200/60 text-center flex flex-col items-center justify-center">
+                <div className="bg-white dark:bg-slate-900 p-12 rounded-[24px] shadow-[0_4px_20px_rgb(0,0,0,0.02)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200/60 dark:border-slate-800 text-center flex flex-col items-center justify-center">
                   <Package className="text-slate-300 mb-5" size={40} />
-                  <p className="text-slate-900 font-bold mb-1">No orders yet</p>
-                  <p className="text-slate-500 text-sm">When you place an order, it will appear here.</p>
+                  <p className="text-slate-900 dark:text-slate-100 font-bold mb-1">No orders yet</p>
+                  <p className="text-slate-500 dark:text-slate-400 text-sm">When you place an order, it will appear here.</p>
                 </div>
               ) : (
                 <div className="space-y-5">
                   {ordersHistory.map((order, i) => (
-                    <div key={i} className="bg-white border border-slate-200/60 p-6 rounded-[20px] shadow-[0_2px_12px_rgb(0,0,0,0.02)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-shadow">
-                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-5 pb-5 border-b border-slate-100 gap-3">
+                    <div key={i} className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 p-6 rounded-[20px] shadow-[0_2px_12px_rgb(0,0,0,0.02)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:hover:shadow-[0_8px_30px_rgba(0,0,0,0.4)] transition-shadow">
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-5 pb-5 border-b border-slate-100 dark:border-slate-800 gap-3">
                         <div>
-                           <p className="font-bold text-slate-900 text-base">{order.id}</p>
-                           <p className="text-xs text-slate-500 mt-1 font-medium">{order.date}</p>
+                           <p className="font-bold text-slate-900 dark:text-slate-100 text-base">{order.id}</p>
+                           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">{order.date}</p>
                         </div>
                         <div className="flex flex-col sm:items-end">
-                           <span className="text-[10px] font-bold uppercase tracking-wider text-teal-700 bg-teal-50 px-2.5 py-1 rounded-md mb-2 w-fit">{order.status}</span>
-                           <p className="font-bold text-lg text-slate-900">₹{order.total}</p>
+                           <span className="text-[10px] font-bold uppercase tracking-wider text-teal-700 dark:text-teal-400 bg-teal-50 dark:bg-teal-950/40 px-2.5 py-1 rounded-md mb-2 w-fit">{order.status}</span>
+                           <p className="font-bold text-lg text-slate-900 dark:text-slate-100">₹{order.total}</p>
                         </div>
                       </div>
-                      <ul className="text-sm text-slate-600 space-y-3">
+                      <ul className="text-sm text-slate-600 dark:text-slate-400 space-y-3">
                         {order.items.map((item, idx) => (
                           <li key={idx} className="flex justify-between items-center">
                             <span className="flex items-center gap-3">
-                               <span className="bg-slate-100 text-slate-700 text-xs font-semibold px-2 py-0.5 rounded">{item.quantity}x</span>
+                               <span className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold px-2 py-0.5 rounded">{item.quantity}x</span>
                                {item.name}
                             </span>
                           </li>
@@ -2409,24 +2440,24 @@ const placeOrder = async () => {
             </div>
           </div>
         ) : currentView === 'transactions' ? (
-          <div className="flex-1 overflow-y-auto bg-[#F8FAFC] p-6 lg:p-8 pb-28 md:pb-6 scrollbar-hide">
+          <div className="flex-1 overflow-y-auto bg-[#F8FAFC] dark:bg-[#090d16] p-6 lg:p-8 pb-28 md:pb-6 scrollbar-hide">
             <div className="max-w-5xl mx-auto">
-              <button onClick={() => setCurrentView('home')} className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-900 font-medium mb-8 transition-colors w-fit bg-white px-4 py-2 rounded-full border border-slate-200/60 shadow-sm">
+              <button onClick={() => setCurrentView('home')} className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 font-medium mb-8 transition-colors w-fit bg-white dark:bg-slate-900 px-4 py-2 rounded-full border border-slate-200/60 dark:border-slate-850 shadow-sm">
                 <ArrowLeft size={16} /> Back to Medicines
               </button>
-              <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-8">Transactions</h2>
+              <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-8">Transactions</h2>
 
               {ordersHistory.length === 0 ? (
-                <div className="bg-white border border-slate-200/60 rounded-[24px] p-16 text-center flex flex-col items-center shadow-[0_4px_20px_rgb(0,0,0,0.02)]">
+                <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 rounded-[24px] p-16 text-center flex flex-col items-center shadow-[0_4px_20px_rgb(0,0,0,0.02)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
                   <Receipt size={40} className="text-slate-300 mb-5" />
-                  <h3 className="text-base font-bold text-slate-900 mb-1">No transactions yet</h3>
-                  <p className="text-sm text-slate-500">Your payment history will appear here.</p>
+                  <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 mb-1">No transactions yet</h3>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">Your payment history will appear here.</p>
                 </div>
               ) : (
-                <div className="bg-white border border-slate-200/60 rounded-[24px] overflow-hidden shadow-[0_4px_20px_rgb(0,0,0,0.02)]">
+                <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 rounded-[24px] overflow-hidden shadow-[0_4px_20px_rgb(0,0,0,0.02)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
                   <div className="overflow-x-auto">
                     <table className="w-full text-left text-sm">
-                      <thead className="bg-slate-50/50 text-slate-500 border-b border-slate-100">
+                      <thead className="bg-slate-50/50 dark:bg-slate-950/50 text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-800">
                         <tr>
                           <th className="p-5 font-bold uppercase tracking-wider text-[11px]">Date</th>
                           <th className="p-5 font-bold uppercase tracking-wider text-[11px]">Order Ref</th>
@@ -2434,17 +2465,17 @@ const placeOrder = async () => {
                           <th className="p-5 font-bold uppercase tracking-wider text-[11px] text-right">Amount</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-slate-100/80">
+                      <tbody className="divide-y divide-slate-100/80 dark:divide-slate-800">
                         {ordersHistory.map((order, idx) => (
-                          <tr key={idx} className="hover:bg-slate-50/50 transition-colors group">
-                            <td className="p-5 text-slate-500 font-medium whitespace-nowrap">{order.date}</td>
-                            <td className="p-5 font-semibold text-slate-900">{order.id}</td>
+                          <tr key={idx} className="hover:bg-slate-50/50 dark:hover:bg-slate-850/50 transition-colors group">
+                            <td className="p-5 text-slate-500 dark:text-slate-400 font-medium whitespace-nowrap">{order.date}</td>
+                            <td className="p-5 font-semibold text-slate-900 dark:text-slate-100">{order.id}</td>
                             <td className="p-5">
-                              <span className={`text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md ${order.paymentMethod === 'razorpay' ? 'bg-indigo-50 text-indigo-700 border border-indigo-100/50' : 'bg-slate-100 text-slate-700 border border-slate-200/50'}`}>
+                              <span className={`text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md ${order.paymentMethod === 'razorpay' ? 'bg-indigo-50 dark:bg-indigo-950/20 text-indigo-700 dark:text-indigo-400 border border-indigo-100/50 dark:border-indigo-900/30' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/50 dark:border-slate-700/55'}`}>
                                 {order.paymentMethod === 'razorpay' ? 'Online' : 'COD'}
                               </span>
                             </td>
-                            <td className="p-5 font-bold text-slate-900 text-right">₹{order.total}</td>
+                            <td className="p-5 font-bold text-slate-900 dark:text-slate-100 text-right">₹{order.total}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -2455,33 +2486,33 @@ const placeOrder = async () => {
             </div>
           </div>
         ) : currentView === 'addresses' ? (
-          <div className="flex-1 overflow-y-auto bg-[#F8FAFC] p-6 lg:p-8 pb-28 md:pb-6 scrollbar-hide">
+          <div className="flex-1 overflow-y-auto bg-[#F8FAFC] dark:bg-[#090d16] p-6 lg:p-8 pb-28 md:pb-6 scrollbar-hide">
             <div className="max-w-4xl mx-auto">
-              <button onClick={() => setCurrentView('home')} className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-900 font-medium mb-8 transition-colors w-fit bg-white px-4 py-2 rounded-full border border-slate-200/60 shadow-sm">
+              <button onClick={() => setCurrentView('home')} className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 font-medium mb-8 transition-colors w-fit bg-white dark:bg-slate-900 px-4 py-2 rounded-full border border-slate-200/60 dark:border-slate-850 shadow-sm">
                 <ArrowLeft size={16} /> Back to Medicines
               </button>
-              <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-8">Saved Addresses</h2>
+              <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-8">Saved Addresses</h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {savedAddresses.map((addr, idx) => (
-                  <div key={idx} className="bg-white border border-slate-200/60 rounded-[20px] p-6 shadow-[0_2px_12px_rgb(0,0,0,0.02)] flex items-start gap-4 hover:border-slate-300 transition-colors group">
-                    <div className="bg-slate-50 border border-slate-100 text-slate-600 p-3 rounded-xl mt-0.5 group-hover:bg-slate-900 group-hover:text-white transition-colors">
+                  <div key={idx} className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 rounded-[20px] p-6 shadow-[0_2px_12px_rgb(0,0,0,0.02)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.4)] flex items-start gap-4 hover:border-slate-300 dark:hover:border-slate-700 transition-colors group">
+                    <div className="bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-400 p-3 rounded-xl mt-0.5 group-hover:bg-slate-900 group-hover:text-white dark:group-hover:bg-slate-100 dark:group-hover:text-slate-950 transition-colors">
                       <MapPin size={20} />
                     </div>
                     <div>
-                      <h4 className="font-bold text-slate-900 text-base mb-1">{addr.name}</h4>
-                      <p className="text-xs font-semibold text-slate-500 mb-3 bg-slate-50 px-2 py-0.5 rounded w-fit">{addr.phone}</p>
-                      <p className="text-sm text-slate-600 leading-relaxed mb-1">{addr.street}</p>
-                      <p className="text-sm text-slate-600">{addr.city} • {addr.pincode}</p>
+                      <h4 className="font-bold text-slate-900 dark:text-slate-100 text-base mb-1">{addr.name}</h4>
+                      <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-3 bg-slate-50 dark:bg-slate-850 px-2 py-0.5 rounded w-fit">{addr.phone}</p>
+                      <p className="text-sm text-slate-600 dark:text-slate-455 leading-relaxed mb-1">{addr.street}</p>
+                      <p className="text-sm text-slate-600 dark:text-slate-455">{addr.city} • {addr.pincode}</p>
                     </div>
                   </div>
                 ))}
 
                 {savedAddresses.length === 0 && (
-                   <div className="col-span-full bg-white p-12 rounded-[24px] shadow-[0_4px_20px_rgb(0,0,0,0.02)] border border-slate-200/60 text-center flex flex-col items-center">
+                   <div className="col-span-full bg-white dark:bg-slate-900 p-12 rounded-[24px] shadow-[0_4px_20px_rgb(0,0,0,0.02)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200/60 dark:border-slate-800 text-center flex flex-col items-center">
                      <MapPin className="text-slate-300 mb-4" size={40} />
-                     <p className="text-slate-900 font-bold mb-1">No saved addresses</p>
-                     <p className="text-slate-500 text-sm">Place an order to save your address automatically.</p>
+                     <p className="text-slate-900 dark:text-slate-100 font-bold mb-1">No saved addresses</p>
+                     <p className="text-slate-500 dark:text-slate-400 text-sm">Place an order to save your address automatically.</p>
                    </div>
                 )}
               </div>
@@ -2493,63 +2524,63 @@ const placeOrder = async () => {
       </div>
 
       {isProcessingPayment && (
-        <div className="fixed inset-0 z-[120] flex items-center justify-center bg-white/80 backdrop-blur-md">
-          <div className="bg-white p-10 rounded-[32px] shadow-[0_20px_60px_rgb(0,0,0,0.08)] border border-slate-100 flex flex-col items-center w-[340px] animate-in zoom-in-95 duration-300">
-            <div className="text-slate-900 mb-8 font-bold text-xl flex items-center gap-2.5">
-              <div className="bg-slate-900 text-white p-2 rounded-xl"><Zap size={20} className="fill-current" /></div>
+        <div className="fixed inset-0 z-[120] flex items-center justify-center bg-white/80 dark:bg-slate-950/80 backdrop-blur-md">
+          <div className="bg-white dark:bg-slate-900 p-10 rounded-[32px] shadow-[0_20px_60px_rgb(0,0,0,0.08)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.4)] border border-slate-100 dark:border-slate-850 flex flex-col items-center w-[340px] animate-in zoom-in-95 duration-300">
+            <div className="text-slate-900 dark:text-slate-100 mb-8 font-bold text-xl flex items-center gap-2.5">
+              <div className="bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-950 p-2 rounded-xl"><Zap size={20} className="fill-current" /></div>
               Secure Checkout
             </div>
             <div className="relative flex items-center justify-center mb-8">
-              <div className="w-16 h-16 border-4 border-slate-100 border-t-slate-900 rounded-full animate-spin" />
-              <ShieldPlus size={18} className="absolute text-slate-900" />
+              <div className="w-16 h-16 border-4 border-slate-100 dark:border-slate-800 border-t-slate-900 dark:border-t-slate-100 rounded-full animate-spin" />
+              <ShieldPlus size={18} className="absolute text-slate-900 dark:text-slate-100" />
             </div>
-            <p className="text-slate-900 font-bold text-base mb-1.5">Processing Payment...</p>
-            <p className="text-slate-500 font-medium text-sm mb-6 bg-slate-50 px-3 py-1 rounded-full">Amount: ₹{cartTotal}</p>
-            <p className="text-[11px] text-slate-400 font-medium uppercase tracking-wider">Please do not close window</p>
+            <p className="text-slate-900 dark:text-slate-100 font-bold text-base mb-1.5">Processing Payment...</p>
+            <p className="text-slate-500 dark:text-slate-400 font-medium text-sm mb-6 bg-slate-50 dark:bg-slate-950/60 px-3 py-1 rounded-full">Amount: ₹{cartTotal}</p>
+            <p className="text-[11px] text-slate-400 dark:text-slate-550 font-medium uppercase tracking-wider">Please do not close window</p>
           </div>
         </div>
       )}
 
       {showOrderModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm">
-          <div className="bg-white p-10 rounded-[32px] shadow-[0_20px_60px_rgb(0,0,0,0.15)] flex flex-col items-center max-w-sm w-full mx-4 text-center animate-in zoom-in-95 duration-300">
-            <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mb-6">
-              <CheckCircle size={40} className="text-green-500" />
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 dark:bg-slate-950/60 backdrop-blur-sm">
+          <div className="bg-white dark:bg-slate-900 p-10 rounded-[32px] shadow-[0_20px_60px_rgb(0,0,0,0.15)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.4)] flex flex-col items-center max-w-sm w-full mx-4 text-center border border-slate-100/50 dark:border-slate-850 animate-in zoom-in-95 duration-300">
+            <div className="w-20 h-20 bg-green-50 dark:bg-green-950/20 rounded-full flex items-center justify-center mb-6">
+              <CheckCircle size={40} className="text-green-500 animate-pulse" />
             </div>
-            <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">Order Confirmed</h2>
-            <p className="text-slate-500 text-sm leading-relaxed">Your Med Z package is being processed and will be delivered securely to your address.</p>
+            <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-3">Order Confirmed</h2>
+            <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">Your Med Z package is being processed and will be delivered securely to your address.</p>
           </div>
         </div>
       )}
 
       {explainerModal.isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
-          <div className="bg-white p-8 rounded-[28px] shadow-2xl max-w-md w-full relative animate-in slide-in-from-bottom-4 duration-300">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 dark:bg-slate-950/60 backdrop-blur-sm p-4">
+          <div className="bg-white dark:bg-slate-900 p-8 rounded-[28px] shadow-2xl max-w-md w-full relative border border-slate-100/50 dark:border-slate-850 animate-in slide-in-from-bottom-4 duration-300">
             <button 
               onClick={() => setExplainerModal({ isOpen: false, product: null, text: '', isLoading: false })}
-              className="absolute top-6 right-6 text-slate-400 hover:text-slate-900 hover:bg-slate-100 p-1.5 rounded-full transition-colors"
+              className="absolute top-6 right-6 text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 p-1.5 rounded-full transition-colors cursor-pointer"
             >
               <X size={18} />
             </button>
             <div className="flex items-center gap-3 mb-6">
-              <div className="bg-indigo-50 text-indigo-600 p-2.5 rounded-xl border border-indigo-100/50">
+              <div className="bg-indigo-50 dark:bg-indigo-950/20 text-indigo-600 dark:text-indigo-400 p-2.5 rounded-xl border border-indigo-100/50 dark:border-indigo-900/30">
                 <Info size={20} />
               </div>
               <div>
-                <h2 className="text-base font-bold text-slate-900 flex items-center gap-1.5">
+                <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
                   {explainerModal.product?.name} <Sparkles size={14} className="text-indigo-500" />
                 </h2>
-                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mt-0.5">AI Explanation</p>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mt-0.5">AI Explanation</p>
               </div>
             </div>
             
             {explainerModal.isLoading ? (
               <div className="flex flex-col items-center justify-center py-10 gap-4">
                 <div className="w-8 h-8 border-2 border-indigo-200 border-t-indigo-600 rounded-full animate-spin" />
-                <p className="text-sm font-medium text-slate-500">Generating simple explanation...</p>
+                <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Generating simple explanation...</p>
               </div>
             ) : (
-              <p className="text-slate-700 text-sm leading-relaxed bg-slate-50 p-5 rounded-2xl border border-slate-100 shadow-inner shadow-slate-100/50">
+              <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed bg-slate-50 dark:bg-slate-950/40 p-5 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-inner shadow-slate-100/50 dark:shadow-none">
                 {explainerModal.text}
               </p>
             )}
@@ -2558,37 +2589,37 @@ const placeOrder = async () => {
       )}
 
       {interactionModal.isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
-          <div className="bg-white p-8 rounded-[28px] shadow-2xl max-w-md w-full relative animate-in slide-in-from-bottom-4 duration-300">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 dark:bg-slate-950/60 backdrop-blur-sm p-4">
+          <div className="bg-white dark:bg-slate-900 p-8 rounded-[28px] shadow-2xl max-w-md w-full relative border border-slate-100/50 dark:border-slate-850 animate-in slide-in-from-bottom-4 duration-300">
             <button 
               onClick={() => setInteractionModal({ isOpen: false, text: '', isLoading: false })}
-              className="absolute top-6 right-6 text-slate-400 hover:text-slate-900 hover:bg-slate-100 p-1.5 rounded-full transition-colors"
+              className="absolute top-6 right-6 text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 p-1.5 rounded-full transition-colors cursor-pointer"
             >
               <X size={18} />
             </button>
             <div className="flex items-center gap-3 mb-6">
-              <div className="bg-amber-50 text-amber-600 p-2.5 rounded-xl border border-amber-100/50">
+              <div className="bg-amber-50 dark:bg-amber-955/20 text-amber-600 dark:text-amber-400 p-2.5 rounded-xl border border-amber-100/50 dark:border-amber-900/30">
                 <AlertTriangle size={20} />
               </div>
               <div>
-                <h2 className="text-base font-bold text-slate-900 flex items-center gap-1.5">
+                <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
                   Interaction Check <Sparkles size={14} className="text-amber-500" />
                 </h2>
-                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mt-0.5">Safety Review</p>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mt-0.5">Safety Review</p>
               </div>
             </div>
             
             {interactionModal.isLoading ? (
               <div className="flex flex-col items-center justify-center py-10 gap-4">
-                <div className="w-8 h-8 border-2 border-amber-200 border-t-amber-500 rounded-full animate-spin" />
-                <p className="text-sm font-medium text-slate-500">Reviewing cart combinations...</p>
+                <div className="w-8 h-8 border-2 border-amber-200 dark:border-amber-800 border-t-amber-500 dark:border-t-amber-400 rounded-full animate-spin" />
+                <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Reviewing cart combinations...</p>
               </div>
             ) : (
-              <div className="bg-amber-50/50 p-5 rounded-2xl border border-amber-100/50">
-                <p className="text-slate-800 text-sm leading-relaxed mb-4">
+              <div className="bg-amber-50/50 dark:bg-amber-955/10 p-5 rounded-2xl border border-amber-100/50 dark:border-amber-900/30">
+                <p className="text-slate-800 dark:text-slate-200 text-sm leading-relaxed mb-4">
                   {interactionModal.text}
                 </p>
-                <div className="text-[11px] text-amber-700/80 font-semibold bg-amber-100/50 px-3 py-2 rounded-lg flex items-start gap-2">
+                <div className="text-[11px] text-amber-700/80 dark:text-amber-400/90 font-semibold bg-amber-100/50 dark:bg-amber-950/45 px-3 py-2 rounded-lg border border-amber-900/10 dark:border-amber-900/25 flex items-start gap-2">
                   <Info size={14} className="shrink-0 mt-0.5" />
                   AI insights do not replace professional medical advice. Consult your doctor if unsure.
                 </div>
@@ -2599,33 +2630,33 @@ const placeOrder = async () => {
       )}
 
       {isDoctorOpen && (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 md:p-6">
-          <div className="bg-white w-full max-w-3xl h-[85vh] md:h-[700px] rounded-[32px] shadow-[0_20px_60px_rgb(0,0,0,0.1)] flex flex-col overflow-hidden relative border border-slate-200/50 animate-in zoom-in-95 duration-200">
-            <div className="p-5 md:px-8 bg-white border-b border-slate-100 flex justify-between items-center z-10">
+        <div className="fixed inset-0 z-[110] flex items-center justify-center bg-slate-900/40 dark:bg-slate-950/60 backdrop-blur-sm p-4 md:p-6">
+          <div className="bg-white dark:bg-slate-900 w-full max-w-3xl h-[85vh] md:h-[700px] rounded-[32px] shadow-[0_20px_60px_rgb(0,0,0,0.1)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.4)] flex flex-col overflow-hidden relative border border-slate-200/50 dark:border-slate-800 animate-in zoom-in-95 duration-200">
+            <div className="p-5 md:px-8 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center z-10">
               <div className="flex items-center gap-3.5">
-                <div className="bg-slate-900 text-white p-2.5 rounded-xl shadow-sm">
+                <div className="bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-950 p-2.5 rounded-xl shadow-sm">
                   <Stethoscope size={20} />
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg text-slate-900 leading-tight">AI Triage Consult</h3>
-                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">Experimental Feature</p>
+                  <h3 className="font-bold text-lg text-slate-900 dark:text-slate-100 leading-tight">AI Triage Consult</h3>
+                  <p className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mt-0.5">Experimental Feature</p>
                 </div>
               </div>
               <button 
                 onClick={() => setIsDoctorOpen(false)}
-                className="text-slate-400 hover:text-slate-900 hover:bg-slate-100 p-2 rounded-full transition-colors"
+                className="text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 p-2 rounded-full transition-colors cursor-pointer"
               >
                 <X size={20} />
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-5 md:px-8 md:py-6 bg-[#F8FAFC] space-y-6 scrollbar-hide">
-              <div className="bg-white border border-slate-200/60 p-4.5 rounded-2xl text-sm text-slate-600 mb-2 flex gap-3.5 items-start shadow-sm">
-                <div className="bg-slate-100 p-1.5 rounded-lg text-slate-500 shrink-0">
+            <div className="flex-1 overflow-y-auto p-5 md:px-8 md:py-6 bg-[#F8FAFC] dark:bg-slate-950/60 space-y-6 scrollbar-hide">
+              <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 p-4.5 rounded-2xl text-sm text-slate-600 dark:text-slate-350 mb-2 flex gap-3.5 items-start shadow-sm">
+                <div className="bg-slate-100 dark:bg-slate-800 p-1.5 rounded-lg text-slate-500 dark:text-slate-400 shrink-0">
                   <AlertTriangle size={18} />
                 </div>
                 <p className="leading-relaxed pt-0.5">
-                  <strong className="text-slate-900">Medical Disclaimer:</strong> This is an AI assistant, not a human doctor. Responses are for informational triage only. Always consult a qualified healthcare provider for severe, persistent, or worsening symptoms.
+                  <strong className="text-slate-900 dark:text-slate-100">Medical Disclaimer:</strong> This is an AI assistant, not a human doctor. Responses are for informational triage only. Always consult a qualified healthcare provider for severe, persistent, or worsening symptoms.
                 </p>
               </div>
               
@@ -2634,8 +2665,8 @@ const placeOrder = async () => {
                   <div className={`
                     max-w-[85%] md:max-w-[75%] p-4.5 rounded-[20px] text-sm leading-relaxed shadow-sm
                     ${msg.role === 'user' 
-                      ? 'bg-slate-900 text-white rounded-br-[4px]' 
-                      : 'bg-white border border-slate-200/60 text-slate-800 rounded-bl-[4px]'}
+                      ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-950 rounded-br-[4px]' 
+                      : 'bg-white dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700/65 text-slate-800 dark:text-slate-200 rounded-bl-[4px]'}
                   `}>
                     {msg.text.split('\n').map((line, i) => (
                       <span key={i}>
@@ -2649,28 +2680,28 @@ const placeOrder = async () => {
               
               {isDoctorTyping && (
                 <div className="flex justify-start">
-                  <div className="bg-white border border-slate-200/60 px-5 py-4 rounded-[20px] rounded-bl-[4px] shadow-sm flex items-center gap-1.5 w-fit">
-                    <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                  <div className="bg-white dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700 px-5 py-4 rounded-[20px] rounded-bl-[4px] shadow-sm flex items-center gap-1.5 w-fit">
+                    <div className="w-1.5 h-1.5 bg-slate-400 dark:bg-slate-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <div className="w-1.5 h-1.5 bg-slate-400 dark:bg-slate-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <div className="w-1.5 h-1.5 bg-slate-400 dark:bg-slate-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                   </div>
                 </div>
               )}
               <div ref={doctorMessagesEndRef} />
             </div>
 
-            <form onSubmit={handleDoctorMessage} className="p-4 md:px-6 md:py-5 bg-white border-t border-slate-100 flex gap-3">
+            <form onSubmit={handleDoctorMessage} className="p-4 md:px-6 md:py-5 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex gap-3">
               <input
                 type="text"
                 value={doctorInput}
                 onChange={(e) => setDoctorInput(e.target.value)}
                 placeholder="Describe duration, severity, and symptoms..."
-                className="flex-1 bg-[#F8FAFC] border border-slate-200 rounded-2xl px-5 py-3.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all"
+                className="flex-1 bg-[#F8FAFC] dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-3.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-550 focus:outline-none focus:border-slate-900 dark:focus:border-slate-100 focus:ring-4 focus:ring-slate-900/5 dark:focus:ring-white/5 transition-all"
               />
               <button 
                 type="submit"
                 disabled={!doctorInput.trim() || isDoctorTyping}
-                className="bg-slate-900 text-white px-6 py-3.5 rounded-2xl hover:bg-slate-800 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed transition-all font-semibold flex items-center gap-2 shadow-sm"
+                className="bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-950 px-6 py-3.5 rounded-2xl hover:bg-slate-800 dark:hover:bg-slate-200 disabled:bg-slate-200 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-550 disabled:cursor-not-allowed transition-all font-semibold flex items-center gap-2 shadow-sm cursor-pointer"
               >
                 <span className="hidden sm:inline">Send</span> <Send size={16} />
               </button>
@@ -2681,54 +2712,54 @@ const placeOrder = async () => {
 
       <div className="fixed bottom-[88px] md:bottom-6 right-6 z-40 flex flex-col items-end">
         {isChatOpen && (
-          <div className="w-[340px] h-[520px] bg-white rounded-[24px] shadow-[0_12px_40px_rgb(0,0,0,0.12)] border border-slate-200/60 mb-4 flex flex-col overflow-hidden animate-in slide-in-from-bottom-2 duration-200">
-            <div className="px-5 py-4 bg-white border-b border-slate-100 flex justify-between items-center">
+          <div className="w-[340px] h-[520px] bg-white dark:bg-slate-900 rounded-[24px] shadow-[0_12px_40px_rgb(0,0,0,0.12)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.4)] border border-slate-200/60 dark:border-slate-800 mb-4 flex flex-col overflow-hidden animate-in slide-in-from-bottom-2 duration-200">
+            <div className="px-5 py-4 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
               <div className="flex items-center gap-3">
-                <div className="bg-slate-100 p-2 rounded-full text-slate-700">
+                <div className="bg-slate-100 dark:bg-slate-800 p-2 rounded-full text-slate-700 dark:text-slate-300">
                   <MessageCircle size={16} />
                 </div>
                 <div>
-                  <h3 className="font-bold text-sm text-slate-900">Pharmacist Chat</h3>
-                  <p className="text-[10px] font-bold text-teal-600 uppercase tracking-wider flex items-center gap-1"><span className="w-1.5 h-1.5 bg-teal-500 rounded-full animate-pulse"></span> Online</p>
+                  <h3 className="font-bold text-sm text-slate-900 dark:text-slate-100">Pharmacist Chat</h3>
+                  <p className="text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider flex items-center gap-1"><span className="w-1.5 h-1.5 bg-teal-500 rounded-full animate-pulse"></span> Online</p>
                 </div>
               </div>
               <button 
                 onClick={() => setIsChatOpen(false)}
-                className="text-slate-400 hover:text-slate-900 hover:bg-slate-100 p-1.5 rounded-full transition-colors"
+                className="text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 p-1.5 rounded-full transition-colors cursor-pointer"
               >
                 <X size={18} />
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-4 bg-[#F8FAFC] space-y-4 scrollbar-hide">
+            <div className="flex-1 overflow-y-auto p-4 bg-[#F8FAFC] dark:bg-slate-955/60 space-y-4 scrollbar-hide">
               {messages.map((msg, idx) => (
                 <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                   <div
                     className={`max-w-[85%] p-3.5 rounded-[18px] text-sm shadow-[0_2px_8px_rgb(0,0,0,0.02)] ${
                       msg.role === 'user'
-                        ? 'bg-slate-900 text-white rounded-br-[4px]'
-                        : 'bg-white border border-slate-200/60 text-slate-800 rounded-bl-[4px]'
+                        ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-950 rounded-br-[4px]'
+                        : 'bg-white dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700/65 text-slate-800 dark:text-slate-200 rounded-bl-[4px]'
                     }`}
                   >
                     <p className="leading-relaxed">{msg.text}</p>
 
                     {msg.role === "model" && msg.products && msg.products.length > 0 && (
-                      <div className="mt-3.5 flex flex-col gap-2 border-t border-slate-100/80 pt-3.5">
-                        <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                      <div className="mt-3.5 flex flex-col gap-2 border-t border-slate-100/80 dark:border-slate-700/60 pt-3.5">
+                        <span className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">
                           Suggested Items
                         </span>
                         {msg.products.map((product) => (
                           <div 
                             key={product.id} 
-                            className="flex justify-between items-center bg-[#F8FAFC] border border-slate-200/60 p-2.5 rounded-xl hover:border-slate-300 hover:bg-white transition-all group"
+                            className="flex justify-between items-center bg-[#F8FAFC] dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 p-2.5 rounded-xl hover:border-slate-300 dark:hover:border-slate-700 hover:bg-white dark:hover:bg-slate-850 transition-all group"
                           >
                             <div className="flex flex-col overflow-hidden mr-2">
-                              <span className="font-semibold text-xs text-slate-900 truncate">{product.name}</span>
-                              <span className="text-[11px] font-bold text-slate-500 mt-0.5">₹{product.price}</span>
+                              <span className="font-semibold text-xs text-slate-900 dark:text-slate-100 truncate">{product.name}</span>
+                              <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 mt-0.5">₹{product.price}</span>
                             </div>
                             <button
                               onClick={() => addToCart(product)}
-                              className="bg-white border border-slate-200 hover:border-slate-900 text-slate-900 w-7 h-7 flex items-center justify-center rounded-lg text-xs font-bold transition-colors shrink-0 shadow-sm"
+                              className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-slate-900 dark:hover:border-slate-100 text-slate-900 dark:text-slate-200 w-7 h-7 flex items-center justify-center rounded-lg text-xs font-bold transition-colors shrink-0 shadow-sm cursor-pointer"
                             >
                               <Plus size={14} />
                             </button>
@@ -2742,28 +2773,28 @@ const placeOrder = async () => {
               
               {isTyping && (
                 <div className="flex justify-start">
-                  <div className="bg-white border border-slate-200/60 px-4 py-3.5 rounded-[18px] rounded-bl-[4px] shadow-[0_2px_8px_rgb(0,0,0,0.02)] flex items-center gap-1.5 w-fit">
-                    <div className="w-1.5 h-1.5 bg-slate-300 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <div className="w-1.5 h-1.5 bg-slate-300 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <div className="w-1.5 h-1.5 bg-slate-300 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                  <div className="bg-white dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700 px-4 py-3.5 rounded-[18px] rounded-bl-[4px] shadow-[0_2px_8px_rgb(0,0,0,0.02)] flex items-center gap-1.5 w-fit">
+                    <div className="w-1.5 h-1.5 bg-slate-300 dark:bg-slate-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <div className="w-1.5 h-1.5 bg-slate-300 dark:bg-slate-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <div className="w-1.5 h-1.5 bg-slate-300 dark:bg-slate-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                   </div>
                 </div>
               )}
               <div ref={messagesEndRef} />
             </div>
 
-            <form onSubmit={handleSendMessage} className="p-3 bg-white border-t border-slate-100 flex gap-2">
+            <form onSubmit={handleSendMessage} className="p-3 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex gap-2">
               <input
                 type="text"
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
                 placeholder="Ask about health..."
-                className="flex-1 bg-[#F8FAFC] border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all"
+                className="flex-1 bg-[#F8FAFC] dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:border-slate-900 dark:focus:border-slate-100 focus:ring-4 focus:ring-slate-900/5 dark:focus:ring-white/5 transition-all"
               />
               <button 
                 type="submit"
                 disabled={!chatInput.trim() || isTyping}
-                className="bg-slate-900 text-white w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-800 disabled:bg-slate-100 disabled:text-slate-300 disabled:cursor-not-allowed transition-all shadow-sm"
+                className="bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-955 w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-800 dark:hover:bg-slate-200 disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:text-slate-300 dark:disabled:text-slate-550 disabled:cursor-not-allowed transition-all shadow-sm cursor-pointer"
               >
                 <Send size={16} className="-ml-0.5" />
               </button>
@@ -2773,18 +2804,18 @@ const placeOrder = async () => {
 
         <button
           onClick={() => setIsChatOpen(!isChatOpen)}
-          className="w-14 h-14 bg-slate-900 hover:bg-slate-800 text-white rounded-full flex items-center justify-center shadow-[0_8px_20px_rgb(0,0,0,0.15)] hover:scale-105 active:scale-95 transition-all duration-200"
+          className="w-14 h-14 bg-slate-900 dark:bg-slate-100 hover:bg-slate-800 dark:hover:bg-slate-200 text-white dark:text-slate-955 rounded-full flex items-center justify-center shadow-[0_8px_20px_rgb(0,0,0,0.15)] hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer animate-pulse-soft"
         >
           {isChatOpen ? <X size={24} /> : <MessageCircle size={24} />}
         </button>
       </div>
 
       {/* --- Mobile Bottom Navigation --- */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200/60 pb-safe">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-slate-950 border-t border-slate-200/60 dark:border-slate-800 pb-safe">
         <div className="flex justify-around items-center h-[72px] px-2 pb-2">
           <button 
             onClick={() => setCurrentView('home')} 
-            className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${currentView === 'home' ? 'text-slate-900' : 'text-slate-400 hover:text-slate-600'}`}
+            className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${currentView === 'home' ? 'text-slate-900 dark:text-slate-100' : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-350'}`}
           >
             <Stethoscope size={20} className={currentView === 'home' ? 'stroke-[2.5px]' : ''} />
             <span className="text-[10px] font-semibold">Home</span>
@@ -2794,19 +2825,19 @@ const placeOrder = async () => {
               setCurrentView('medicines');
               setIsMobileSidebarOpen(true);
             }} 
-            className="flex flex-col items-center justify-center w-full h-full space-y-1 text-slate-400 hover:text-slate-600"
+            className="flex flex-col items-center justify-center w-full h-full space-y-1 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-350"
           >
             <Search size={20} />
             <span className="text-[10px] font-semibold">Search</span>
           </button>
           <button 
             onClick={() => setCurrentView('cart')} 
-            className={`relative flex flex-col items-center justify-center w-full h-full space-y-1 ${currentView === 'cart' ? 'text-slate-900' : 'text-slate-400 hover:text-slate-600'}`}
+            className={`relative flex flex-col items-center justify-center w-full h-full space-y-1 ${currentView === 'cart' ? 'text-slate-900 dark:text-slate-100' : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-350'}`}
           >
             <div className="relative">
               <ShoppingCart size={20} className={currentView === 'cart' ? 'stroke-[2.5px]' : ''} />
               {cartCount > 0 && (
-                <span className="absolute -top-1.5 -right-2 bg-slate-900 text-white text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full ring-2 ring-white">
+                <span className="absolute -top-1.5 -right-2 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-955 text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full ring-2 ring-white dark:ring-slate-950">
                   {cartCount}
                 </span>
               )}
@@ -2818,7 +2849,7 @@ const placeOrder = async () => {
               setCurrentView('medicines');
               setIsMobileSidebarOpen(true);
             }} 
-            className="flex flex-col items-center justify-center w-full h-full space-y-1 text-slate-400 hover:text-slate-600"
+            className="flex flex-col items-center justify-center w-full h-full space-y-1 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-350"
           >
             <User size={20} />
             <span className="text-[10px] font-semibold">Account</span>
