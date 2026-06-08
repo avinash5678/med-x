@@ -4,9 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import random
 import time
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+import resend
 from dotenv import load_dotenv
 from pymongo import MongoClient
 from bson import ObjectId
@@ -21,9 +19,10 @@ app = Flask(__name__)
 FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:3000")
 CORS(app, origins=[origin.strip() for origin in FRONTEND_URL.split(",")])
 
-# --- OTP Configuration ---
-SMTP_EMAIL = os.environ.get("SMTP_EMAIL", "")
-SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD", "")
+# --- Resend Configuration ---
+resend.api_key = os.environ.get("RESEND_API_KEY", "")
+FROM_EMAIL = os.environ.get("FROM_EMAIL", "MedZ <onboarding@resend.dev>")
+DEVELOPER_EMAIL = os.environ.get("DEVELOPER_EMAIL", "noreply.medz.care@gmail.com")
 
 # In-memory OTP store: { email: { "otp": "123456", "expires": timestamp } }
 otp_store = {}
@@ -99,14 +98,9 @@ def send_otp():
     otp = str(random.randint(100000, 999999))
     otp_store[email.lower()] = {"otp": otp, "expires": time.time() + 300}
 
-    # Send email
+    # Send email via Resend
     try:
-        msg = MIMEMultipart()
-        msg["From"] = SMTP_EMAIL
-        msg["To"] = email
-        msg["Subject"] = "Med Z - Your Verification Code"
-
-        body = f"""
+        html_body = f"""
         <div style="font-family: sans-serif; max-width: 480px; margin: auto; padding: 32px; background: #f8fafc; border-radius: 16px;">
             <h2 style="color: #0f172a; margin-bottom: 8px;">Med Z</h2>
             <p style="color: #64748b; font-size: 14px;">Your verification code is:</p>
@@ -117,19 +111,20 @@ def send_otp():
         </div>
         """
 
-        msg.attach(MIMEText(body, "html"))
-
-        with smtplib.SMTP("smtp.gmail.com", 587) as server:
-            server.starttls()
-            server.login(SMTP_EMAIL, SMTP_PASSWORD)
-            server.send_message(msg)
+        params = {
+            "from": FROM_EMAIL,
+            "to": [email],
+            "subject": "Med Z - Your Verification Code",
+            "html": html_body,
+        }
+        resend.Emails.send(params)
 
         print(f"OTP sent to {email}")
         return jsonify({"message": "OTP sent successfully"}), 200
 
     except Exception as e:
         print(f"Email send error: {e}")
-        return jsonify({"error": "Failed to send OTP email. Check server SMTP configuration."}), 500
+        return jsonify({"error": "Failed to send OTP email. Check Resend API configuration."}), 500
 
 
 # ✅ VERIFY OTP API
@@ -179,14 +174,9 @@ def send_reset_otp():
     otp = str(random.randint(100000, 999999))
     otp_store[email.lower()] = {"otp": otp, "expires": time.time() + 300}
 
-    # Send email
+    # Send email via Resend
     try:
-        msg = MIMEMultipart()
-        msg["From"] = SMTP_EMAIL
-        msg["To"] = email
-        msg["Subject"] = "Med Z - Password Reset Code"
-
-        body = f"""
+        html_body = f"""
         <div style="font-family: sans-serif; max-width: 480px; margin: auto; padding: 32px; background: #f8fafc; border-radius: 16px;">
             <h2 style="color: #0f172a; margin-bottom: 8px;">Med Z</h2>
             <p style="color: #64748b; font-size: 14px;">Your password reset code is:</p>
@@ -197,12 +187,13 @@ def send_reset_otp():
         </div>
         """
 
-        msg.attach(MIMEText(body, "html"))
-
-        with smtplib.SMTP("smtp.gmail.com", 587) as server:
-            server.starttls()
-            server.login(SMTP_EMAIL, SMTP_PASSWORD)
-            server.send_message(msg)
+        params = {
+            "from": FROM_EMAIL,
+            "to": [email],
+            "subject": "Med Z - Password Reset Code",
+            "html": html_body,
+        }
+        resend.Emails.send(params)
 
         return jsonify({"message": "Password reset OTP sent"}), 200
     except Exception as e:
@@ -350,13 +341,7 @@ def contact():
         return jsonify({"error": "All fields are required"}), 400
 
     try:
-        msg = MIMEMultipart()
-        msg["From"] = f"Med Z Pharmacy <{SMTP_EMAIL}>"
-        msg["To"] = SMTP_EMAIL
-        msg["Reply-To"] = email
-        msg["Subject"] = f"Med Z Contact - From {name}"
-
-        body = f"""
+        html_body = f"""
         <div style="font-family: sans-serif; padding: 20px; background: #f8fafc;">
             <h2>New Contact Message</h2>
             <p><strong>Name:</strong> {name}</p>
@@ -367,12 +352,14 @@ def contact():
         </div>
         """
 
-        msg.attach(MIMEText(body, "html"))
-
-        with smtplib.SMTP("smtp.gmail.com", 587) as server:
-            server.starttls()
-            server.login(SMTP_EMAIL, SMTP_PASSWORD)
-            server.send_message(msg)
+        params = {
+            "from": FROM_EMAIL,
+            "to": [DEVELOPER_EMAIL],
+            "reply_to": email,
+            "subject": f"Med Z Contact - From {name}",
+            "html": html_body,
+        }
+        resend.Emails.send(params)
 
         return jsonify({"success": True, "message": "Your message has been sent successfully!"}), 200
 
@@ -431,12 +418,7 @@ def retailer_send_otp():
     otp_store[f"retailer_{email}"] = {"otp": otp, "expires": time.time() + 300}
 
     try:
-        msg = MIMEMultipart()
-        msg["From"] = SMTP_EMAIL
-        msg["To"] = email
-        msg["Subject"] = "MedZ Retailer - Verification Code"
-
-        body = f"""
+        html_body = f"""
         <div style="font-family: sans-serif; max-width: 480px; margin: auto; padding: 32px; background: #0f172a; border-radius: 16px; color: white;">
             <h2 style="color: #10b981; margin-bottom: 8px;">MedZ Retailer Portal</h2>
             <p style="color: #94a3b8; font-size: 14px;">Your verification code is:</p>
@@ -447,12 +429,13 @@ def retailer_send_otp():
         </div>
         """
 
-        msg.attach(MIMEText(body, "html"))
-
-        with smtplib.SMTP("smtp.gmail.com", 587) as server:
-            server.starttls()
-            server.login(SMTP_EMAIL, SMTP_PASSWORD)
-            server.send_message(msg)
+        params = {
+            "from": FROM_EMAIL,
+            "to": [email],
+            "subject": "MedZ Retailer - Verification Code",
+            "html": html_body,
+        }
+        resend.Emails.send(params)
 
         return jsonify({"message": "OTP sent successfully"}), 200
     except Exception as e:

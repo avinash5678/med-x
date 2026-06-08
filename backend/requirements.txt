@@ -4,3 +4,4 @@ gunicorn
 werkzeug
 python-dotenv
 pymongo[srv]
+resend
