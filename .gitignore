@@ -44,3 +44,4 @@ next-env.d.ts
 # backend data files (contain user data)
 backend/*.json
 backend/__pycache__/
+backend/venv/
