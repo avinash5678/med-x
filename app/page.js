@@ -58,10 +58,10 @@ const CATEGORIES = [
 
 const CATEGORY_POOLS = {
   'Fever': [
-    '1576091160550-2173dba999ef', // Thermometer
     '1584308666744-24d5c474f2ae', // Pill cup
     '1624969862644-791f3d9ceec7', // Water and pills
-    '1576602976047-174e57a47881'  // Pills layout
+    '1576602976047-174e57a47881', // Pills layout
+    '1607619228035-7c2a71d87e07'  // Blister packs
   ],
   'Cold & Cough': [
     '1550572017-edd951b55104', // RX bottles
@@ -89,15 +89,15 @@ const CATEGORY_POOLS = {
   ],
   'First Aid': [
     '1603398938378-e54eab446dde', // Bandages kit
-    '1576091160550-2173dba999ef', // Diagnostic check
     '1584307839351-a7b21e843eac', // Test tubes
-    '1603398938378-e54eab446dde'  // Scissors bandages
+    '1607619228035-7c2a71d87e07', // Blister packs stack
+    '1603398938378-e54eab446dde'  // First aid box
   ],
   'Supplements': [
     '1584017911766-d451b3d0e843', // Capsule jar
-    '1628348068343-c6a848d2b6dd', // Supplements shelf
+    '1585435128465-b1b3d9050d2e', // Supplements shelf
     '1616679911721-fe6eec10fcd5', // Vitamin tablets
-    '1625014020904-56c28f32c3f8'  // Nutrients bowl
+    '1607618898144-84c47879e602'  // Nutrients bowl
   ],
   'Skin Care': [
     '1556228720-195a672e8a03', // Serum tubes
@@ -112,16 +112,16 @@ const CATEGORY_POOLS = {
     '1512438248247-f0f2a5a8b7f0'  // Eye drops bottle
   ],
   'Diabetes': [
-    '1508847154043-be12a62861c1', // Glucose meter
-    '1628348068343-c6a848d2b6dd', // Medical equipment
+    '1607619228035-7c2a71d87e07', // Blister stack
     '1584307839351-a7b21e843eac', // Clinical analysis
-    '1508847154043-be12a62861c1'  // Sugar check strips
+    '1585435128465-b1b3d9050d2e', // Vitamin bottle
+    '1607619056574-7b8f304b3c8f'  // Tablets blister
   ],
   'Heart Care': [
-    '1628348068343-c6a848d2b6dd', // Heart wellness
-    '1576091160550-2173dba999ef', // BP check tool
-    '1584308666744-24d5c474f2ae', // Clinical cups
-    '1607619056574-7b8f304b3c8f'  // Aspirin pack
+    '1584017911766-d451b3d0e843', // Heart wellness
+    '1585435348002-3c2d4ffcb628', // White bottle
+    '1607619056574-7b8f304b3c8f', // Aspirin
+    '1607619228035-7c2a71d87e07'  // Blister packs
   ],
   'Women Care': [
     '1526947425960-945c6e72858f', // Organic bottles
@@ -130,10 +130,10 @@ const CATEGORY_POOLS = {
     '1559594833-01c577bfc736'  // Beauty wellness soap
   ],
   'Baby Care': [
-    '1519689680058-324335c77ebe', // Baby cosmetics
     '1556228720-195a672e8a03', // Gentle lotions
-    '1519689680058-324335c77ebe', // Baby wash bottle
-    '1559594833-01c577bfc736'  // Bath elements soap
+    '1526947425960-945c6e72858f', // Organic bottles
+    '1559594833-01c577bfc736', // Soap bars
+    '1631549916768-4119b255f777'  // Dropper
   ],
   'Personal Care': [
     '1559594833-01c577bfc736', // Botanical soap
