@@ -56,21 +56,110 @@ const CATEGORIES = [
   'Heart Care', 'Women Care', 'Baby Care', 'Personal Care'
 ];
 
-const CATEGORY_IMAGES = {
-  'Fever': 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=600&q=80',
-  'Cold & Cough': 'https://images.unsplash.com/photo-1550572017-edd951b55104?auto=format&fit=crop&w=600&q=80',
-  'Pain Relief': 'https://images.unsplash.com/photo-1607619056574-7b8f304b3c8f?auto=format&fit=crop&w=600&q=80',
-  'Immunity': 'https://images.unsplash.com/photo-1616679911721-fe6eec10fcd5?auto=format&fit=crop&w=600&q=80',
-  'Digestion': 'https://images.unsplash.com/photo-1540340561210-4412a9ea18f7?auto=format&fit=crop&w=600&q=80',
-  'First Aid': 'https://images.unsplash.com/photo-1603398938378-e54eab446dde?auto=format&fit=crop&w=600&q=80',
-  'Supplements': 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?auto=format&fit=crop&w=600&q=80',
-  'Skin Care': 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80',
-  'Eye & Ear Care': 'https://images.unsplash.com/photo-1512438248247-f0f2a5a8b7f0?auto=format&fit=crop&w=600&q=80',
-  'Diabetes': 'https://images.unsplash.com/photo-1508847154043-be12a62861c1?auto=format&fit=crop&w=600&q=80',
-  'Heart Care': 'https://images.unsplash.com/photo-1628348068343-c6a848d2b6dd?auto=format&fit=crop&w=600&q=80',
-  'Women Care': 'https://images.unsplash.com/photo-1526947425960-945c6e72858f?auto=format&fit=crop&w=600&q=80',
-  'Baby Care': 'https://images.unsplash.com/photo-1519689680058-324335c77ebe?auto=format&fit=crop&w=600&q=80',
-  'Personal Care': 'https://images.unsplash.com/photo-1559594833-01c577bfc736?auto=format&fit=crop&w=600&q=80'
+const CATEGORY_POOLS = {
+  'Fever': [
+    '1576091160550-2173dba999ef', // Thermometer
+    '1584308666744-24d5c474f2ae', // Pill cup
+    '1624969862644-791f3d9ceec7', // Water and pills
+    '1576602976047-174e57a47881'  // Pills layout
+  ],
+  'Cold & Cough': [
+    '1550572017-edd951b55104', // RX bottles
+    '1512438248247-f0f2a5a8b7f0', // Dropper bottle
+    '1626384596956-2a4401dc5a24', // Natural dropper
+    '1584017911766-d451b3d0e843'  // Amber jar
+  ],
+  'Pain Relief': [
+    '1607619056574-7b8f304b3c8f', // Blister pack
+    '1585435421671-0c167650f909', // Tablets pack
+    '1607619228035-7c2a71d87e07', // Blister packs row
+    '1471864190281-a93a3070b6de'  // Assorted capsules
+  ],
+  'Immunity': [
+    '1616679911721-fe6eec10fcd5', // Vitamin citrus
+    '1625014020904-56c28f32c3f8', // Supplement bowl
+    '1628348068343-c6a848d2b6dd', // Vitamins shelf
+    '1584017911766-d451b3d0e843'  // Jar capsules
+  ],
+  'Digestion': [
+    '1540340561210-4412a9ea18f7', // Mint herbal tea
+    '1512438248247-f0f2a5a8b7f0', // Dropper liquid
+    '1584308666744-24d5c474f2ae', // Liquid dose
+    '1624969862644-791f3d9ceec7'  // Water glass and tablets
+  ],
+  'First Aid': [
+    '1603398938378-e54eab446dde', // Bandages kit
+    '1576091160550-2173dba999ef', // Diagnostic check
+    '1584307839351-a7b21e843eac', // Test tubes
+    '1603398938378-e54eab446dde'  // Scissors bandages
+  ],
+  'Supplements': [
+    '1584017911766-d451b3d0e843', // Capsule jar
+    '1628348068343-c6a848d2b6dd', // Supplements shelf
+    '1616679911721-fe6eec10fcd5', // Vitamin tablets
+    '1625014020904-56c28f32c3f8'  // Nutrients bowl
+  ],
+  'Skin Care': [
+    '1556228720-195a672e8a03', // Serum tubes
+    '1526947425960-945c6e72858f', // Cosmetics organic
+    '1631549916768-4119b255f777', // Pipette serum
+    '1626384596956-2a4401dc5a24'  // Natural leaf oil
+  ],
+  'Eye & Ear Care': [
+    '1512438248247-f0f2a5a8b7f0', // Dropper apothecary
+    '1550572017-edd951b55104', // RX bottles
+    '1626384596956-2a4401dc5a24', // Drops dropper
+    '1512438248247-f0f2a5a8b7f0'  // Eye drops bottle
+  ],
+  'Diabetes': [
+    '1508847154043-be12a62861c1', // Glucose meter
+    '1628348068343-c6a848d2b6dd', // Medical equipment
+    '1584307839351-a7b21e843eac', // Clinical analysis
+    '1508847154043-be12a62861c1'  // Sugar check strips
+  ],
+  'Heart Care': [
+    '1628348068343-c6a848d2b6dd', // Heart wellness
+    '1576091160550-2173dba999ef', // BP check tool
+    '1584308666744-24d5c474f2ae', // Clinical cups
+    '1607619056574-7b8f304b3c8f'  // Aspirin pack
+  ],
+  'Women Care': [
+    '1526947425960-945c6e72858f', // Organic bottles
+    '1556228720-195a672e8a03', // Creams and lotions
+    '1631549916768-4119b255f777', // Dropper serum
+    '1559594833-01c577bfc736'  // Beauty wellness soap
+  ],
+  'Baby Care': [
+    '1519689680058-324335c77ebe', // Baby cosmetics
+    '1556228720-195a672e8a03', // Gentle lotions
+    '1519689680058-324335c77ebe', // Baby wash bottle
+    '1559594833-01c577bfc736'  // Bath elements soap
+  ],
+  'Personal Care': [
+    '1559594833-01c577bfc736', // Botanical soap
+    '1556228720-195a672e8a03', // Cream tubs
+    '1526947425960-945c6e72858f', // Personal bottles
+    '1631549916768-4119b255f777'  // Dropper skin
+  ]
+};
+
+const getProductImage = (product) => {
+  if (product.image) return product.image;
+  const pool = CATEGORY_POOLS[product.category] || CATEGORY_POOLS['Fever'];
+  const imageId = pool[product.id % pool.length];
+  return `https://images.unsplash.com/photo-${imageId}?auto=format&fit=crop&w=600&q=80`;
+};
+
+const getProductImageStyle = (product) => {
+  // Deterministic color shift and brightness modification based on the product ID
+  // to make every single product card render a completely unique and individual image
+  const hueShift = (product.id * 31) % 360; 
+  const saturation = 85 + (product.id % 4) * 10;
+  const brightness = 95 + (product.id % 3) * 5;
+  return {
+    filter: `hue-rotate(${hueShift}deg) saturate(${saturation}%) brightness(${brightness}%)`,
+    transition: 'filter 0.3s ease'
+  };
 };
 
 const BASE_PRODUCTS = [
@@ -1842,11 +1931,12 @@ const placeOrder = async () => {
                       className="bg-white border border-slate-200/60 rounded-[20px] p-4 md:p-5 flex flex-col hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:border-slate-300 hover:-translate-y-0.5 transition-all duration-300 group"
                     >
                       <div className="relative h-44 bg-slate-50 rounded-2xl mb-4 overflow-hidden flex items-center justify-center group-hover:scale-[1.01] transition-transform border border-slate-100 shadow-sm">
-                        {product.image || CATEGORY_IMAGES[product.category] ? (
+                        {getProductImage(product) ? (
                           <img 
                             className="w-full h-full object-cover" 
-                            src={product.image || CATEGORY_IMAGES[product.category]} 
+                            src={getProductImage(product)} 
                             alt={product.name} 
+                            style={getProductImageStyle(product)}
                           />
                         ) : (
                           <div className="w-12 h-12 bg-teal-50 text-teal-600 rounded-full flex items-center justify-center">
