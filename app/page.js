@@ -56,6 +56,23 @@ const CATEGORIES = [
   'Heart Care', 'Women Care', 'Baby Care', 'Personal Care'
 ];
 
+const CATEGORY_IMAGES = {
+  'Fever': 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=600&q=80',
+  'Cold & Cough': 'https://images.unsplash.com/photo-1550572017-edd951b55104?auto=format&fit=crop&w=600&q=80',
+  'Pain Relief': 'https://images.unsplash.com/photo-1607619056574-7b8f304b3c8f?auto=format&fit=crop&w=600&q=80',
+  'Immunity': 'https://images.unsplash.com/photo-1616679911721-fe6eec10fcd5?auto=format&fit=crop&w=600&q=80',
+  'Digestion': 'https://images.unsplash.com/photo-1540340561210-4412a9ea18f7?auto=format&fit=crop&w=600&q=80',
+  'First Aid': 'https://images.unsplash.com/photo-1603398938378-e54eab446dde?auto=format&fit=crop&w=600&q=80',
+  'Supplements': 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?auto=format&fit=crop&w=600&q=80',
+  'Skin Care': 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80',
+  'Eye & Ear Care': 'https://images.unsplash.com/photo-1512438248247-f0f2a5a8b7f0?auto=format&fit=crop&w=600&q=80',
+  'Diabetes': 'https://images.unsplash.com/photo-1508847154043-be12a62861c1?auto=format&fit=crop&w=600&q=80',
+  'Heart Care': 'https://images.unsplash.com/photo-1628348068343-c6a848d2b6dd?auto=format&fit=crop&w=600&q=80',
+  'Women Care': 'https://images.unsplash.com/photo-1526947425960-945c6e72858f?auto=format&fit=crop&w=600&q=80',
+  'Baby Care': 'https://images.unsplash.com/photo-1519689680058-324335c77ebe?auto=format&fit=crop&w=600&q=80',
+  'Personal Care': 'https://images.unsplash.com/photo-1559594833-01c577bfc736?auto=format&fit=crop&w=600&q=80'
+};
+
 const BASE_PRODUCTS = [
   { id: 901, name: 'NeuroEase Max', price: 1999, category: 'Pain Relief', description: 'Rapid release formula for neurological comfort and muscle relaxation.', icon: Zap, image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAUafx17L_BWZG-fshbbdBVoqGk7GEBFv_7fzm7ucgEqLLV0iY1pciuBqCBys2E9vMOxCGzAmWNXg5aNBcHZW0fsqb45IfrPMl3BraSSJVbj58DJR5oWU3zWAnNOO5LEAHUqpbLMQHLSdXmj0IsqVpMkcLlrxZhBDj6i7q_IsI06Iy4jLVBe7Qzns-3OuEaWjbv6iSSygLoyhYPpcizlonZItTP6L42c4QCIRdzQgOtIfKJnnT8e6lPzRrPcEC4qS7w2PLaVy_Pjig' },
   { id: 902, name: 'GlucoControl X', price: 3399, category: 'Diabetes', description: 'Daily maintenance supplement for stable metabolic health and sugar levels.', icon: Activity, image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCcdxdTinU_JYCYFnk1AEOsAVe_Xm2kJR9G16o1BIcGC5EQNpetXr1Tfo0h7pKMcMKwx0nzpcnAHfWoo9BOlNpPnB49L2qy8mts19yMdrtZL0sg2IHp2P8_6bvAJXi4gCgOJfSfJ9pOVhLIFQNtTxpeAA5YvgKcaF1iXMFemfSnzVPKyvZQ3qj2ACo74B9HBuzmyI0yTK6RQI3i3Yyngw0W7vNzsNrJJVo0a8NA3-zr6eZ-BaK0kchTRFYlxicwUCb1RpeKmcxDxRg' },
@@ -1824,8 +1841,21 @@ const placeOrder = async () => {
                       key={product.id} 
                       className="bg-white border border-slate-200/60 rounded-[20px] p-4 md:p-5 flex flex-col hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:border-slate-300 hover:-translate-y-0.5 transition-all duration-300 group"
                     >
-                      <div className="w-10 h-10 md:w-12 md:h-12 bg-slate-50 border border-slate-100/50 text-slate-700 rounded-2xl flex items-center justify-center mb-4 md:mb-5 group-hover:bg-slate-100 transition-colors">
-                        <Icon size={20} strokeWidth={2} />
+                      <div className="relative h-44 bg-slate-50 rounded-2xl mb-4 overflow-hidden flex items-center justify-center group-hover:scale-[1.01] transition-transform border border-slate-100 shadow-sm">
+                        {product.image || CATEGORY_IMAGES[product.category] ? (
+                          <img 
+                            className="w-full h-full object-cover" 
+                            src={product.image || CATEGORY_IMAGES[product.category]} 
+                            alt={product.name} 
+                          />
+                        ) : (
+                          <div className="w-12 h-12 bg-teal-50 text-teal-600 rounded-full flex items-center justify-center">
+                            <Icon size={24} />
+                          </div>
+                        )}
+                        <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-md w-8 h-8 rounded-full flex items-center justify-center border border-slate-100 text-slate-700 shadow-sm">
+                          <Icon size={16} />
+                        </div>
                       </div>
                       <h3 className="font-bold text-base text-slate-900 mb-1">{product.name}</h3>
                       <span className="text-[10px] font-semibold text-slate-500 mb-3 uppercase tracking-wider bg-slate-50 px-2 py-1 rounded w-fit border border-slate-100">{product.category}</span>
