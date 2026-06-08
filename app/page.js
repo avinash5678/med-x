@@ -1448,13 +1448,7 @@ const placeOrder = async () => {
           </div>
           <div className="hidden md:flex gap-8">
             <button 
-              onClick={() => { 
-                setCurrentView('home'); 
-                setTimeout(() => { 
-                  const el = document.getElementById('medicines-catalog'); 
-                  if (el) el.scrollIntoView({ behavior: 'smooth' }); 
-                }, 50); 
-              }} 
+              onClick={() => setCurrentView('medicines')} 
               className="text-sm font-semibold text-slate-600 hover:text-teal-600 transition-colors cursor-pointer"
             >
               Medicines
@@ -1565,10 +1559,7 @@ const placeOrder = async () => {
                   </p>
                   <div className="flex flex-wrap gap-4">
                     <button 
-                      onClick={() => {
-                        const el = document.getElementById('medicines-catalog');
-                        if (el) el.scrollIntoView({ behavior: 'smooth' });
-                      }}
+                      onClick={() => setCurrentView('medicines')}
                       className="px-8 py-4 bg-teal-600 text-white rounded-xl font-bold hover:shadow-lg hover:shadow-teal-600/30 hover:bg-teal-700 transition-all duration-300 flex items-center gap-2 group cursor-pointer"
                     >
                       Shop Medicines
@@ -1662,107 +1653,6 @@ const placeOrder = async () => {
               </div>
             </section>
 
-            {/* Search & Categories Section */}
-            <section id="medicines-catalog" className="px-6 md:px-12 py-12 max-w-7xl mx-auto scroll-mt-24">
-              <div className="max-w-3xl mx-auto">
-                <div className="relative group">
-                  <div className="absolute inset-0 bg-teal-600/5 rounded-full blur-xl group-focus-within:bg-teal-600/10 transition-all duration-500"></div>
-                  <div className="relative flex items-center glass rounded-full px-6 py-2 shadow-sm border-teal-600/10">
-                    <Search className="text-slate-400 ml-2" size={20} />
-                    <input 
-                      type="text" 
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full bg-transparent border-none focus:outline-none focus:ring-0 px-4 py-4 text-base md:text-lg text-slate-800 placeholder:text-slate-400"
-                      placeholder="Search medicines, brands, or symptoms..." 
-                    />
-                  </div>
-                </div>
-                <div className="flex flex-wrap justify-center gap-2.5 mt-8">
-                  {CATEGORIES.map(category => (
-                    <button
-                      key={category}
-                      onClick={() => setActiveCategory(category)}
-                      className={`px-4 py-2 rounded-full text-xs font-bold transition-colors cursor-pointer ${activeCategory === category ? 'bg-teal-600 text-white shadow-md shadow-teal-600/15' : 'bg-slate-100 hover:bg-teal-50 text-slate-600 hover:text-teal-700'}`}
-                    >
-                      {category}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </section>
-
-            {/* Featured / Shopping List */}
-            <section className="bg-slate-50/50 py-20 border-y border-slate-100">
-              <div className="px-6 md:px-12 max-w-7xl mx-auto">
-                <div className="flex justify-between items-end mb-12">
-                  <div>
-                    <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-2">{activeCategory === 'All' ? 'Featured Medicines' : `${activeCategory} Medicines`}</h2>
-                    <p className="text-slate-500 text-sm">Recommended based on current health trends</p>
-                  </div>
-                  <span className="text-slate-500 text-sm font-semibold">Showing {filteredProducts.length} results</span>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                  {filteredProducts.map((product) => {
-                    const Icon = product.icon;
-                    return (
-                      <div key={product.id} className="bg-white rounded-3xl p-5 card-shadow hover-lift group flex flex-col border border-slate-100">
-                        <div className="relative h-44 bg-slate-50 rounded-2xl mb-5 overflow-hidden flex items-center justify-center group-hover:scale-[1.02] transition-transform">
-                          {product.image ? (
-                            <img className="w-full h-full object-cover" src={product.image} alt={product.name} />
-                          ) : (
-                            <div className="w-12 h-12 bg-teal-50 text-teal-600 rounded-full flex items-center justify-center">
-                              <Icon size={24} />
-                            </div>
-                          )}
-                          {product.id >= 900 && (
-                            <span className="absolute top-3 left-3 bg-red-100 text-red-700 text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-wider">Featured</span>
-                          )}
-                        </div>
-                        <p className="text-xs font-bold text-teal-600 mb-1 uppercase tracking-wider">{product.category}</p>
-                        <h3 className="text-lg font-bold text-slate-900 mb-2 leading-tight">{product.name}</h3>
-                        <p className="text-xs text-slate-400 mb-5 line-clamp-2 leading-relaxed">{product.description}</p>
-                        <div className="flex justify-between items-center mt-auto mb-4">
-                          <span className="text-xl font-bold text-teal-600">₹{product.price}</span>
-                          <button 
-                            onClick={() => addToCart(product)}
-                            className="w-10 h-10 bg-teal-50 text-teal-600 rounded-full flex items-center justify-center hover:bg-teal-600 hover:text-white transition-colors cursor-pointer"
-                          >
-                            <Plus size={18} />
-                          </button>
-                        </div>
-                        <div className="grid grid-cols-2 gap-2">
-                          <button 
-                            onClick={() => handleAiExplain(product)}
-                            className="py-2 bg-slate-50 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100 cursor-pointer"
-                          >
-                            AI Explain
-                          </button>
-                          <button 
-                            onClick={() => addToCart(product)}
-                            className="py-2 bg-teal-600 text-white rounded-xl text-xs font-bold hover:bg-teal-700 cursor-pointer"
-                          >
-                            Add to Cart
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {filteredProducts.length === 0 && (
-                  <div className="text-center py-24 text-slate-500 flex flex-col items-center">
-                    <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mb-4">
-                      <Package size={32} className="text-slate-400" />
-                    </div>
-                    <p className="text-lg font-bold text-slate-900 mb-1">No products found</p>
-                    <p className="text-sm">Try searching for a different medicine or category.</p>
-                  </div>
-                )}
-              </div>
-            </section>
-
             {/* Integrated Health Ecosystem Bento Grid */}
             <section className="px-6 md:px-12 py-24 max-w-7xl mx-auto">
               <h2 className="text-3xl md:text-4xl font-extrabold text-slate-950 text-center mb-16">Integrated Health <span className="text-teal-600">Ecosystem</span></h2>
@@ -1822,7 +1712,7 @@ const placeOrder = async () => {
             {/* Why Choose Us */}
             <section className="bg-slate-100/60 py-20">
               <div className="px-6 md:px-12 max-w-7xl mx-auto text-center">
-                <h2 className="text-2xl font-bold tracking-tight text-slate-950 mb-12">The Med Z Difference</h2>
+                <h2 className="text-2xl font-bold tracking-tight text-slate-955 mb-12">The Med Z Difference</h2>
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
                   <div className="flex flex-col items-center">
                     <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center shadow-sm mb-4 border border-slate-100 text-teal-600">
@@ -1858,68 +1748,6 @@ const placeOrder = async () => {
               </div>
             </section>
 
-            {/* Consultation Banner */}
-            <section className="px-6 md:px-12 py-20 max-w-7xl mx-auto">
-              <div className="relative rounded-[40px] overflow-hidden bg-gradient-to-r from-teal-600 to-slate-800 p-12 md:p-20 flex flex-col md:flex-row items-center gap-12 text-white shadow-2xl">
-                <div className="absolute top-0 right-0 w-1/2 h-full opacity-20 pointer-events-none">
-                  <img className="w-full h-full object-cover" alt="Medical Illustration" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAE28wzyeKe2AoMLsKuziqQMRsb-9ZvuDJVFsnCRHYDQ9mQO9yUBqU6B4U_8_cvY2YP-UKE4fLU9LHz3IjKdwwoUx1yz-MyS0JpBe1bURgqCogDHzdqT-xlq2sKGTQr37imyK7T99McYMadjMW3sNrZdcywow9R-dxDKCsO57pCvuAJAxHhg7ZTUAA9_7D2B1Hi86FX7-XO0aEryzEEBqytspYSfifpoTwyYCDpJ4Jon7k8JkXLfgWBPbgw5RTjUovfAdh9_0d7Q10" />
-                </div>
-                <div className="relative z-10 md:w-3/5">
-                  <h2 className="text-3xl md:text-5xl font-extrabold mb-6 leading-tight">Experience Future of Consultations with <span className="text-teal-200">AI-Driven Insights</span></h2>
-                  <p className="text-sm md:text-base mb-10 opacity-90 leading-relaxed">Our AI Doctors provide preliminary diagnosis in seconds. Accurate, private, and free for the first session.</p>
-                  <button onClick={() => setIsDoctorOpen(true)} className="bg-white text-teal-700 px-10 py-5 rounded-2xl font-bold text-base hover:shadow-2xl hover:scale-105 active:scale-95 transition-all cursor-pointer">Start Free Consultation</button>
-                </div>
-              </div>
-            </section>
-
-            {/* Testimonials */}
-            <section className="bg-slate-50 py-24">
-              <div className="px-6 md:px-12 max-w-7xl mx-auto">
-                <h2 className="text-2xl md:text-3xl font-bold text-slate-900 text-center mb-16">Trusted by Thousands</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="bg-white p-8 rounded-3xl card-shadow border border-slate-100">
-                    <div className="flex gap-1 text-teal-600 mb-6">
-                      {"★".repeat(5)}
-                    </div>
-                    <p className="text-sm text-slate-500 italic mb-8 leading-relaxed">"The drone delivery was surreal. I ordered my insulin and it arrived within 20 minutes. This is literally life-saving technology."</p>
-                    <div className="flex items-center gap-4">
-                      <img alt="Sarah Johnson" className="w-12 h-12 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWCN5au8E33yaFwkAGcIu_TbgacFre9W4wfPl4NYztWrFEXC8qGGwXjW9UIWEuJ538zGO83JC5n6sYn94YnljdAJbojuT1m0I2XjlS1pVAHnWRpDeOsSk9pJoU03n2hlpx0TEbLeYsTa8ZviUAT7jbBmv4PMV05Eg7ecC9metad7DtX0OvexfXpJ-6BANk6AjMNsqtstFgN11uyqB3ZEfT4PMV82dRCT13xkVTeTqTooM0J0LQZLIgAgY8vO-idh-E1ZlX16lPYt0" />
-                      <div>
-                        <p className="font-bold text-slate-900 text-sm">Sarah Johnson</p>
-                        <p className="text-xs text-slate-400 mt-0.5">Verified Patient</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bg-white p-8 rounded-3xl card-shadow border border-slate-100">
-                    <div className="flex gap-1 text-teal-600 mb-6">
-                      {"★".repeat(5)}
-                    </div>
-                    <p className="text-sm text-slate-500 italic mb-8 leading-relaxed">"I love the AI Health Assistant. It helped me understand my symptoms before I even booked my consultation. Truly futuristic."</p>
-                    <div className="flex items-center gap-4">
-                      <img alt="David Rivera" className="w-12 h-12 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOqlq9Gyh7jlQGvkq34R4xahzGnSYbB0iC9Puo7YDFu10PnQ8hSlza5PGtmLAflfmrXGBaSnbCto9E0IjqbAb9tseLAK8uKh2XWocfd1UKpHkbIWDhihi02olBZFsPmnnLZBe4NOfuZu7Zk4ZJpuXGcN8Ppehe3zlSge3KUxD47NNdMuxj56iAWfKqiyBYhPL0ZwK-Ah9wzWicue6eml7f8cceaKScvhGNQnCRK72j5kbwVU8hxYobj-lAn5hGErAgD9c4nlu98Js" />
-                      <div>
-                        <p className="font-bold text-slate-900 text-sm">David Rivera</p>
-                        <p className="text-xs text-slate-400 mt-0.5">Verified Patient</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bg-white p-8 rounded-3xl card-shadow border border-slate-100">
-                    <div className="flex gap-1 text-teal-600 mb-6">
-                      {"★".repeat(5)}
-                    </div>
-                    <p className="text-sm text-slate-500 italic mb-8 leading-relaxed">"Seamless experience from prescription upload to checkout. The UI is so clean, unlike any other pharmacy site I've used."</p>
-                    <div className="flex items-center gap-4">
-                      <img alt="Elena Mitchell" className="w-12 h-12 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJSeU2if3SU-rHFDkso4Hm-v-wekZGJMUZgAwEwHYtLX1mQwvugbFL_Tyajc5Wkuc-qeJoabN59emSVd8yR4xJYbzdc-UVJX4qvlFdFWhaB2Rm-lRjuCzSNZi6_kfTLDAGBjEBQiIAFWZBb4MlXZj4OZi0D0P79s4YNXUFsI4e5VlOF1cZXW3XQtvzXruJAFrauAEHh9GVPSxM_hFj8Jtv4EdsIAshxgAK0ZRVgktu3f8UuaxMAfekLqZHXVyav31jmSNtuuDrHko" />
-                      <div>
-                        <p className="font-bold text-slate-900 text-sm">Elena Mitchell</p>
-                        <p className="text-xs text-slate-400 mt-0.5">Verified Patient</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-
             {/* Footer */}
             <footer className="bg-slate-900 text-white border-t border-slate-800">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-8 px-6 md:px-12 py-16 max-w-7xl mx-auto">
@@ -1932,7 +1760,7 @@ const placeOrder = async () => {
                 <div>
                   <h4 className="font-bold text-sm mb-6 uppercase tracking-wider text-slate-300">Navigation</h4>
                   <ul className="space-y-3">
-                    <li><button onClick={() => { const el = document.getElementById('medicines-catalog'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }} className="text-xs text-slate-400 hover:text-teal-400 transition-all cursor-pointer">Medicines</button></li>
+                    <li><button onClick={() => setCurrentView('medicines')} className="text-xs text-slate-400 hover:text-teal-400 transition-all cursor-pointer">Medicines</button></li>
                     <li><button onClick={() => setIsDoctorOpen(true)} className="text-xs text-slate-400 hover:text-teal-400 transition-all cursor-pointer">Consultations</button></li>
                     <li><button onClick={() => setCurrentView('contact')} className="text-xs text-slate-400 hover:text-teal-400 transition-all cursor-pointer">Contact Us</button></li>
                   </ul>
@@ -1958,6 +1786,227 @@ const placeOrder = async () => {
                 <p>© 2026 Med Z Pharmacy. All rights reserved.</p>
               </div>
             </footer>
+          </div>
+        ) : currentView === 'medicines' ? (
+          <div className="flex flex-col md:flex-row flex-1 h-full overflow-hidden animate-fade-in">
+            <main className="flex-1 p-4 md:p-6 lg:p-8 pb-28 md:pb-6 w-full overflow-y-auto scrollbar-hide">
+              <div className="mb-8 flex justify-between items-end">
+                <div>
+                  <h2 className="text-2xl font-bold tracking-tight text-slate-900">{activeCategory} Medicines</h2>
+                  <p className="text-slate-500 text-sm mt-1 font-medium">Showing {filteredProducts.length} results</p>
+                </div>
+              </div>
+
+              <div className="mb-8 overflow-x-auto pb-4 scrollbar-hide">
+                <div className="flex gap-2">
+                  {CATEGORIES.map(category => (
+                    <button
+                      key={category}
+                      onClick={() => setActiveCategory(category)}
+                      className={`
+                        whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border
+                        ${activeCategory === category 
+                          ? 'bg-slate-900 text-white border-slate-900 shadow-md shadow-slate-900/10' 
+                          : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300 hover:text-slate-900 shadow-[0_2px_8px_rgb(0,0,0,0.02)]'}
+                      `}
+                    >
+                      {category}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 pb-24">
+                {filteredProducts.map((product) => {
+                  const Icon = product.icon;
+                  return (
+                    <div 
+                      key={product.id} 
+                      className="bg-white border border-slate-200/60 rounded-[20px] p-4 md:p-5 flex flex-col hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:border-slate-300 hover:-translate-y-0.5 transition-all duration-300 group"
+                    >
+                      <div className="w-10 h-10 md:w-12 md:h-12 bg-slate-50 border border-slate-100/50 text-slate-700 rounded-2xl flex items-center justify-center mb-4 md:mb-5 group-hover:bg-slate-100 transition-colors">
+                        <Icon size={20} strokeWidth={2} />
+                      </div>
+                      <h3 className="font-bold text-base text-slate-900 mb-1">{product.name}</h3>
+                      <span className="text-[10px] font-semibold text-slate-500 mb-3 uppercase tracking-wider bg-slate-50 px-2 py-1 rounded w-fit border border-slate-100">{product.category}</span>
+                      <div className="mb-6 flex-1">
+                        <p className="text-slate-600 text-sm leading-relaxed mb-4 line-clamp-2">
+                          {product.description}
+                        </p>
+                        <button 
+                          onClick={() => handleAiExplain(product)}
+                          className="text-xs text-indigo-600 font-medium flex items-center gap-1.5 hover:text-indigo-700 transition-colors bg-indigo-50/50 hover:bg-indigo-50 px-3 py-2 rounded-lg w-fit border border-indigo-100/50"
+                        >
+                          <Sparkles size={14} /> AI Explain
+                        </button>
+                      </div>
+                      
+                      <div className="flex items-center justify-between mt-auto border-t border-slate-100/80 pt-4">
+                        <span className="text-xl font-bold tracking-tight text-slate-900">
+                          ₹{product.price}
+                        </span>
+                        <button 
+                          onClick={() => addToCart(product)}
+                          className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all shadow-[0_2px_10px_rgb(0,0,0,0.08)] active:scale-95 flex items-center gap-1.5"
+                        >
+                          <Plus size={16} /> Add
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              
+              {filteredProducts.length === 0 && (
+                <div className="text-center py-32 text-slate-500 flex flex-col items-center">
+                  <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mb-4">
+                    <Package size={32} className="text-slate-400" />
+                  </div>
+                  <p className="text-lg font-bold text-slate-900 mb-1">No products found</p>
+                  <p className="text-sm">Try searching for a different medicine or category.</p>
+                </div>
+              )}
+            </main>
+
+            {isMobileSidebarOpen && (
+              <div 
+                className="fixed inset-0 bg-slate-900/20 z-50 md:hidden backdrop-blur-sm transition-opacity"
+                onClick={() => setIsMobileSidebarOpen(false)}
+              />
+            )}
+            
+            <aside className={`
+              fixed md:static top-0 right-0 z-50 w-full md:w-[340px] h-full bg-white border-l border-slate-200/60 shadow-2xl md:shadow-none flex flex-col transition-transform duration-300 ease-in-out
+              ${isMobileSidebarOpen ? 'translate-x-0' : 'translate-x-full md:translate-x-0'}
+            `}>
+              <div className="p-4 border-b border-slate-100 flex justify-between items-center md:hidden">
+                <h2 className="text-base font-bold text-slate-900">Tools & Search</h2>
+                <button 
+                  className="p-2 text-slate-400 hover:bg-slate-50 hover:text-slate-900 rounded-xl transition-colors"
+                  onClick={() => setIsMobileSidebarOpen(false)}
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              <div className="p-2 border-b border-slate-100 md:hidden flex flex-col gap-1 bg-slate-50/50">
+                <div className="flex items-center gap-3 px-4 py-3 mb-1">
+                  <div className="w-8 h-8 bg-white border border-slate-200 text-slate-700 rounded-full flex items-center justify-center text-xs font-semibold uppercase shadow-sm">
+                    {user?.name?.charAt(0)}
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-slate-500 font-medium leading-none mb-1 uppercase tracking-wider">Account</p>
+                    <p className="text-sm font-bold text-slate-900 leading-none">{user?.name}</p>
+                  </div>
+                </div>
+                <button onClick={() => { setCurrentView('orders'); setIsMobileSidebarOpen(false); }} className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm rounded-xl transition-all">
+                  <Package size={16} /> Order History
+                </button>
+                <button onClick={() => { setCurrentView('transactions'); setIsMobileSidebarOpen(false); }} className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm rounded-xl transition-all">
+                  <Receipt size={16} /> Transaction History
+                </button>
+                <button onClick={() => { setCurrentView('addresses'); setIsMobileSidebarOpen(false); }} className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm rounded-xl transition-all">
+                  <MapPin size={16} /> Saved Addresses
+                </button>
+                <button onClick={() => { setCurrentView('contact'); setIsMobileSidebarOpen(false); }} className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm rounded-xl transition-all">
+                  <Mail size={16} /> Contact Us
+                </button>
+                <div className="my-1 border-t border-slate-200/60"></div>
+                <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 rounded-xl transition-all">
+                  <LogOut size={16} /> Sign Out
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto p-6 space-y-8 scrollbar-hide">
+                <div>
+                  <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
+                    <Search size={14} /> Search Medicines
+                  </h2>
+                  <div className="relative group">
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                      <Search size={16} className="text-slate-400 group-focus-within:text-slate-900 transition-colors" />
+                    </div>
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search by name or generic..."
+                      className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all bg-slate-50 hover:bg-white"
+                    />
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-b from-teal-50/50 to-teal-50/80 border border-teal-100/60 rounded-[20px] p-5 flex flex-col gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-teal-600 p-2 rounded-xl text-white shadow-sm shadow-teal-600/20">
+                      <Stethoscope size={20} />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-slate-900 text-sm">AI Doctor</h3>
+                      <p className="text-[10px] text-teal-600 font-bold uppercase tracking-wider">Free Consult</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-slate-600 leading-relaxed mt-1">
+                    Describe your symptoms for preliminary triage and home care advice.
+                  </p>
+                  <button
+                    onClick={() => { setIsDoctorOpen(true); setIsMobileSidebarOpen(false); }}
+                    className="w-full mt-2 bg-teal-600 hover:bg-teal-700 text-white py-2.5 rounded-xl font-semibold text-sm transition-all shadow-[0_2px_10px_rgb(20,184,166,0.2)] active:scale-95 flex items-center justify-center gap-2"
+                  >
+                    Start Consultation <ArrowLeft size={16} className="rotate-135" />
+                  </button>
+                </div>
+
+                <div className="bg-white border border-slate-200/60 rounded-[20px] p-5 shadow-[0_4px_20px_rgb(0,0,0,0.02)] flex flex-col gap-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
+                      <ShoppingCart size={16} className="text-slate-400" /> Quick Cart
+                    </h3>
+                    {cartCount > 0 && (
+                      <span className="bg-slate-100 text-slate-700 text-[10px] px-2 py-0.5 rounded-md font-bold uppercase tracking-wider">
+                        {cartCount} Items
+                      </span>
+                    )}
+                  </div>
+
+                  {cart.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-8 text-slate-400 gap-3 bg-slate-50/50 rounded-xl border border-slate-100 border-dashed">
+                      <Package size={24} className="text-slate-300" />
+                      <p className="text-xs font-medium text-slate-500">Your cart is empty</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      <div className="space-y-3">
+                        {cart.slice(0, 3).map(item => (
+                          <div key={item.id} className="flex justify-between items-center text-sm group">
+                            <span className="text-slate-600 truncate pr-2 flex items-center gap-2.5">
+                              <span className="text-[10px] font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded-md">{item.quantity}x</span> 
+                              <span className="group-hover:text-slate-900 transition-colors">{item.name}</span>
+                            </span>
+                            <span className="font-semibold text-slate-900">₹{item.price * item.quantity}</span>
+                          </div>
+                        ))}
+                        {cart.length > 3 && (
+                          <p className="text-xs text-slate-400 pt-1 font-medium">+{cart.length - 3} more items</p>
+                        )}
+                      </div>
+                      
+                      <div className="border-t border-slate-100 pt-4 flex justify-between items-center">
+                        <span className="font-medium text-slate-500 text-sm">Total</span>
+                        <span className="font-bold tracking-tight text-slate-900 text-lg">₹{cartTotal}</span>
+                      </div>
+                      
+                      <button
+                        onClick={() => { setCurrentView('cart'); setIsMobileSidebarOpen(false); }}
+                        className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 rounded-xl font-semibold text-sm transition-all shadow-[0_2px_10px_rgb(0,0,0,0.08)] active:scale-95 flex items-center justify-center gap-2 mt-2"
+                      >
+                        View Full Cart
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </aside>
           </div>
         ) : currentView === 'contact' ? (
           <div className="flex-1 overflow-y-auto bg-[#F8FAFC] p-6 lg:p-8 scrollbar-hide">
@@ -2740,7 +2789,10 @@ const placeOrder = async () => {
             <span className="text-[10px] font-semibold">Home</span>
           </button>
           <button 
-            onClick={() => setIsMobileSidebarOpen(true)} 
+            onClick={() => {
+              setCurrentView('medicines');
+              setIsMobileSidebarOpen(true);
+            }} 
             className="flex flex-col items-center justify-center w-full h-full space-y-1 text-slate-400 hover:text-slate-600"
           >
             <Search size={20} />
@@ -2761,7 +2813,10 @@ const placeOrder = async () => {
             <span className="text-[10px] font-semibold">Cart</span>
           </button>
           <button 
-            onClick={() => setIsMobileSidebarOpen(true)} 
+            onClick={() => {
+              setCurrentView('medicines');
+              setIsMobileSidebarOpen(true);
+            }} 
             className="flex flex-col items-center justify-center w-full h-full space-y-1 text-slate-400 hover:text-slate-600"
           >
             <User size={20} />
