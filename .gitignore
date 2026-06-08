@@ -12,6 +12,7 @@
 
 # testing
 /coverage
+/backend/test_resend.py
 
 # next.js
 /.next/
