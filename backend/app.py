@@ -21,7 +21,7 @@ CORS(app, origins=[origin.strip() for origin in FRONTEND_URL.split(",")])
 
 # --- Resend Configuration ---
 resend.api_key = os.environ.get("RESEND_API_KEY", "")
-FROM_EMAIL = os.environ.get("FROM_EMAIL", "MedZ <onboarding@resend.dev>")
+FROM_EMAIL = os.environ.get("FROM_EMAIL", "noreply@med-z.store")
 DEVELOPER_EMAIL = os.environ.get("DEVELOPER_EMAIL", "noreply.medz.care@gmail.com")
 
 # In-memory OTP store: { email: { "otp": "123456", "expires": timestamp } }
