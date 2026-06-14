@@ -28,7 +28,6 @@ import {
   Zap,
   Flame,
   Wind,
-  Menu,
   Search,
   ArrowLeft,
   User,
@@ -48,8 +47,21 @@ import {
   Store,
   Sun,
   Moon,
-  Map as MapIcon
 } from 'lucide-react';
+
+// View components imports
+import LoginView from '@/components/views/LoginView';
+import HomeView from '@/components/views/HomeView';
+import ShopView from '@/components/views/ShopView';
+import CartView from '@/components/views/CartView';
+import CheckoutView from '@/components/views/CheckoutView';
+import PaymentView from '@/components/views/PaymentView';
+import AIConsultView from '@/components/views/AIConsultView';
+import TrackingView from '@/components/views/TrackingView';
+import ContactView from '@/components/views/ContactView';
+import AddressesView from '@/components/views/AddressesView';
+import OrdersView, { TransactionsView } from '@/components/views/OrdersView';
+
 
 // --- Categories & Localized Indian Products ---
 const CATEGORIES = [
@@ -194,303 +206,6 @@ for(let i = 0; i < 500; i++) {
 
 const PRODUCTS = [...BASE_PRODUCTS, ...extraMedicines];
 
-const DeliveryTrackingView = ({ order, setCurrentView }) => {
-  const [status, setStatus] = useState(0); // 0: Placed, 1: Packed, 2: Out for Delivery, 3: Delivered
-  const [eta, setEta] = useState('Waiting for confirmation');
-  const [mapLoaded, setMapLoaded] = useState(false);
-  const [retailerInfo, setRetailerInfo] = useState(null);
-
-  useEffect(() => {
-    let interval;
-    if (typeof window !== 'undefined' && !window.L) {
-      const link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-      document.head.appendChild(link);
-
-      const script = document.createElement('script');
-      script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-      script.async = true;
-      script.onload = () => {
-        setMapLoaded(true);
-        initializeMap();
-      };
-      document.head.appendChild(script);
-    } else if (window.L) {
-      setMapLoaded(true);
-      initializeMap();
-    }
-
-    function initializeMap() {
-      const L = window.L;
-      if (!L) return;
-      
-      const mapContainer = document.getElementById('delivery-map');
-      if (!mapContainer) return;
-
-      // Handle React strict mode hot reloading
-      const existingMap = mapContainer._leaflet_id;
-      if (existingMap) {
-        return; // already initialized
-      }
-
-      const map = L.map('delivery-map', { zoomControl: false, attributionControl: false }).setView([28.6139, 77.2090], 13);
-      
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        maxZoom: 19
-      }).addTo(map);
-
-      // Shop Marker
-      const shopIcon = L.divIcon({
-        className: 'custom-div-icon',
-        html: `<div style="background-color:#0f172a;width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 6px rgba(0,0,0,0.3);border:2px solid white;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></div>`,
-        iconSize: [32, 32],
-        iconAnchor: [16, 16]
-      });
-      const shopMarker = L.marker([28.6200, 77.2100], { icon: shopIcon }).addTo(map);
-
-      // Customer Marker
-      const customerIcon = L.divIcon({
-        className: 'custom-div-icon',
-        html: `<div style="background-color:#3b82f6;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 6px rgba(0,0,0,0.3);border:2px solid white;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>`,
-        iconSize: [32, 32],
-        iconAnchor: [16, 32]
-      });
-      const customerMarker = L.marker([28.6000, 77.2200], { icon: customerIcon }).addTo(map);
-
-      // Delivery Agent Marker
-      const deliveryIcon = L.divIcon({
-        className: 'custom-div-icon',
-        html: `<div style="background-color:#10b981;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(16,185,129,0.4);border:3px solid white;z-index:1000;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg></div>`,
-        iconSize: [40, 40],
-        iconAnchor: [20, 20]
-      });
-
-      let agentLat = 28.6180;
-      let agentLng = 77.2110;
-      const deliveryMarker = L.marker([agentLat, agentLng], { icon: deliveryIcon, zIndexOffset: 1000 }).addTo(map);
-
-      // Simple Animation for map ONLY
-      const targetLat = 28.6010;
-      const targetLng = 77.2190;
-      const steps = 600; 
-      let currentStep = 0;
-      const latStep = (targetLat - agentLat) / steps;
-      const lngStep = (targetLng - agentLng) / steps;
-
-      interval = setInterval(() => {
-        if (currentStep < steps) {
-          agentLat += latStep;
-          agentLng += lngStep;
-          deliveryMarker.setLatLng([agentLat, agentLng]);
-          currentStep++;
-        }
-      }, 1000);
-
-      // Fit bounds
-      const group = new L.featureGroup([shopMarker, customerMarker, deliveryMarker]);
-      map.fitBounds(group.getBounds().pad(0.3));
-    }
-
-    // Real-time status polling
-    const pollStatus = async () => {
-      if (!order?.id) return;
-      try {
-        const res = await fetch(`/api/orders/${order.id}`);
-        if (res.ok) {
-          const data = await res.json();
-          let newStatus = 0; // default placed
-          
-          if (data.retailer_status === 'accepted') newStatus = 1;
-          if (data.delivery_status === 'packing') newStatus = 1;
-          if (data.delivery_status === 'packed') newStatus = 1;
-          if (data.delivery_status === 'out_for_delivery') newStatus = 2;
-          if (data.delivery_status === 'delivered') newStatus = 3;
-          
-          setStatus(newStatus);
-          
-          if (data.retailer_info) {
-             setRetailerInfo(data.retailer_info);
-          }
-          
-          if (newStatus === 3) setEta('Delivered');
-          else if (newStatus === 2) setEta('14 mins');
-          else if (newStatus === 1) setEta('Preparing');
-          else setEta('Pending');
-        }
-      } catch (err) {
-        console.error("Poll error:", err);
-      }
-    };
-    
-    pollStatus();
-    const statusInterval = setInterval(pollStatus, 3000);
-
-    return () => {
-      if (interval) clearInterval(interval);
-      clearInterval(statusInterval);
-    };
-  }, [order?.id]);
-
-  return (
-    <div className="w-full h-full overflow-y-auto bg-slate-50 dark:bg-[#090d16] pb-20 md:pb-8 md:pt-6 lg:pt-8 md:px-8 lg:px-12 xl:px-16 font-sans flex flex-col text-slate-900 dark:text-slate-100">
-      
-      {/* Top Header */}
-      <div className="flex items-center justify-between mb-6 md:mb-8 px-6 md:px-0 mt-4 md:mt-0 flex-shrink-0">
-        <div className="flex items-center gap-4 md:gap-6">
-          <button onClick={() => setCurrentView('home')} className="w-10 h-10 md:w-14 md:h-14 bg-white dark:bg-slate-900 flex items-center justify-center rounded-full shadow-sm hover:shadow-md transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 border border-slate-100 dark:border-slate-850">
-            <ArrowLeft size={20} className="md:w-6 md:h-6" />
-          </button>
-          <div>
-            <h1 className="text-2xl md:text-3xl lg:text-4xl font-black text-slate-900 dark:text-slate-100 tracking-tight">Track Your Order</h1>
-            <p className="text-sm md:text-base text-slate-500 dark:text-slate-400 font-bold mt-0.5 md:mt-1">Order #{order?.id || 'ORD-1234'}</p>
-          </div>
-        </div>
-        <div className="hidden md:flex bg-white dark:bg-slate-900 px-5 py-2.5 rounded-full shadow-sm items-center gap-3 border border-slate-100 dark:border-slate-850">
-          <div className="w-3 h-3 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_12px_rgba(16,185,129,0.8)]" />
-          <span className="font-bold text-slate-700 dark:text-slate-350 text-sm uppercase tracking-[0.15em]">Live Tracking</span>
-        </div>
-      </div>
-
-      <div className="flex flex-col md:flex-row gap-0 md:gap-8 lg:gap-12 xl:gap-16 flex-grow">
-        
-        {/* Map Section */}
-        <div className="relative h-[450px] md:h-auto min-h-[600px] flex-grow bg-slate-200 md:rounded-[40px] overflow-hidden shadow-lg md:shadow-2xl border-0 md:border-8 border-white dark:border-slate-900 z-0">
-          <div id="delivery-map" className="w-full h-full z-0"></div>
-          {!mapLoaded && (
-            <div className="absolute inset-0 flex items-center justify-center bg-slate-100/80 backdrop-blur-sm z-10">
-              <div className="w-10 h-10 border-4 border-slate-300 border-t-emerald-500 rounded-full animate-spin"></div>
-            </div>
-          )}
-          
-          {/* ETA Overlay on Map */}
-          <div className="absolute top-8 inset-x-0 flex justify-center z-20 pointer-events-none">
-            <div className="bg-slate-900/90 backdrop-blur-md text-white px-10 py-4 rounded-full shadow-2xl flex flex-col items-center pointer-events-auto border border-slate-800/50 transform hover:scale-[1.02] transition-transform cursor-default">
-              <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.25em] text-emerald-400 mb-1">
-                {status === 3 ? 'Order Status' : status === 0 ? 'Order Status' : 'Arriving In'}
-              </span>
-              <span className="text-2xl md:text-3xl font-black tracking-tight">{eta}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Delivery Details Sidebar */}
-        <div className="bg-white dark:bg-slate-900 rounded-t-[40px] md:rounded-[40px] -mt-8 md:mt-0 relative z-30 pt-10 pb-12 px-6 md:px-8 shadow-[0_-20px_40px_rgb(0,0,0,0.08)] md:shadow-[0_20px_60px_rgb(0,0,0,0.05)] w-full md:w-[420px] lg:w-[480px] flex-shrink-0 flex flex-col h-fit border border-slate-100/60 dark:border-slate-800/80">
-          
-          {/* Status Timeline */}
-          <div className="mb-10">
-            <div className="flex justify-between relative">
-              <div className="absolute top-4 left-[10%] right-[10%] h-[4px] bg-slate-100 dark:bg-slate-800 z-0 rounded-full">
-                <div 
-                  className="h-full bg-emerald-500 rounded-full transition-all duration-1000 ease-out z-0 relative shadow-[0_0_12px_rgba(16,185,129,0.5)]" 
-                  style={{ width: `${(status / 3) * 100}%` }}
-                />
-              </div>
-
-              {['Placed', 'Packed', 'On the way', 'Delivered'].map((step, idx) => (
-                <div key={idx} className="flex flex-col items-center relative z-10 w-1/4">
-                  <div className={`w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-all duration-500 mb-3 shadow-sm ${idx <= status ? 'bg-emerald-500 text-white shadow-emerald-500/40 ring-4 ring-emerald-50' : 'bg-white dark:bg-slate-950 border-2 border-slate-100 dark:border-slate-850 text-slate-300 dark:text-slate-600'}`}>
-                    {idx < status ? <CheckCircle2 size={18} strokeWidth={3} /> : 
-                     idx === 0 ? <Receipt size={16} /> :
-                     idx === 1 ? <Package size={16} /> :
-                     idx === 2 ? <Truck size={16} /> : <MapPin size={16} />}
-                  </div>
-                  <span className={`text-[10px] md:text-xs font-bold text-center uppercase tracking-wider ${idx <= status ? 'text-slate-900 dark:text-slate-100' : 'text-slate-400 dark:text-slate-500'}`}>{step}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <h3 className="font-bold text-slate-900 dark:text-slate-100 text-lg md:text-xl mb-5 tracking-tight">Assigned Partner</h3>
-
-          {/* Delivery Agent Profile / Retailer Profile */}
-          <div className="bg-slate-50/50 dark:bg-slate-950/60 hover:bg-slate-50 dark:hover:bg-slate-950 border border-slate-100 dark:border-slate-850 rounded-[28px] p-5 md:p-6 mb-8 flex items-center justify-between shadow-sm hover:shadow-md transition-all group">
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <div className="w-14 h-14 md:w-16 md:h-16 bg-emerald-100/50 rounded-full flex items-center justify-center text-emerald-600 border-2 border-emerald-200 shadow-inner group-hover:bg-emerald-100 transition-colors">
-                  {retailerInfo ? <Store size={28} /> : <User size={28} />}
-                </div>
-                <div className="absolute -bottom-1 -right-1 bg-emerald-500 border-2 border-white w-6 h-6 rounded-full flex items-center justify-center shadow-sm">
-                  <CheckCircle2 size={12} className="text-white" strokeWidth={3} />
-                </div>
-              </div>
-              <div>
-                <p className="font-bold text-slate-900 dark:text-slate-100 text-base md:text-lg tracking-tight">
-                  {retailerInfo ? retailerInfo.shop_name : (status > 0 ? 'Assigned Partner' : 'Waiting...')}
-                </p>
-                <div className="flex items-center gap-2 mt-1.5">
-                  <span className="bg-amber-100 dark:bg-amber-955/40 text-amber-700 dark:text-amber-400 text-[10px] md:text-xs font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
-                    <svg className="w-3 h-3 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
-                    4.9
-                  </span>
-                  <span className="text-slate-400 dark:text-slate-500 text-xs md:text-sm font-semibold tracking-wide">
-                    {retailerInfo ? `• ${retailerInfo.city}` : '• Local Delivery'}
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div className="flex gap-2.5 md:gap-3">
-              <a href={`tel:${retailerInfo ? retailerInfo.phone : ''}`} className="w-11 h-11 md:w-12 md:h-12 rounded-full bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-950 flex items-center justify-center shadow-lg hover:bg-emerald-500 hover:shadow-emerald-500/30 hover:scale-105 transition-all">
-                <Phone size={20} />
-              </a>
-            </div>
-          </div>
-
-          <h3 className="font-bold text-slate-900 dark:text-slate-100 text-lg md:text-xl mb-5 tracking-tight">Store Details</h3>
-
-          {/* Shop Info */}
-          <div className="bg-white dark:bg-slate-950/60 border border-slate-100 dark:border-slate-850 rounded-[24px] p-5 md:p-6 flex items-center justify-between shadow-sm hover:shadow-md transition-all group">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 md:w-14 md:h-14 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center text-slate-600 dark:text-slate-300 group-hover:bg-slate-200 transition-colors shadow-inner">
-                <Store size={24} />
-              </div>
-              <div>
-                <p className="font-bold text-slate-900 dark:text-slate-100 text-sm md:text-base tracking-tight">
-                  {retailerInfo ? retailerInfo.shop_name : 'Med Z Central Pharmacy'}
-                </p>
-                <p className="text-slate-500 dark:text-slate-400 text-xs md:text-sm font-semibold mt-1">
-                  {retailerInfo ? `${retailerInfo.address?.slice(0, 40)}...` : 'Connecting to nearby store...'}
-                </p>
-              </div>
-            </div>
-            <a href={`tel:${retailerInfo ? retailerInfo.phone : ''}`} className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950/25 rounded-full transition-all">
-              <Phone size={20} />
-            </a>
-          </div>
-
-          {/* Order Details Snippet */}
-          <div className="mt-8 border-t-2 border-dashed border-slate-100 dark:border-slate-800 pt-8">
-            <div className="flex justify-between items-end mb-6">
-              <div>
-                <h3 className="font-bold text-slate-900 dark:text-slate-100 text-lg md:text-xl tracking-tight">Receipt</h3>
-                <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400 font-semibold mt-1">{order?.items?.length || 0} items</p>
-              </div>
-              <span className="text-emerald-500 dark:text-emerald-400 font-black text-2xl md:text-3xl tracking-tight">₹{order?.total || 0}</span>
-            </div>
-            <div className="space-y-4">
-              {order?.items?.slice(0, 3).map((item, i) => (
-                <div key={i} className="flex justify-between text-sm md:text-base group">
-                  <span className="text-slate-600 dark:text-slate-400 font-semibold flex gap-3 items-center">
-                    <span className="bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-2.5 py-1 rounded-md font-bold text-xs">{item.quantity}x</span>
-                    <span className="group-hover:text-slate-900 dark:group-hover:text-slate-100 transition-colors line-clamp-1">{item.name}</span>
-                  </span>
-                  <span className="text-slate-900 dark:text-slate-100 font-bold whitespace-nowrap ml-4">₹{item.price * item.quantity}</span>
-                </div>
-              ))}
-              {order?.items?.length > 3 && (
-                <button className="w-full text-center text-xs md:text-sm text-slate-500 dark:text-slate-400 font-bold uppercase tracking-[0.15em] pt-4 hover:text-emerald-500 transition-colors cursor-pointer">
-                  View {order.items.length - 3} More Items
-                </button>
-              )}
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-  );
-};
-
 export default function App() {
   // --- Auth State ---
   const [user, setUser] = useState(undefined);
@@ -509,7 +224,6 @@ export default function App() {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setUser(JSON.parse(savedUser));
     } else {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setUser(null);
     }
   }, []);
@@ -971,7 +685,6 @@ const placeOrder = async () => {
     }
     if (user && currentView === 'addresses') {
       const addrs = JSON.parse(localStorage.getItem(`addresses_${user.email}`)) || [];
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSavedAddresses(addrs);
     }
   }, [currentView, user]);
@@ -1130,328 +843,28 @@ const placeOrder = async () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-[#F8FAFC] flex flex-col justify-center items-center p-4 font-sans relative overflow-hidden">
-        <div className="fixed inset-0 pointer-events-none flex items-center justify-center z-0 opacity-[0.02]">
-          <div className="flex flex-col items-center transform -rotate-12 opacity-50">
-            <Image src="/logo.png" alt="Med Z Logo Watermark" width={400} height={400} priority />
-          </div>
-        </div>
-
-        <div className="w-full max-w-[420px] bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 relative z-10 p-10">
-          <div className="flex flex-col items-center justify-center mb-8">
-            <Image src="/logo.png" alt="Med Z Logo" width={64} height={64} className="mb-5 rounded-2xl shadow-sm" priority />
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Med Z</h1>
-            <p className="text-slate-500 text-sm mt-1.5">
-              {authStep === 'otp' ? 'Verify your email' 
-                : authStep === 'reset-otp' ? 'Password Reset Code'
-                : authStep === 'new-password' ? 'Create New Password'
-                : authMode === 'login' ? 'Sign in to your account' 
-                : authMode === 'forgot-password' ? 'Reset your password'
-                : 'Create a new account'}
-            </p>
-          </div>
-
-          {authSuccessMsg && (
-            <div className="bg-emerald-50 text-emerald-600 p-3 rounded-xl text-sm font-medium text-center border border-emerald-100 mb-4 animate-fade-in">
-              {authSuccessMsg}
-            </div>
-          )}
-
-          {/* --- OTP Verification Step --- */}
-          {authStep === 'otp' ? (
-            <form onSubmit={handleVerifyAndSignup} className="space-y-4">
-              {authError && (
-                <div className="bg-red-50 text-red-600 p-3 rounded-xl text-sm font-medium text-center border border-red-100">
-                  {authError}
-                </div>
-              )}
-
-              <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 text-center">
-                <p className="text-sm text-slate-600">
-                  We sent a 6-digit code to
-                </p>
-                <p className="text-sm font-bold text-slate-900 mt-1">{authForm.email}</p>
-              </div>
-
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <ShieldPlus size={18} className="text-slate-400 group-focus-within:text-slate-900 transition-colors" />
-                </div>
-                <input
-                  type="text"
-                  required
-                  maxLength={6}
-                  inputMode="numeric"
-                  pattern="[0-9]{6}"
-                  placeholder="Enter 6-digit code"
-                  value={otpCode}
-                  onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                  className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-200 bg-white text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all text-center tracking-[0.3em] font-bold text-lg"
-                  autoFocus
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl font-semibold text-sm transition-all shadow-[0_4px_12px_rgb(0,0,0,0.1)] active:scale-[0.98] mt-2"
-              >
-                Verify & Create Account
-              </button>
-
-              <div className="text-center pt-2">
-                {otpCountdown > 0 ? (
-                  <p className="text-xs text-slate-400 font-medium">Resend code in {otpCountdown}s</p>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={handleSendOtp}
-                    disabled={otpSending}
-                    className="text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors disabled:opacity-50"
-                  >
-                    {otpSending ? 'Sending...' : 'Resend Code'}
-                  </button>
-                )}
-              </div>
-
-              <button
-                type="button"
-                onClick={() => { setAuthStep('form'); setOtpCode(''); setAuthError(''); }}
-                className="w-full text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors mt-2"
-              >
-                ← Back to signup form
-              </button>
-            </form>
-          ) : authStep === 'reset-otp' ? (
-            /* --- Password Reset OTP Step --- */
-            <form onSubmit={handleVerifyResetOtp} className="space-y-4 animate-fade-in">
-              {authError && (
-                <div className="bg-red-50 text-red-600 p-3 rounded-xl text-sm font-medium text-center border border-red-100">
-                  {authError}
-                </div>
-              )}
-
-              <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 text-center">
-                <p className="text-sm text-slate-600">
-                  We sent a reset code to
-                </p>
-                <p className="text-sm font-bold text-slate-900 mt-1">{authForm.email}</p>
-              </div>
-
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <ShieldPlus size={18} className="text-slate-400 group-focus-within:text-slate-900 transition-colors" />
-                </div>
-                <input
-                  type="text"
-                  required
-                  maxLength={6}
-                  inputMode="numeric"
-                  pattern="[0-9]{6}"
-                  placeholder="Enter 6-digit code"
-                  value={otpCode}
-                  onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                  className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-200 bg-white text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all text-center tracking-[0.3em] font-bold text-lg"
-                  autoFocus
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl font-semibold text-sm transition-all shadow-[0_4px_12px_rgb(0,0,0,0.1)] active:scale-[0.98] mt-2"
-              >
-                Verify Code
-              </button>
-
-              <div className="text-center pt-2">
-                {otpCountdown > 0 ? (
-                  <p className="text-xs text-slate-400 font-medium">Resend code in {otpCountdown}s</p>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={handleSendResetOtp}
-                    disabled={otpSending}
-                    className="text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors disabled:opacity-50"
-                  >
-                    {otpSending ? 'Sending...' : 'Resend Code'}
-                  </button>
-                )}
-              </div>
-
-              <button
-                type="button"
-                onClick={() => { setAuthStep('form'); setOtpCode(''); setAuthError(''); }}
-                className="w-full text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors mt-2"
-              >
-                ← Back
-              </button>
-            </form>
-          ) : authStep === 'new-password' ? (
-            /* --- New Password Step --- */
-            <form onSubmit={handleResetPassword} className="space-y-4 animate-fade-in">
-              {authError && (
-                <div className="bg-red-50 text-red-600 p-3 rounded-xl text-sm font-medium text-center border border-red-100">
-                  {authError}
-                </div>
-              )}
-
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-slate-900">
-                  <Lock size={18} className="text-slate-400 group-focus-within:text-slate-900 transition-colors" />
-                </div>
-                <input
-                  type="password"
-                  required
-                  placeholder="New Password"
-                  value={authForm.password}
-                  onChange={(e) => setAuthForm({ ...authForm, password: e.target.value })}
-                  className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-200 bg-white text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all"
-                  autoFocus
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl font-semibold text-sm transition-all shadow-[0_4px_12px_rgb(0,0,0,0.1)] active:scale-[0.98] mt-4"
-              >
-                Save New Password
-              </button>
-            </form>
-          ) : authMode === 'forgot-password' ? (
-            /* --- Forgot Password Request Form --- */
-            <form onSubmit={(e) => { e.preventDefault(); handleSendResetOtp(); }} className="space-y-4 animate-fade-in">
-              {authError && (
-                <div className="bg-red-50 text-red-600 p-3 rounded-xl text-sm font-medium text-center border border-red-100">
-                  {authError}
-                </div>
-              )}
-              
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-slate-900">
-                  <Mail size={18} className="text-slate-400 group-focus-within:text-slate-900 transition-colors" />
-                </div>
-                <input
-                  type="email"
-                  required
-                  placeholder="Email Address"
-                  value={authForm.email}
-                  onChange={(e) => setAuthForm({ ...authForm, email: e.target.value })}
-                  className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-200 bg-white text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={otpSending}
-                className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl font-semibold text-sm transition-all shadow-[0_4px_12px_rgb(0,0,0,0.1)] active:scale-[0.98] mt-4 disabled:opacity-50"
-              >
-                {otpSending ? 'Sending...' : 'Send Reset Link'}
-              </button>
-
-              <div className="mt-6 text-center">
-                <button
-                  type="button"
-                  onClick={() => { setAuthMode('login'); setAuthError(''); setAuthSuccessMsg(''); }}
-                  className="text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors"
-                >
-                  Back to login
-                </button>
-              </div>
-            </form>
-          ) : (
-            /* --- Login / Signup Form --- */
-            <>
-              <form onSubmit={handleAuthSubmit} className="space-y-4 animate-fade-in">
-                {authError && (
-                  <div className="bg-red-50 text-red-600 p-3 rounded-xl text-sm font-medium text-center border border-red-100">
-                    {authError}
-                  </div>
-                )}
-                
-                {authMode === 'signup' && (
-                  <div className="relative group">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-slate-900">
-                      <User size={18} className="text-slate-400 group-focus-within:text-slate-900 transition-colors" />
-                    </div>
-                    <input
-                      type="text"
-                      required
-                      placeholder="Full Name"
-                      value={authForm.name}
-                      onChange={(e) => setAuthForm({ ...authForm, name: e.target.value })}
-                      className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-200 bg-white text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all"
-                    />
-                  </div>
-                )}
-                
-                <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-slate-900">
-                    <Mail size={18} className="text-slate-400 group-focus-within:text-slate-900 transition-colors" />
-                  </div>
-                  <input
-                    type="email"
-                    required
-                    placeholder="Email Address"
-                    value={authForm.email}
-                    onChange={(e) => setAuthForm({ ...authForm, email: e.target.value })}
-                    className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-200 bg-white text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all"
-                  />
-                </div>
-
-                <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-slate-900">
-                    <Lock size={18} className="text-slate-400 group-focus-within:text-slate-900 transition-colors" />
-                  </div>
-                  <input
-                    type="password"
-                    required
-                    placeholder="Password"
-                    value={authForm.password}
-                    onChange={(e) => setAuthForm({ ...authForm, password: e.target.value })}
-                    className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-200 bg-white text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all"
-                  />
-                </div>
-
-                {authMode === 'login' && (
-                  <div className="flex justify-end">
-                    <button
-                      type="button"
-                      onClick={() => { setAuthMode('forgot-password'); setAuthError(''); setAuthSuccessMsg(''); }}
-                      className="text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors"
-                    >
-                      Forgot password?
-                    </button>
-                  </div>
-                )}
-
-                <button
-                  type="submit"
-                  disabled={otpSending}
-                  className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl font-semibold text-sm transition-all shadow-[0_4px_12px_rgb(0,0,0,0.1)] active:scale-[0.98] mt-4 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                >
-                  {authMode === 'login' ? 'Sign In' : (otpSending ? 'Sending OTP...' : 'Continue')}
-                </button>
-              </form>
-
-              <div className="mt-8 text-center">
-                <button
-                  onClick={() => {
-                    setAuthMode(authMode === 'login' ? 'signup' : 'login');
-                    setAuthForm({ name: '', email: '', password: '' });
-                    setAuthStep('form');
-                    setOtpCode('');
-                    setAuthError('');
-                  }}
-                  className="text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors"
-                >
-                  {authMode === 'login' 
-                    ? "Don't have an account? Sign up" 
-                    : "Already have an account? Sign in"}
-                </button>
-              </div>
-            </>
-          )}
-        </div>
-      </div>
+      <LoginView
+        authMode={authMode}
+        setAuthMode={setAuthMode}
+        authForm={authForm}
+        setAuthForm={setAuthForm}
+        authError={authError}
+        setAuthError={setAuthError}
+        authStep={authStep}
+        setAuthStep={setAuthStep}
+        authSuccessMsg={authSuccessMsg}
+        setAuthSuccessMsg={setAuthSuccessMsg}
+        otpCode={otpCode}
+        setOtpCode={setOtpCode}
+        otpSending={otpSending}
+        otpCountdown={otpCountdown}
+        handleAuthSubmit={handleAuthSubmit}
+        handleSendOtp={handleSendOtp}
+        handleVerifyAndSignup={handleVerifyAndSignup}
+        handleSendResetOtp={handleSendResetOtp}
+        handleVerifyResetOtp={handleVerifyResetOtp}
+        handleResetPassword={handleResetPassword}
+      />
     );
   }
 
@@ -1575,951 +988,122 @@ const placeOrder = async () => {
 
       <div className="flex-1 flex flex-col h-full overflow-hidden relative z-10">
         {currentView === 'home' ? (
-          <div className="flex-1 w-full overflow-y-auto scrollbar-hide">
-            {/* Hero Section */}
-            <section className="relative px-6 md:px-12 py-16 md:py-24 max-w-7xl mx-auto overflow-visible">
-              <div className="absolute -top-40 -left-40 w-96 h-96 bg-teal-600/10 rounded-full blur-3xl"></div>
-              <div className="absolute top-1/2 -right-20 w-80 h-80 bg-slate-500/10 rounded-full blur-3xl"></div>
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                <div className="lg:col-span-6 z-10">
-                  <span className="inline-block py-1 px-4 rounded-full bg-teal-100 dark:bg-teal-950/40 text-teal-800 dark:text-teal-400 font-semibold text-xs tracking-wider mb-6">NEXT-GEN HEALTHCARE</span>
-                  <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-slate-100 mb-6 leading-tight">
-                    Your Trusted <span className="text-gradient">Online Pharmacy</span>
-                  </h1>
-                  <p className="text-base md:text-lg text-slate-500 dark:text-slate-400 mb-10 max-w-lg leading-relaxed">
-                    Order medicines, consult certified doctors, and get healthcare delivered to your doorstep with clinical precision and digital speed.
-                  </p>
-                  <div className="flex flex-wrap gap-4">
-                    <button 
-                      onClick={() => setCurrentView('medicines')}
-                      className="px-8 py-4 bg-teal-600 text-white rounded-xl font-bold hover:shadow-lg hover:shadow-teal-600/30 hover:bg-teal-700 transition-all duration-300 flex items-center gap-2 group cursor-pointer"
-                    >
-                      Shop Medicines
-                      <span className="group-hover:translate-x-1 transition-transform">→</span>
-                    </button>
-                    <button 
-                      onClick={() => setIsDoctorOpen(true)}
-                      className="px-8 py-4 bg-white dark:bg-slate-900 border border-teal-600/20 dark:border-teal-900/30 text-teal-700 dark:text-teal-400 rounded-xl font-bold hover:bg-teal-50/50 dark:hover:bg-slate-800 transition-all duration-300 cursor-pointer"
-                    >
-                      Consult a Doctor
-                    </button>
-                  </div>
-                </div>
-                <div className="lg:col-span-6 relative mt-12 lg:mt-0">
-                  <div className="glass p-4 rounded-3xl card-shadow overflow-hidden transform lg:rotate-3">
-                    <img 
-                      alt="Futuristic Drone Delivery" 
-                      className="w-full rounded-2xl" 
-                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgdpx1sL00wuxTeLcY2kBflaXSUrAgYxuIunUHQTiOy1iLlHHzR7mg3zSGvl90BiVpiRyWGs-KkNV2TUS3MCRoqViytOVPL47t9C3ZfApjjkA8vx_SsUMKY7oCEfGW5jNM5mldkesrhZTSmD24Ot2t6XRi41JjJjvR1BfGoen_0GmUD7_0Cl_hQhJnjA1k1or-Sx48_dEORTp_ocim4ah_cMtZSg-InyM_HeZFJsvGQdvrkhpgE8h1EXiYkioDr9r_wZGL-O_czeg" 
-                    />
-                    {/* Glass Element Overlay */}
-                    <div className="absolute bottom-10 -left-10 glass p-6 rounded-2xl shadow-xl flex items-center gap-4 animate-bounce-slow">
-                      <div className="w-12 h-12 bg-teal-600/20 rounded-full flex items-center justify-center text-teal-600">
-                        <Clock size={20} />
-                      </div>
-                      <div>
-                        <p className="text-xs font-semibold text-slate-500">Estimated Delivery</p>
-                        <p className="text-base font-bold text-teal-600">15 - 20 Minutes</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* AI Triage Banner */}
-            <section className="px-6 md:px-12 py-12 max-w-7xl mx-auto">
-              <div className="bg-gradient-to-br from-teal-600/5 to-slate-500/5 dark:from-teal-950/10 dark:to-slate-900/10 border border-teal-600/10 dark:border-teal-900/40 rounded-[40px] p-8 md:p-12 card-shadow flex flex-col lg:flex-row gap-12 items-center">
-                <div className="lg:w-1/2">
-                  <div className="flex items-center gap-2 mb-6">
-                    <span className="px-3 py-1 bg-teal-600 text-white text-[10px] font-bold rounded-full uppercase tracking-wider">New Feature</span>
-                    <span className="text-teal-600 font-bold text-sm">AI-Powered Triage</span>
-                  </div>
-                  <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-slate-100 mb-6 leading-tight">Not Sure Which Medicine You Need?</h2>
-                  <p className="text-slate-500 dark:text-slate-400 text-base md:text-lg mb-8 leading-relaxed">Describe your symptoms and get instant AI-powered guidance, medicine recommendations, dosage information, and triage advice.</p>
-                  <div className="grid grid-cols-2 gap-4 mb-10">
-                    <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
-                      <CheckCircle size={18} className="text-teal-600" />
-                      <span className="text-sm font-semibold">Symptom Checker</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
-                      <CheckCircle size={18} className="text-teal-600" />
-                      <span className="text-sm font-semibold">Dosage Guidance</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
-                      <CheckCircle size={18} className="text-teal-600" />
-                      <span className="text-sm font-semibold">Drug Interactions</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
-                      <CheckCircle size={18} className="text-teal-600" />
-                      <span className="text-sm font-semibold">Doctor Referrals</span>
-                    </div>
-                  </div>
-                  <button 
-                    onClick={() => setIsDoctorOpen(true)}
-                    className="w-full md:w-auto px-10 py-4 bg-teal-600 text-white rounded-xl font-bold hover:shadow-lg hover:shadow-teal-600/30 hover:bg-teal-700 transition-all cursor-pointer"
-                  >
-                    Start AI Consultation
-                  </button>
-                </div>
-                <div className="lg:w-1/2 w-full">
-                  <div className="glass rounded-3xl p-6 border-white/40 shadow-xl">
-                    <div className="space-y-4">
-                      <div className="flex justify-end">
-                        <div className="bg-teal-600 text-white px-4 py-3 rounded-2xl rounded-tr-none max-w-[80%] text-sm shadow-sm">
-                          "I have a fever and a persistent headache since morning."
-                        </div>
-                      </div>
-                      <div className="flex justify-start gap-3">
-                        <div className="w-8 h-8 bg-teal-600 rounded-full flex-shrink-0 flex items-center justify-center text-white">
-                          <Sparkles size={16} className="animate-pulse" />
-                        </div>
-                        <div className="bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800/80 px-4 py-3 rounded-2xl rounded-tl-none max-w-[80%] text-sm shadow-sm dark:text-slate-200">
-                          <p className="text-teal-600 font-bold text-xs mb-1">AI Pharmacist</p>
-                          Based on your symptoms, here are possible causes and suitable OTC medicines. Consult a doctor if symptoms persist.
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-            {/* Integrated Health Ecosystem Bento Grid */}
-            <section className="px-6 md:px-12 py-24 max-w-7xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-slate-100 text-center mb-16">Integrated Health <span className="text-teal-600">Ecosystem</span></h2>
-              <div className="grid grid-cols-1 md:grid-cols-6 gap-6 auto-rows-[180px]">
-                <div className="md:col-span-3 md:row-span-2 glass rounded-3xl p-8 flex flex-col justify-between card-shadow hover-lift bg-teal-600/5 border-teal-600/10 dark:border-teal-900/30">
-                  <div>
-                    <div className="w-14 h-14 bg-teal-600 text-white rounded-2xl flex items-center justify-center mb-6 shadow-md shadow-teal-600/20">
-                      <Sparkles size={28} />
-                    </div>
-                    <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">AI Health Assistant</h3>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">Our advanced neural network analyzes your symptoms and provides immediate, data-backed guidance before you even see a doctor.</p>
-                  </div>
-                  <button onClick={() => setIsChatOpen(true)} className="text-teal-600 font-bold flex items-center gap-2 group hover:text-teal-700 cursor-pointer">
-                    Try Assistant <span className="group-hover:translate-x-1 transition-transform">→</span>
-                  </button>
-                </div>
-                <div onClick={() => setIsDoctorOpen(true)} className="md:col-span-3 glass rounded-3xl p-6 card-shadow hover-lift border-slate-100/50 dark:border-slate-800/80 flex items-center gap-6 cursor-pointer">
-                  <div className="w-14 h-14 bg-slate-900 text-white rounded-2xl flex-shrink-0 flex items-center justify-center shadow-md">
-                    <Stethoscope size={28} />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-slate-900 dark:text-slate-100 text-base">Online Doctor Consultation</h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Connect with specialists in under 5 minutes.</p>
-                  </div>
-                </div>
-                <div onClick={() => setIsChatOpen(true)} className="md:col-span-3 glass rounded-3xl p-6 card-shadow hover-lift border-slate-100/50 dark:border-slate-800/80 flex items-center gap-6 cursor-pointer">
-                  <div className="w-14 h-14 bg-teal-100 dark:bg-teal-950 text-teal-700 dark:text-teal-400 rounded-2xl flex-shrink-0 flex items-center justify-center border border-teal-200 dark:border-teal-900">
-                    <PlusSquare size={28} />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-slate-900 dark:text-slate-100 text-base">Prescription Upload</h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Instant AI verification for quick fulfillment.</p>
-                  </div>
-                </div>
-                <div className="md:col-span-2 glass rounded-3xl p-6 card-shadow hover-lift border-slate-100/50 dark:border-slate-800/80 flex flex-col justify-center text-center">
-                  <div className="w-10 h-10 bg-teal-50 dark:bg-teal-950/30 text-teal-600 dark:text-teal-400 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <Truck size={20} />
-                  </div>
-                  <h3 className="font-bold text-slate-900 dark:text-slate-100 text-sm">Fast Delivery</h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Doorstep in 2 hours.</p>
-                </div>
-                <div className="md:col-span-4 glass rounded-3xl p-6 card-shadow hover-lift border-slate-100/50 dark:border-slate-800/80 flex items-center justify-between">
-                  <div className="flex items-center gap-6">
-                    <div className="w-14 h-14 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-2xl flex-shrink-0 flex items-center justify-center shadow-inner">
-                      <Activity size={28} />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-slate-900 dark:text-slate-100 text-base">Health Records Management</h3>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Encrypted vault for all your medical history.</p>
-                    </div>
-                  </div>
-                  <button onClick={() => setCurrentView('orders')} className="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 px-5 py-2 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 transition-colors cursor-pointer">Manage</button>
-                </div>
-              </div>
-            </section>
-
-
-            {/* Why Choose Us */}
-            <section className="bg-slate-100/60 py-20">
-              <div className="px-6 md:px-12 max-w-7xl mx-auto text-center">
-                <h2 className="text-2xl font-bold tracking-tight text-slate-955 mb-12">The Med Z Difference</h2>
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
-                  <div className="flex flex-col items-center">
-                    <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center shadow-sm mb-4 border border-slate-100 text-teal-600">
-                      <CheckCircle size={24} />
-                    </div>
-                    <p className="font-bold text-slate-800 text-sm">Certified Medicines</p>
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center shadow-sm mb-4 border border-slate-100 text-teal-600">
-                      <Stethoscope size={24} />
-                    </div>
-                    <p className="font-bold text-slate-800 text-sm">Licensed Pharmacists</p>
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center shadow-sm mb-4 border border-slate-100 text-teal-600">
-                      <ShieldPlus size={24} />
-                    </div>
-                    <p className="font-bold text-slate-800 text-sm">Secure Payments</p>
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center shadow-sm mb-4 border border-slate-100 text-teal-600">
-                      <Phone size={24} />
-                    </div>
-                    <p className="font-bold text-slate-800 text-sm">24/7 Support</p>
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center shadow-sm mb-4 border border-slate-100 text-teal-600">
-                      <Truck size={24} />
-                    </div>
-                    <p className="font-bold text-slate-800 text-sm">Same-Day Delivery</p>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* Footer */}
-            <footer className="bg-slate-900 text-white border-t border-slate-800">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-8 px-6 md:px-12 py-16 max-w-7xl mx-auto">
-                <div>
-                  <span className="text-xl font-bold text-teal-400 mb-6 block">Med Z Pharmacy</span>
-                  <p className="text-xs text-slate-400 leading-relaxed">
-                    Bridging clinical reliability with futuristic digital health. Your well-being, optimized by AI.
-                  </p>
-                </div>
-                <div>
-                  <h4 className="font-bold text-sm mb-6 uppercase tracking-wider text-slate-300">Navigation</h4>
-                  <ul className="space-y-3">
-                    <li><button onClick={() => setCurrentView('medicines')} className="text-xs text-slate-400 hover:text-teal-400 transition-all cursor-pointer">Medicines</button></li>
-                    <li><button onClick={() => setIsDoctorOpen(true)} className="text-xs text-slate-400 hover:text-teal-400 transition-all cursor-pointer">Consultations</button></li>
-                    <li><button onClick={() => setCurrentView('contact')} className="text-xs text-slate-400 hover:text-teal-400 transition-all cursor-pointer">Contact Us</button></li>
-                  </ul>
-                </div>
-                <div>
-                  <h4 className="font-bold text-sm mb-6 uppercase tracking-wider text-slate-300">Legal</h4>
-                  <ul className="space-y-3">
-                    <li><a className="text-xs text-slate-400 hover:text-teal-400 transition-all" href="#">Privacy Policy</a></li>
-                    <li><a className="text-xs text-slate-400 hover:text-teal-400 transition-all" href="#">Terms of Service</a></li>
-                  </ul>
-                </div>
-                <div>
-                  <h4 className="font-bold text-sm mb-6 uppercase tracking-wider text-slate-300">Newsletter</h4>
-                  <div className="relative">
-                    <input className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-xs focus:ring-teal-500 focus:border-teal-500 text-white placeholder-slate-500" placeholder="Enter your email" type="email"/>
-                    <button className="absolute right-2 top-2 bg-teal-600 text-white p-1 rounded-lg hover:bg-teal-700 cursor-pointer">
-                      <Mail size={16} />
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <div className="px-6 md:px-12 py-6 border-t border-slate-800 max-w-7xl mx-auto flex justify-between items-center text-xs text-slate-400">
-                <p>© 2026 Med Z Pharmacy. All rights reserved.</p>
-              </div>
-            </footer>
-          </div>
+          <HomeView
+            setCurrentView={setCurrentView}
+            setIsDoctorOpen={setIsDoctorOpen}
+            setIsChatOpen={setIsChatOpen}
+          />
         ) : currentView === 'medicines' ? (
-          <div className="flex flex-col md:flex-row flex-1 h-full overflow-hidden animate-fade-in">
-            <main className="flex-1 p-4 md:p-6 lg:p-8 pb-28 md:pb-6 w-full overflow-y-auto scrollbar-hide">
-              <div className="mb-8 flex justify-between items-end">
-                <div>
-                  <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">{activeCategory} Medicines</h2>
-                  <p className="text-slate-500 dark:text-slate-400 text-sm mt-1 font-medium">Showing {filteredProducts.length} results</p>
-                </div>
-              </div>
-
-              <div className="mb-8 overflow-x-auto pb-4 scrollbar-hide">
-                <div className="flex gap-2">
-                  {CATEGORIES.map(category => (
-                    <button
-                      key={category}
-                      onClick={() => setActiveCategory(category)}
-                      className={`
-                        whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border
-                        ${activeCategory === category 
-                          ? 'bg-slate-900 text-white border-slate-900 dark:bg-slate-100 dark:text-slate-950 dark:border-slate-100 shadow-md shadow-slate-900/10' 
-                          : 'bg-white text-slate-600 border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800 dark:hover:border-slate-700 dark:hover:text-slate-100 hover:border-slate-300 hover:text-slate-900 shadow-[0_2px_8px_rgb(0,0,0,0.02)]'}
-                      `}
-                    >
-                      {category}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 pb-24">
-                {filteredProducts.map((product) => {
-                  const Icon = product.icon;
-                  return (
-                    <div 
-                      key={product.id} 
-                      className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/60 rounded-[20px] p-4 md:p-5 flex flex-col hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:hover:shadow-[0_8px_30px_rgba(0,0,0,0.4)] hover:border-slate-300 dark:hover:border-slate-700 hover:-translate-y-0.5 transition-all duration-300 group"
-                    >
-                      <div className="w-10 h-10 md:w-12 md:h-12 bg-slate-50 dark:bg-slate-800 border border-slate-100/50 dark:border-slate-700/50 text-slate-700 dark:text-slate-300 rounded-2xl flex items-center justify-center mb-4 md:mb-5 group-hover:bg-slate-100 dark:group-hover:bg-slate-750 transition-colors">
-                        <Icon size={20} strokeWidth={2} />
-                      </div>
-                      <h3 className="font-bold text-base text-slate-900 dark:text-slate-100 mb-1">{product.name}</h3>
-                      <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-wider bg-slate-50 dark:bg-slate-800 px-2 py-1 rounded w-fit border border-slate-100 dark:border-slate-700">{product.category}</span>
-                      <div className="mb-6 flex-1">
-                        <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4 line-clamp-2">
-                          {product.description}
-                        </p>
-                        <button 
-                          onClick={() => handleAiExplain(product)}
-                          className="text-xs text-indigo-600 dark:text-indigo-400 font-medium flex items-center gap-1.5 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors bg-indigo-50/50 dark:bg-indigo-950/20 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 px-3 py-2 rounded-lg w-fit border border-indigo-100/50 dark:border-indigo-900/30"
-                        >
-                          <Sparkles size={14} /> AI Explain
-                        </button>
-                      </div>
-                      
-                      <div className="flex items-center justify-between mt-auto border-t border-slate-100/80 dark:border-slate-800/80 pt-4">
-                        <span className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-                          ₹{product.price}
-                        </span>
-                        <button 
-                          onClick={() => addToCart(product)}
-                          className="bg-slate-900 dark:bg-slate-100 hover:bg-slate-800 dark:hover:bg-slate-200 text-white dark:text-slate-950 px-4 py-2 rounded-xl text-sm font-semibold transition-all shadow-[0_2px_10px_rgb(0,0,0,0.08)] active:scale-95 flex items-center gap-1.5"
-                        >
-                          <Plus size={16} /> Add
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-              
-              {filteredProducts.length === 0 && (
-                <div className="text-center py-32 text-slate-500 dark:text-slate-400 flex flex-col items-center">
-                  <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4">
-                    <Package size={32} className="text-slate-400" />
-                  </div>
-                  <p className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-1">No products found</p>
-                  <p className="text-sm">Try searching for a different medicine or category.</p>
-                </div>
-              )}
-            </main>
-
-            {isMobileSidebarOpen && (
-              <div 
-                className="fixed inset-0 bg-slate-900/20 z-50 md:hidden backdrop-blur-sm transition-opacity"
-                onClick={() => setIsMobileSidebarOpen(false)}
-              />
-            )}
-            
-            <aside className={`
-              fixed md:static top-0 right-0 z-50 w-full md:w-[340px] h-full bg-white dark:bg-slate-950 border-l border-slate-200/60 dark:border-slate-800/80 shadow-2xl md:shadow-none flex flex-col transition-transform duration-300 ease-in-out
-              ${isMobileSidebarOpen ? 'translate-x-0' : 'translate-x-full md:translate-x-0'}
-            `}>
-              <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center md:hidden">
-                <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">Tools & Search</h2>
-                <button 
-                  className="p-2 text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 rounded-xl transition-colors"
-                  onClick={() => setIsMobileSidebarOpen(false)}
-                >
-                  <X size={20} />
-                </button>
-              </div>
-
-              <div className="p-2 border-b border-slate-100 dark:border-slate-800 md:hidden flex flex-col gap-1 bg-slate-50/50 dark:bg-slate-900/30">
-                <div className="flex items-center gap-3 px-4 py-3 mb-1">
-                  <div className="w-8 h-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-350 rounded-full flex items-center justify-center text-xs font-semibold uppercase shadow-sm">
-                    {user?.name?.charAt(0)}
-                  </div>
-                  <div>
-                    <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium leading-none mb-1 uppercase tracking-wider">Account</p>
-                    <p className="text-sm font-bold text-slate-900 dark:text-slate-100 leading-none">{user?.name}</p>
-                  </div>
-                </div>
-                <button onClick={() => { setCurrentView('orders'); setIsMobileSidebarOpen(false); }} className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800 hover:shadow-sm rounded-xl transition-all">
-                  <Package size={16} /> Order History
-                </button>
-                <button onClick={() => { setCurrentView('transactions'); setIsMobileSidebarOpen(false); }} className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800 hover:shadow-sm rounded-xl transition-all">
-                  <Receipt size={16} /> Transaction History
-                </button>
-                <button onClick={() => { setCurrentView('addresses'); setIsMobileSidebarOpen(false); }} className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800 hover:shadow-sm rounded-xl transition-all">
-                  <MapPin size={16} /> Saved Addresses
-                </button>
-                <button onClick={() => { setCurrentView('contact'); setIsMobileSidebarOpen(false); }} className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800 hover:shadow-sm rounded-xl transition-all">
-                  <Mail size={16} /> Contact Us
-                </button>
-                <div className="my-1 border-t border-slate-200/60 dark:border-slate-800"></div>
-                <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-xl transition-all">
-                  <LogOut size={16} /> Sign Out
-                </button>
-              </div>
-
-              <div className="flex-1 overflow-y-auto p-6 space-y-8 scrollbar-hide">
-                <div>
-                  <h2 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
-                    <Search size={14} /> Search Medicines
-                  </h2>
-                  <div className="relative group">
-                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                      <Search size={16} className="text-slate-400 group-focus-within:text-slate-900 dark:group-focus-within:text-slate-100 transition-colors" />
-                    </div>
-                    <input
-                      type="text"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Search by name or generic..."
-                      className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 text-sm focus:outline-none focus:border-slate-900 focus:border-slate-100 focus:ring-4 focus:ring-slate-900/5 dark:focus:ring-white/5 transition-all bg-slate-50 dark:bg-slate-900 hover:bg-white dark:hover:bg-slate-850 text-slate-900 dark:text-slate-100"
-                    />
-                  </div>
-                </div>
-
-                <div className="bg-gradient-to-b from-teal-50/50 to-teal-50/80 dark:from-teal-950/20 dark:to-teal-950/40 border border-teal-100/60 dark:border-teal-900/30 rounded-[20px] p-5 flex flex-col gap-3">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-teal-600 p-2 rounded-xl text-white shadow-sm shadow-teal-600/20">
-                      <Stethoscope size={20} />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-slate-900 dark:text-slate-100 text-sm">AI Doctor</h3>
-                      <p className="text-[10px] text-teal-600 dark:text-teal-400 font-bold uppercase tracking-wider">Free Consult</p>
-                    </div>
-                  </div>
-                  <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mt-1">
-                    Describe your symptoms for preliminary triage and home care advice.
-                  </p>
-                  <button
-                    onClick={() => { setIsDoctorOpen(true); setIsMobileSidebarOpen(false); }}
-                    className="w-full mt-2 bg-teal-600 hover:bg-teal-700 text-white py-2.5 rounded-xl font-semibold text-sm transition-all shadow-[0_2px_10px_rgb(20,184,166,0.2)] active:scale-95 flex items-center justify-center gap-2"
-                  >
-                    Start Consultation <ArrowLeft size={16} className="rotate-135" />
-                  </button>
-                </div>
-
-                <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/60 rounded-[20px] p-5 shadow-[0_4px_20px_rgb(0,0,0,0.02)] flex flex-col gap-4">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-bold text-slate-900 dark:text-slate-100 text-sm flex items-center gap-2">
-                      <ShoppingCart size={16} className="text-slate-400" /> Quick Cart
-                    </h3>
-                    {cartCount > 0 && (
-                      <span className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-350 text-[10px] px-2 py-0.5 rounded-md font-bold uppercase tracking-wider">
-                        {cartCount} Items
-                      </span>
-                    )}
-                  </div>
-
-                  {cart.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-8 text-slate-400 gap-3 bg-slate-50/50 dark:bg-slate-900/30 rounded-xl border border-slate-100 dark:border-slate-800 border-dashed">
-                      <Package size={24} className="text-slate-300" />
-                      <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Your cart is empty</p>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      <div className="space-y-3">
-                        {cart.slice(0, 3).map(item => (
-                          <div key={item.id} className="flex justify-between items-center text-sm group">
-                            <span className="text-slate-600 dark:text-slate-400 truncate pr-2 flex items-center gap-2.5">
-                              <span className="text-[10px] font-bold text-slate-500 dark:text-slate-450 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded-md">{item.quantity}x</span> 
-                              <span className="group-hover:text-slate-900 dark:group-hover:text-slate-100 transition-colors">{item.name}</span>
-                            </span>
-                            <span className="font-semibold text-slate-900 dark:text-slate-100">₹{item.price * item.quantity}</span>
-                          </div>
-                        ))}
-                        {cart.length > 3 && (
-                          <p className="text-xs text-slate-400 pt-1 font-medium">+{cart.length - 3} more items</p>
-                        )}
-                      </div>
-                      
-                      <div className="border-t border-slate-100 dark:border-slate-800 pt-4 flex justify-between items-center">
-                        <span className="font-medium text-slate-500 dark:text-slate-400 text-sm">Total</span>
-                        <span className="font-bold tracking-tight text-slate-900 dark:text-slate-100 text-lg">₹{cartTotal}</span>
-                      </div>
-                      
-                      <button
-                        onClick={() => { setCurrentView('cart'); setIsMobileSidebarOpen(false); }}
-                        className="w-full bg-slate-900 dark:bg-slate-100 hover:bg-slate-800 dark:hover:bg-slate-200 text-white dark:text-slate-950 py-3 rounded-xl font-semibold text-sm transition-all shadow-[0_2px_10px_rgb(0,0,0,0.08)] active:scale-95 flex items-center justify-center gap-2 mt-2"
-                      >
-                        View Full Cart
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </aside>
-          </div>
+          <ShopView
+            filteredProducts={filteredProducts}
+            activeCategory={activeCategory}
+            setActiveCategory={setActiveCategory}
+            CATEGORIES={CATEGORIES}
+            addToCart={addToCart}
+            handleAiExplain={handleAiExplain}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            cartCount={cartCount}
+            cartTotal={cartTotal}
+            cart={cart}
+            setCurrentView={setCurrentView}
+            setIsDoctorOpen={setIsDoctorOpen}
+            setIsChatOpen={setIsChatOpen}
+            handleLogout={handleLogout}
+            user={user}
+          />
         ) : currentView === 'contact' ? (
-          <div className="flex-1 overflow-y-auto bg-[#F8FAFC] dark:bg-[#090d16] p-6 lg:p-8 scrollbar-hide">
-            <div className="max-w-2xl mx-auto animate-fade-in">
-              <button 
-                onClick={() => setCurrentView('home')}
-                className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 font-medium mb-8 transition-colors w-fit bg-white dark:bg-slate-900 px-4 py-2 rounded-full border border-slate-200/60 dark:border-slate-850 shadow-sm"
-              >
-                <ArrowLeft size={16} /> Back to Store
-              </button>
-
-              <div className="bg-white dark:bg-slate-900 rounded-[24px] border border-slate-200/60 dark:border-slate-800/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.4)] p-8">
-                <div className="mb-8">
-                  <div className="w-12 h-12 bg-indigo-50 dark:bg-indigo-950/20 text-indigo-600 dark:text-indigo-400 rounded-2xl flex items-center justify-center mb-4">
-                    <Mail size={24} />
-                  </div>
-                  <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Contact Us</h2>
-                  <p className="text-slate-500 dark:text-slate-400 mt-2 text-sm">Have a question or need help? Send us a message and we&apos;ll get back to you as soon as possible.</p>
-                </div>
-
-                {contactStatus.success && (
-                  <div className="bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 p-4 rounded-xl text-sm font-medium mb-6 border border-emerald-100 dark:border-emerald-900/30 flex items-center gap-3 animate-fade-in">
-                    <CheckCircle2 size={18} />
-                    {contactStatus.success}
-                  </div>
-                )}
-
-                {contactStatus.error && (
-                  <div className="bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 p-4 rounded-xl text-sm font-medium mb-6 border border-red-100 dark:border-red-900/30 flex items-center gap-3 animate-fade-in">
-                    <AlertCircle size={18} />
-                    {contactStatus.error}
-                  </div>
-                )}
-
-                <form onSubmit={handleContactSubmit} className="space-y-5">
-                  <div className="space-y-1.5">
-                    <label className="text-sm font-semibold text-slate-700 dark:text-slate-350 ml-1">Name</label>
-                    <div className="relative group">
-                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-indigo-600">
-                        <User size={18} className="text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
-                      </div>
-                      <input
-                        type="text"
-                        required
-                        value={contactForm.name}
-                        onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
-                        className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 hover:bg-white dark:hover:bg-slate-850 focus:bg-white dark:focus:bg-slate-900 text-slate-900 dark:text-slate-100 text-sm placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-4 focus:ring-indigo-500/10 dark:focus:ring-indigo-400/5 transition-all"
-                        placeholder="John Doe"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <label className="text-sm font-semibold text-slate-700 dark:text-slate-350 ml-1">Email</label>
-                    <div className="relative group">
-                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-indigo-600">
-                        <Mail size={18} className="text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
-                      </div>
-                      <input
-                        type="email"
-                        required
-                        value={contactForm.email}
-                        onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
-                        className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 hover:bg-white dark:hover:bg-slate-850 focus:bg-white dark:focus:bg-slate-900 text-slate-900 dark:text-slate-100 text-sm placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-4 focus:ring-indigo-500/10 dark:focus:ring-indigo-400/5 transition-all"
-                        placeholder="john@example.com"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <label className="text-sm font-semibold text-slate-700 dark:text-slate-350 ml-1">Message</label>
-                    <textarea
-                      required
-                      rows={5}
-                      value={contactForm.message}
-                      onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
-                      className="w-full p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 hover:bg-white dark:hover:bg-slate-850 focus:bg-white dark:focus:bg-slate-900 text-slate-900 dark:text-slate-100 text-sm placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-4 focus:ring-indigo-500/10 dark:focus:ring-indigo-400/5 transition-all resize-none"
-                      placeholder="How can we help you today?"
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={contactStatus.loading}
-                    className="w-full bg-slate-900 dark:bg-slate-100 hover:bg-slate-800 dark:hover:bg-slate-200 text-white dark:text-slate-950 py-3.5 rounded-xl font-semibold text-sm transition-all shadow-[0_4px_12px_rgb(0,0,0,0.1)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.4)] active:scale-[0.98] mt-2 disabled:opacity-50 flex items-center justify-center gap-2"
-                  >
-                    {contactStatus.loading ? 'Sending...' : (
-                      <>
-                        <Send size={18} /> Send Message
-                      </>
-                    )}
-                  </button>
-                </form>
-              </div>
-            </div>
-          </div>
+          <ContactView
+            contactForm={contactForm}
+            setContactForm={setContactForm}
+            contactStatus={contactStatus}
+            handleContactSubmit={handleContactSubmit}
+            setCurrentView={setCurrentView}
+          />
         ) : currentView === 'cart' ? (
-          <div className="flex-1 overflow-y-auto bg-[#F8FAFC] dark:bg-[#090d16] p-6 lg:p-8 scrollbar-hide">
-            <div className="max-w-5xl mx-auto">
-              <button 
-                onClick={() => setCurrentView('home')}
-                className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 font-medium mb-8 transition-colors w-fit bg-white dark:bg-slate-900 px-4 py-2 rounded-full border border-slate-200/60 dark:border-slate-850 shadow-sm"
-              >
-                <ArrowLeft size={16} /> Back to Medicines
-              </button>
-              
-              <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-8">Your Cart</h2>
-              
-              <div className="flex flex-col lg:flex-row gap-8">
-                <div className="flex-1">
-                  {cart.length === 0 ? (
-                    <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 rounded-[24px] p-16 flex flex-col items-center justify-center text-center shadow-[0_8px_30px_rgb(0,0,0,0.02)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.4)]">
-                      <div className="w-20 h-20 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-5">
-                        <ShoppingCart size={32} className="text-slate-300" />
-                      </div>
-                      <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2">Your cart is empty</h3>
-                      <p className="text-slate-500 dark:text-slate-400 text-sm mb-8">Looks like you haven&apos;t added any medicines yet.</p>
-                      <button 
-                        onClick={() => setCurrentView('home')}
-                        className="bg-slate-900 dark:bg-slate-100 hover:bg-slate-800 dark:hover:bg-slate-200 text-white dark:text-slate-950 px-8 py-3 rounded-xl font-semibold transition-all shadow-[0_4px_14px_rgb(0,0,0,0.1)] active:scale-95"
-                      >
-                        Start Shopping
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      {cart.map((item) => {
-                        const Icon = item.icon;
-                        return (
-                          <div key={item.id} className="flex flex-col sm:flex-row gap-5 p-5 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 rounded-[20px] shadow-[0_2px_12px_rgb(0,0,0,0.02)] items-start sm:items-center group hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
-                            <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700/60 text-slate-700 dark:text-slate-300 rounded-2xl flex items-center justify-center shrink-0 group-hover:bg-slate-100 dark:group-hover:bg-slate-750 transition-colors">
-                              <Icon size={24} strokeWidth={2} />
-                            </div>
-                            <div className="flex-1 min-w-0 w-full sm:w-auto">
-                              <h4 className="font-bold text-base text-slate-900 dark:text-slate-100 truncate">{item.name}</h4>
-                              <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5 mb-1.5 uppercase tracking-wider font-medium">{item.category}</p>
-                              <p className="text-slate-900 dark:text-slate-100 font-bold text-lg">₹{item.price}</p>
-                            </div>
-                            
-                            <div className="flex sm:flex-col flex-row items-center sm:items-end gap-4 justify-between w-full sm:w-auto mt-4 sm:mt-0 border-t sm:border-0 border-slate-100 dark:border-slate-800 pt-4 sm:pt-0">
-                              <div className="flex items-center gap-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-1 shadow-sm">
-                                <button onClick={() => updateQuantity(item.id, -1)} className="p-1.5 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors">
-                                  <Minus size={16} />
-                                </button>
-                                <span className="w-8 text-center text-sm font-semibold text-slate-900 dark:text-slate-100">{item.quantity}</span>
-                                <button onClick={() => updateQuantity(item.id, 1)} className="p-1.5 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors">
-                                  <Plus size={16} />
-                                </button>
-                              </div>
-                              <button 
-                                onClick={() => removeItem(item.id)}
-                                className="text-slate-400 hover:text-red-500 transition-colors flex items-center gap-1.5 text-xs font-medium bg-slate-50 dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-950/20 px-3 py-1.5 rounded-lg"
-                              >
-                                <Trash2 size={14} /> <span className="sm:hidden">Remove</span>
-                              </button>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-
-                {cart.length > 0 && (
-                  <div className="w-full lg:w-[380px] shrink-0">
-                    <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 rounded-[24px] p-6 sticky top-6 shadow-[0_8px_30px_rgb(0,0,0,0.03)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.4)]">
-                      <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-6">Order Summary</h3>
-                      
-                      <div className="space-y-4 mb-6 text-sm">
-                        <div className="flex justify-between text-slate-600 dark:text-slate-400">
-                          <span>Subtotal ({cartCount} items)</span>
-                          <span className="font-medium text-slate-900 dark:text-slate-100">₹{cartTotal}</span>
-                        </div>
-                        <div className="flex justify-between text-slate-600 dark:text-slate-400">
-                          <span>Delivery Fee</span>
-                          <span className="text-teal-600 dark:text-teal-400 font-semibold bg-teal-50 dark:bg-teal-950/40 px-2 py-0.5 rounded">Free</span>
-                        </div>
-                        <div className="border-t border-slate-100 dark:border-slate-800 pt-5 mt-5 flex justify-between items-center">
-                          <span className="text-base font-bold text-slate-900 dark:text-slate-100">Total</span>
-                          <span className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">₹{cartTotal}</span>
-                        </div>
-                      </div>
-
-                      <div className="space-y-3 pt-2">
-                        {cart.length > 1 && (
-                          <button 
-                            onClick={handleCheckInteractions}
-                            className="w-full bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-200/60 dark:border-indigo-900/30 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400 py-3 rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2"
-                          >
-                            <Sparkles size={16} /> AI Interaction Check
-                          </button>
-                        )}
-                        <button 
-                          onClick={proceedToCheckout}
-                          className="w-full bg-slate-900 dark:bg-slate-100 hover:bg-slate-800 dark:hover:bg-slate-200 text-white dark:text-slate-950 py-3.5 rounded-xl font-bold text-sm transition-all shadow-[0_4px_14px_rgb(0,0,0,0.1)] dark:shadow-[0_4px_14px_rgba(0,0,0,0.4)] active:scale-95 flex items-center justify-center gap-2"
-                        >
-                          Proceed to Checkout
-                        </button>
-                      </div>
-                      
-                      <div className="mt-6 flex items-center justify-center gap-2 text-[11px] text-slate-400 font-medium uppercase tracking-wider">
-                        <ShieldPlus size={14} /> Safe & Secure Payments
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
+          <CartView
+            cart={cart}
+            cartCount={cartCount}
+            cartTotal={cartTotal}
+            updateQuantity={updateQuantity}
+            removeItem={removeItem}
+            proceedToCheckout={proceedToCheckout}
+            handleCheckInteractions={handleCheckInteractions}
+            setCurrentView={setCurrentView}
+          />
         ) : currentView === 'checkout' ? (
-          <div className="flex-1 overflow-y-auto bg-[#F8FAFC] dark:bg-[#090d16] p-6 lg:p-8 pb-28 md:pb-6 scrollbar-hide">
-            <div className="max-w-5xl mx-auto">
-              <button 
-                onClick={() => setCurrentView('cart')}
-                className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 font-medium mb-8 transition-colors w-fit bg-white dark:bg-slate-900 px-4 py-2 rounded-full border border-slate-200/60 dark:border-slate-850 shadow-sm"
-              >
-                <ArrowLeft size={16} /> Back to Cart
-              </button>
-              
-              <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-8">Checkout</h2>
-              
-              <div className="flex flex-col lg:flex-row gap-8">
-                <div className="flex-1 space-y-6">
-                  <div className={`bg-white dark:bg-slate-900 border ${checkoutStep === 1 ? 'border-slate-900 dark:border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.4)]' : 'border-slate-200/60 dark:border-slate-800/60 opacity-60 pointer-events-none'} rounded-[24px] p-6 lg:p-8 transition-all duration-300`}>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-6 flex items-center gap-3">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${checkoutStep === 1 ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-950' : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'}`}>1</div>
-                      Delivery Details
-                    </h3>
-                    <form onSubmit={handleAddressSubmit} className="space-y-5">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <div className="space-y-1.5">
-                          <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Full Name</label>
-                          <input type="text" required value={addressForm.name} onChange={e => setAddressForm({...addressForm, name: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 text-sm focus:outline-none focus:border-slate-900 dark:focus:border-slate-100 focus:ring-4 focus:ring-slate-900/5 dark:focus:ring-white/5 transition-all bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100" placeholder="John Doe" />
-                        </div>
-                        <div className="space-y-1.5">
-                          <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Phone Number</label>
-                          <input type="tel" required value={addressForm.phone} onChange={e => setAddressForm({...addressForm, phone: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 text-sm focus:outline-none focus:border-slate-900 dark:focus:border-slate-100 focus:ring-4 focus:ring-slate-900/5 dark:focus:ring-white/5 transition-all bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100" placeholder="+91 9876543210" />
-                        </div>
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Street Address</label>
-                        <textarea required value={addressForm.street} onChange={e => setAddressForm({...addressForm, street: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 text-sm focus:outline-none focus:border-slate-900 dark:focus:border-slate-100 focus:ring-4 focus:ring-slate-900/5 dark:focus:ring-white/5 transition-all bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 resize-none" placeholder="Flat No, Building Name, Street..." rows="2" />
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <div className="space-y-1.5">
-                          <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">City</label>
-                          <input type="text" required value={addressForm.city} onChange={e => setAddressForm({...addressForm, city: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 text-sm focus:outline-none focus:border-slate-900 dark:focus:border-slate-100 focus:ring-4 focus:ring-slate-900/5 dark:focus:ring-white/5 transition-all bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100" placeholder="Mumbai" readOnly />
-                        </div>
-                        <div className="space-y-1.5">
-                          <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex justify-between">
-                            <span>Pincode</span>
-                            {pincodeLoading && <span className="text-indigo-500 dark:text-indigo-400 animate-pulse">Verifying...</span>}
-                          </label>
-                          <input type="text" maxLength={6} required value={addressForm.pincode} onChange={e => setAddressForm({...addressForm, pincode: e.target.value.replace(/\D/g, '').slice(0, 6)})} className={`w-full px-4 py-3 rounded-xl border ${pincodeError ? 'border-red-500' : 'border-slate-200 dark:border-slate-800'} text-sm focus:outline-none focus:border-slate-900 dark:focus:border-slate-100 focus:ring-4 focus:ring-slate-900/5 dark:focus:ring-white/5 transition-all bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100`} placeholder="400001" />
-                          {pincodeError && <p className="text-xs text-red-500 font-medium mt-1">{pincodeError}</p>}
-                          {addressForm.state && !pincodeError && !pincodeLoading && (
-                            <p className="text-xs text-emerald-600 dark:text-emerald-450 font-medium mt-1">✓ Verified: {addressForm.state}</p>
-                          )}
-                        </div>
-                      </div>
-                      <div className="pt-4 flex justify-end">
-                        <button type="submit" className="bg-slate-900 dark:bg-slate-100 hover:bg-slate-800 dark:hover:bg-slate-200 text-white dark:text-slate-950 px-8 py-3.5 rounded-xl font-semibold text-sm transition-all shadow-[0_4px_14px_rgb(0,0,0,0.1)] dark:shadow-[0_4px_14px_rgba(0,0,0,0.4)] active:scale-95 cursor-pointer">
-                          Continue to Payment
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-
-                  <div className={`bg-white dark:bg-slate-900 border ${checkoutStep === 2 ? 'border-slate-900 dark:border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.4)]' : 'border-slate-200/60 dark:border-slate-800/60 opacity-60 pointer-events-none'} rounded-[24px] p-6 lg:p-8 transition-all duration-300`}>
-                    <div className="flex justify-between items-center mb-6">
-                      <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-3">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${checkoutStep === 2 ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-950' : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'}`}>2</div>
-                        Payment Method
-                      </h3>
-                      {checkoutStep === 2 && (
-                        <button onClick={() => setCheckoutStep(1)} className="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors cursor-pointer">Edit Details</button>
-                      )}
-                    </div>
-                    
-                    <form onSubmit={handlePaymentSubmit} className="space-y-5">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div 
-                          className={`border-2 rounded-xl p-5 cursor-pointer transition-all duration-200 ${paymentMethod === 'razorpay' ? 'border-slate-900 dark:border-slate-100 bg-slate-50 dark:bg-slate-800/40' : 'border-slate-100 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'}`}
-                          onClick={() => setPaymentMethod('razorpay')}
-                        >
-                          <div className="flex justify-between items-center mb-3">
-                            <div className="w-5 h-5 rounded-full border-2 border-slate-300 dark:border-slate-700 flex items-center justify-center">
-                              {paymentMethod === 'razorpay' && <div className="w-2.5 h-2.5 bg-slate-900 dark:bg-slate-100 rounded-full" />}
-                            </div>
-                            <CreditCard size={20} className={paymentMethod === 'razorpay' ? 'text-slate-900 dark:text-slate-100' : 'text-slate-400 dark:text-slate-500'} />
-                          </div>
-                          <h4 className="font-semibold text-slate-900 dark:text-slate-100 text-sm">Pay Online</h4>
-                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Cards, UPI, Netbanking</p>
-                        </div>
-                        
-                        <div 
-                          className={`border-2 rounded-xl p-5 cursor-pointer transition-all duration-200 ${paymentMethod === 'cod' ? 'border-slate-900 dark:border-slate-100 bg-slate-50 dark:bg-slate-800/40' : 'border-slate-100 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'}`}
-                          onClick={() => setPaymentMethod('cod')}
-                        >
-                          <div className="flex justify-between items-center mb-3">
-                            <div className="w-5 h-5 rounded-full border-2 border-slate-300 dark:border-slate-700 flex items-center justify-center">
-                              {paymentMethod === 'cod' && <div className="w-2.5 h-2.5 bg-slate-900 dark:bg-slate-100 rounded-full" />}
-                            </div>
-                            <Truck size={20} className={paymentMethod === 'cod' ? 'text-slate-900 dark:text-slate-100' : 'text-slate-400 dark:text-slate-500'} />
-                          </div>
-                          <h4 className="font-semibold text-slate-900 dark:text-slate-100 text-sm">Cash on Delivery</h4>
-                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Pay at your doorstep</p>
-                        </div>
-                      </div>
-
-                      <div className="pt-6 border-t border-slate-100 dark:border-slate-800 mt-6">
-                        <button type="submit" className="w-full bg-slate-900 dark:bg-slate-100 hover:bg-slate-800 dark:hover:bg-slate-200 text-white dark:text-slate-950 py-4 rounded-xl font-bold text-sm transition-all shadow-[0_4px_14px_rgb(0,0,0,0.1)] dark:shadow-[0_4px_14px_rgba(0,0,0,0.4)] active:scale-95 cursor-pointer">
-                          {paymentMethod === 'razorpay' ? `Pay ₹${cartTotal} securely` : 'Confirm COD Order'}
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-
-                <div className="w-full lg:w-[380px] shrink-0">
-                  <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 rounded-[24px] p-6 sticky top-6 shadow-[0_8px_30px_rgb(0,0,0,0.03)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.4)]">
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-6 flex items-center gap-2">
-                      <ShoppingCart size={18} className="text-slate-400" /> Order Summary
-                    </h3>
-                    
-                    <div className="space-y-4 mb-6 max-h-64 overflow-y-auto pr-2 scrollbar-hide">
-                      {cart.map(item => (
-                        <div key={item.id} className="flex justify-between items-start text-sm border-b border-slate-50 dark:border-slate-800/60 pb-3">
-                          <span className="text-slate-600 dark:text-slate-400 pr-2 leading-relaxed">
-                            <span className="font-semibold text-slate-900 dark:text-slate-100 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs mr-2">{item.quantity}x</span> 
-                            {item.name}
-                          </span>
-                          <span className="font-medium text-slate-900 dark:text-slate-100 whitespace-nowrap mt-0.5">₹{item.price * item.quantity}</span>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="space-y-4 mb-2 text-sm bg-slate-50 dark:bg-slate-950/60 p-4 rounded-xl">
-                      <div className="flex justify-between text-slate-600 dark:text-slate-400">
-                        <span>Items Total</span>
-                        <span className="font-medium text-slate-900 dark:text-slate-100">₹{cartTotal}</span>
-                      </div>
-                      <div className="flex justify-between text-slate-600 dark:text-slate-400">
-                        <span>Delivery Fee</span>
-                        <span className="text-teal-600 dark:text-teal-400 font-semibold">Free</span>
-                      </div>
-                      <div className="border-t border-slate-200/60 dark:border-slate-800 pt-4 mt-2 flex justify-between items-center">
-                        <span className="text-sm font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider">To Pay</span>
-                        <span className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">₹{cartTotal}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          checkoutStep === 1 ? (
+            <CheckoutView
+              cart={cart}
+              cartCount={cartCount}
+              cartTotal={cartTotal}
+              checkoutStep={checkoutStep}
+              setCheckoutStep={setCheckoutStep}
+              addressForm={addressForm}
+              setAddressForm={setAddressForm}
+              handleAddressSubmit={handleAddressSubmit}
+              paymentMethod={paymentMethod}
+              setPaymentMethod={setPaymentMethod}
+              handlePaymentSubmit={handlePaymentSubmit}
+              pincodeLoading={pincodeLoading}
+              pincodeError={pincodeError}
+              setCurrentView={setCurrentView}
+              savedAddresses={savedAddresses}
+              selectSavedAddress={(addr) => {
+                setAddressForm({
+                  name: addr.name || '',
+                  phone: addr.phone || '',
+                  street: addr.street || '',
+                  city: addr.city || '',
+                  state: addr.state || '',
+                  pincode: addr.pincode || '',
+                });
+              }}
+            />
+          ) : (
+            <PaymentView
+              cart={cart}
+              cartCount={cartCount}
+              cartTotal={cartTotal}
+              setCheckoutStep={setCheckoutStep}
+              paymentMethod={paymentMethod}
+              setPaymentMethod={setPaymentMethod}
+              handlePaymentSubmit={handlePaymentSubmit}
+              setCurrentView={setCurrentView}
+              isProcessingPayment={isProcessingPayment}
+            />
+          )
         ) : currentView === 'orders' ? (
-          <div className="flex-1 overflow-y-auto bg-[#F8FAFC] dark:bg-[#090d16] p-6 lg:p-8 pb-28 md:pb-6 scrollbar-hide">
-            <div className="max-w-4xl mx-auto">
-              <button onClick={() => setCurrentView('home')} className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 font-medium mb-8 transition-colors w-fit bg-white dark:bg-slate-900 px-4 py-2 rounded-full border border-slate-200/60 dark:border-slate-850 shadow-sm">
-                <ArrowLeft size={16} /> Back to Medicines
-              </button>
-              <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-8">Order History</h2>
-
-              {ordersHistory.length === 0 ? (
-                <div className="bg-white dark:bg-slate-900 p-12 rounded-[24px] shadow-[0_4px_20px_rgb(0,0,0,0.02)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200/60 dark:border-slate-800 text-center flex flex-col items-center justify-center">
-                  <Package className="text-slate-300 mb-5" size={40} />
-                  <p className="text-slate-900 dark:text-slate-100 font-bold mb-1">No orders yet</p>
-                  <p className="text-slate-500 dark:text-slate-400 text-sm">When you place an order, it will appear here.</p>
-                </div>
-              ) : (
-                <div className="space-y-5">
-                  {ordersHistory.map((order, i) => (
-                    <div key={i} className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 p-6 rounded-[20px] shadow-[0_2px_12px_rgb(0,0,0,0.02)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:hover:shadow-[0_8px_30px_rgba(0,0,0,0.4)] transition-shadow">
-                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-5 pb-5 border-b border-slate-100 dark:border-slate-800 gap-3">
-                        <div>
-                           <p className="font-bold text-slate-900 dark:text-slate-100 text-base">{order.id}</p>
-                           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">{order.date}</p>
-                        </div>
-                        <div className="flex flex-col sm:items-end">
-                           <span className="text-[10px] font-bold uppercase tracking-wider text-teal-700 dark:text-teal-400 bg-teal-50 dark:bg-teal-950/40 px-2.5 py-1 rounded-md mb-2 w-fit">{order.status}</span>
-                           <p className="font-bold text-lg text-slate-900 dark:text-slate-100">₹{order.total}</p>
-                        </div>
-                      </div>
-                      <ul className="text-sm text-slate-600 dark:text-slate-400 space-y-3">
-                        {order.items.map((item, idx) => (
-                          <li key={idx} className="flex justify-between items-center">
-                            <span className="flex items-center gap-3">
-                               <span className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold px-2 py-0.5 rounded">{item.quantity}x</span>
-                               {item.name}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
+          <OrdersView
+            ordersHistory={ordersHistory}
+            setCurrentView={setCurrentView}
+            setActiveDeliveryOrder={setActiveDeliveryOrder}
+          />
         ) : currentView === 'transactions' ? (
-          <div className="flex-1 overflow-y-auto bg-[#F8FAFC] dark:bg-[#090d16] p-6 lg:p-8 pb-28 md:pb-6 scrollbar-hide">
-            <div className="max-w-5xl mx-auto">
-              <button onClick={() => setCurrentView('home')} className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 font-medium mb-8 transition-colors w-fit bg-white dark:bg-slate-900 px-4 py-2 rounded-full border border-slate-200/60 dark:border-slate-850 shadow-sm">
-                <ArrowLeft size={16} /> Back to Medicines
-              </button>
-              <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-8">Transactions</h2>
-
-              {ordersHistory.length === 0 ? (
-                <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 rounded-[24px] p-16 text-center flex flex-col items-center shadow-[0_4px_20px_rgb(0,0,0,0.02)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
-                  <Receipt size={40} className="text-slate-300 mb-5" />
-                  <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 mb-1">No transactions yet</h3>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">Your payment history will appear here.</p>
-                </div>
-              ) : (
-                <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 rounded-[24px] overflow-hidden shadow-[0_4px_20px_rgb(0,0,0,0.02)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left text-sm">
-                      <thead className="bg-slate-50/50 dark:bg-slate-950/50 text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-800">
-                        <tr>
-                          <th className="p-5 font-bold uppercase tracking-wider text-[11px]">Date</th>
-                          <th className="p-5 font-bold uppercase tracking-wider text-[11px]">Order Ref</th>
-                          <th className="p-5 font-bold uppercase tracking-wider text-[11px]">Method</th>
-                          <th className="p-5 font-bold uppercase tracking-wider text-[11px] text-right">Amount</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-100/80 dark:divide-slate-800">
-                        {ordersHistory.map((order, idx) => (
-                          <tr key={idx} className="hover:bg-slate-50/50 dark:hover:bg-slate-850/50 transition-colors group">
-                            <td className="p-5 text-slate-500 dark:text-slate-400 font-medium whitespace-nowrap">{order.date}</td>
-                            <td className="p-5 font-semibold text-slate-900 dark:text-slate-100">{order.id}</td>
-                            <td className="p-5">
-                              <span className={`text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md ${order.paymentMethod === 'razorpay' ? 'bg-indigo-50 dark:bg-indigo-950/20 text-indigo-700 dark:text-indigo-400 border border-indigo-100/50 dark:border-indigo-900/30' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/50 dark:border-slate-700/55'}`}>
-                                {order.paymentMethod === 'razorpay' ? 'Online' : 'COD'}
-                              </span>
-                            </td>
-                            <td className="p-5 font-bold text-slate-900 dark:text-slate-100 text-right">₹{order.total}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
+          <TransactionsView
+            ordersHistory={ordersHistory}
+            setCurrentView={setCurrentView}
+          />
         ) : currentView === 'addresses' ? (
-          <div className="flex-1 overflow-y-auto bg-[#F8FAFC] dark:bg-[#090d16] p-6 lg:p-8 pb-28 md:pb-6 scrollbar-hide">
-            <div className="max-w-4xl mx-auto">
-              <button onClick={() => setCurrentView('home')} className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 font-medium mb-8 transition-colors w-fit bg-white dark:bg-slate-900 px-4 py-2 rounded-full border border-slate-200/60 dark:border-slate-850 shadow-sm">
-                <ArrowLeft size={16} /> Back to Medicines
-              </button>
-              <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-8">Saved Addresses</h2>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {savedAddresses.map((addr, idx) => (
-                  <div key={idx} className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 rounded-[20px] p-6 shadow-[0_2px_12px_rgb(0,0,0,0.02)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.4)] flex items-start gap-4 hover:border-slate-300 dark:hover:border-slate-700 transition-colors group">
-                    <div className="bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-400 p-3 rounded-xl mt-0.5 group-hover:bg-slate-900 group-hover:text-white dark:group-hover:bg-slate-100 dark:group-hover:text-slate-950 transition-colors">
-                      <MapPin size={20} />
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-slate-900 dark:text-slate-100 text-base mb-1">{addr.name}</h4>
-                      <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-3 bg-slate-50 dark:bg-slate-850 px-2 py-0.5 rounded w-fit">{addr.phone}</p>
-                      <p className="text-sm text-slate-600 dark:text-slate-455 leading-relaxed mb-1">{addr.street}</p>
-                      <p className="text-sm text-slate-600 dark:text-slate-455">{addr.city} • {addr.pincode}</p>
-                    </div>
-                  </div>
-                ))}
-
-                {savedAddresses.length === 0 && (
-                   <div className="col-span-full bg-white dark:bg-slate-900 p-12 rounded-[24px] shadow-[0_4px_20px_rgb(0,0,0,0.02)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200/60 dark:border-slate-800 text-center flex flex-col items-center">
-                     <MapPin className="text-slate-300 mb-4" size={40} />
-                     <p className="text-slate-900 dark:text-slate-100 font-bold mb-1">No saved addresses</p>
-                     <p className="text-slate-500 dark:text-slate-400 text-sm">Place an order to save your address automatically.</p>
-                   </div>
-                )}
-              </div>
-            </div>
-          </div>
+          <AddressesView
+            savedAddresses={savedAddresses}
+            setCurrentView={setCurrentView}
+          />
         ) : currentView === 'delivery' ? (
-          <DeliveryTrackingView order={activeDeliveryOrder} setCurrentView={setCurrentView} />
+          <TrackingView
+            order={activeDeliveryOrder}
+            setCurrentView={setCurrentView}
+          />
+        ) : currentView === 'consult' ? (
+          <AIConsultView
+            doctorMessages={doctorMessages}
+            doctorInput={doctorInput}
+            setDoctorInput={setDoctorInput}
+            handleDoctorMessage={handleDoctorMessage}
+            isDoctorTyping={isDoctorTyping}
+            setCurrentView={setCurrentView}
+            addToCart={addToCart}
+          />
         ) : null}
       </div>
 

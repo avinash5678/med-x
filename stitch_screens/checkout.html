@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Checkout | MedPrecision</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .step-active::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 100%;
+            width: 2px;
+            height: calc(100% + 24px);
+            background: #e5e9f2;
+            transform: translateX(-50%);
+            z-index: 0;
+        }
+        .step-item:last-child::before {
+            display: none;
+        }
+        .focus-ring:focus-within {
+            ring: 2px solid #004295;
+            outline: 2px solid transparent;
+            outline-offset: 2px;
+        }
+        .card-shadow {
+            box-shadow: 0px 12px 32px rgba(0, 88, 195, 0.04);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary-fixed": "#d8e2ff",
+                      "inverse-on-surface": "#eff1f6",
+                      "on-secondary-fixed": "#00201d",
+                      "on-background": "#181c20",
+                      "surface-variant": "#e0e2e7",
+                      "on-primary-container": "#c7d6ff",
+                      "secondary-container": "#86f2e4",
+                      "surface-container-high": "#e6e8ed",
+                      "on-primary": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "inverse-surface": "#2d3135",
+                      "secondary-fixed-dim": "#6bd8cb",
+                      "on-secondary-fixed-variant": "#005049",
+                      "on-tertiary-container": "#c7d7f2",
+                      "surface-bright": "#f7f9fe",
+                      "primary-container": "#0058c3",
+                      "on-primary-fixed-variant": "#004397",
+                      "on-error": "#ffffff",
+                      "surface-container-low": "#f1f4f9",
+                      "on-primary-fixed": "#001a43",
+                      "secondary": "#006a61",
+                      "on-secondary-container": "#006f66",
+                      "primary-fixed-dim": "#afc6ff",
+                      "tertiary": "#37465c",
+                      "on-secondary": "#ffffff",
+                      "on-surface-variant": "#424753",
+                      "tertiary-container": "#4e5e74",
+                      "tertiary-fixed": "#d3e4fe",
+                      "surface-container-highest": "#e0e2e7",
+                      "surface-container": "#eceef3",
+                      "on-tertiary-fixed-variant": "#38485d",
+                      "inverse-primary": "#afc6ff",
+                      "error-container": "#ffdad6",
+                      "surface-container-lowest": "#ffffff",
+                      "background": "#f7f9fe",
+                      "outline-variant": "#c2c6d5",
+                      "surface": "#f7f9fe",
+                      "surface-tint": "#0559c4",
+                      "on-tertiary": "#ffffff",
+                      "on-tertiary-fixed": "#0b1c30",
+                      "on-surface": "#181c20",
+                      "outline": "#737784",
+                      "surface-dim": "#d8dadf",
+                      "primary": "#004295",
+                      "tertiary-fixed-dim": "#b7c8e1",
+                      "secondary-fixed": "#89f5e7",
+                      "error": "#ba1a1a"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "xl": "80px",
+                      "lg": "48px",
+                      "sm": "12px",
+                      "md": "24px",
+                      "container-max": "1280px",
+                      "gutter": "24px",
+                      "base": "8px",
+                      "xs": "4px"
+              },
+              "fontFamily": {
+                      "headline-sm": ["Plus Jakarta Sans"],
+                      "body-lg": ["Inter"],
+                      "display-lg": ["Plus Jakarta Sans"],
+                      "headline-md": ["Plus Jakarta Sans"],
+                      "headline-lg": ["Plus Jakarta Sans"],
+                      "body-md": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "label-md": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-sm": ["18px", {"lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400"}],
+                      "display-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-md": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "1.25", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400"}],
+                      "body-sm": ["14px", {"lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400"}],
+                      "label-md": ["14px", {"lineHeight": "1", "letterSpacing": "0.02em", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body-md selection:bg-primary-fixed">
+<!-- TopNavBar (Shared Component) -->
+<header class="bg-surface-container-lowest dark:bg-inverse-surface sticky top-0 w-full shadow-sm z-50 border-b border-outline-variant dark:border-outline">
+<div class="flex justify-between items-center h-16 px-lg max-w-container-max mx-auto">
+<div class="flex items-center gap-md">
+<span class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary">MedPrecision</span>
+</div>
+<nav class="hidden md:flex gap-lg items-center">
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors cursor-pointer active:opacity-80" href="#">Medicines</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors cursor-pointer active:opacity-80" href="#">Consultations</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors cursor-pointer active:opacity-80" href="#">Contact Us</a>
+</nav>
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined text-on-surface-variant dark:text-surface-variant p-2 hover:bg-surface-container rounded-full transition-colors">search</button>
+<button class="material-symbols-outlined text-primary dark:text-inverse-primary p-2 hover:bg-surface-container rounded-full transition-colors">account_circle</button>
+</div>
+</div>
+</header>
+<main class="max-w-container-max mx-auto px-lg py-xl">
+<div class="flex flex-col lg:flex-row gap-xl items-start">
+<!-- Left Side: Progress & Checkout Form -->
+<div class="flex-grow w-full lg:max-w-[800px] flex gap-lg">
+<!-- Vertical Step Indicator -->
+<div class="hidden md:flex flex-col items-center gap-lg py-sm">
+<div class="step-item step-active relative flex flex-col items-center">
+<div class="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center z-10">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-wider text-primary mt-xs">Info</span>
+</div>
+<div class="step-item step-active relative flex flex-col items-center">
+<div class="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center z-10">
+<span class="font-label-md text-label-md">2</span>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-wider text-primary mt-xs">Ship</span>
+</div>
+<div class="step-item step-active relative flex flex-col items-center">
+<div class="w-10 h-10 rounded-full border-2 border-outline-variant bg-surface text-outline flex items-center justify-center z-10">
+<span class="font-label-md text-label-md">3</span>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-wider text-outline mt-xs">Pay</span>
+</div>
+</div>
+<!-- Form Canvas -->
+<div class="flex-grow space-y-md">
+<div class="mb-md">
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-xs">Shipping &amp; Delivery</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Verify your prescription delivery details for MedPrecision pharmaceuticals.</p>
+</div>
+<!-- Shipping Address Section -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md card-shadow">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="flex flex-col gap-xs md:col-span-2">
+<label class="font-label-md text-label-md text-on-surface-variant ml-1">Full Patient Name</label>
+<div class="focus-ring bg-surface-container-low rounded-lg transition-all border border-transparent">
+<input class="w-full bg-transparent border-none py-3 px-md text-on-surface placeholder:text-outline focus:ring-0" placeholder="Johnathan Doe" type="text"/>
+</div>
+</div>
+<div class="flex flex-col gap-xs md:col-span-2">
+<label class="font-label-md text-label-md text-on-surface-variant ml-1">Street Address</label>
+<div class="focus-ring bg-surface-container-low rounded-lg transition-all border border-transparent">
+<input class="w-full bg-transparent border-none py-3 px-md text-on-surface placeholder:text-outline focus:ring-0" placeholder="123 Clinical Way, Medical District" type="text"/>
+</div>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface-variant ml-1">City</label>
+<div class="focus-ring bg-surface-container-low rounded-lg transition-all border border-transparent">
+<input class="w-full bg-transparent border-none py-3 px-md text-on-surface placeholder:text-outline focus:ring-0" placeholder="Boston" type="text"/>
+</div>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface-variant ml-1">Postal Code</label>
+<div class="focus-ring bg-surface-container-low rounded-lg transition-all border border-transparent">
+<input class="w-full bg-transparent border-none py-3 px-md text-on-surface placeholder:text-outline focus:ring-0" placeholder="02108" type="text"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Payment Method Section -->
+<div class="pt-md">
+<h2 class="font-headline-sm text-headline-sm text-on-surface mb-md">Payment Method</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+<button class="flex flex-col items-start p-md border-2 border-primary bg-primary-fixed rounded-xl text-left transition-all group">
+<div class="flex justify-between w-full mb-md">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">credit_card</span>
+<div class="w-5 h-5 rounded-full border-2 border-primary flex items-center justify-center">
+<div class="w-2.5 h-2.5 rounded-full bg-primary"></div>
+</div>
+</div>
+<span class="font-label-md text-label-md text-on-primary-fixed mb-xs">Credit Card</span>
+<span class="text-[12px] text-on-primary-fixed-variant">Secure processing</span>
+</button>
+<button class="flex flex-col items-start p-md border-2 border-outline-variant bg-surface-container-lowest rounded-xl text-left hover:border-primary/40 transition-all group">
+<div class="flex justify-between w-full mb-md">
+<span class="material-symbols-outlined text-on-surface-variant">account_balance</span>
+<div class="w-5 h-5 rounded-full border-2 border-outline-variant"></div>
+</div>
+<span class="font-label-md text-label-md text-on-surface mb-xs">Bank Transfer</span>
+<span class="text-[12px] text-on-surface-variant">Direct ACH</span>
+</button>
+<button class="flex flex-col items-start p-md border-2 border-outline-variant bg-surface-container-lowest rounded-xl text-left hover:border-primary/40 transition-all group">
+<div class="flex justify-between w-full mb-md">
+<span class="material-symbols-outlined text-on-surface-variant">wallet</span>
+<div class="w-5 h-5 rounded-full border-2 border-outline-variant"></div>
+</div>
+<span class="font-label-md text-label-md text-on-surface mb-xs">Health Wallet</span>
+<span class="text-[12px] text-on-surface-variant">HSA/FSA Eligible</span>
+</button>
+</div>
+</div>
+<!-- Card Details (Interactive) -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md card-shadow space-y-md">
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface-variant ml-1">Cardholder Name</label>
+<div class="focus-ring bg-surface-container-low rounded-lg border border-transparent">
+<input class="w-full bg-transparent border-none py-3 px-md text-on-surface focus:ring-0" placeholder="NAME ON CARD" type="text"/>
+</div>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface-variant ml-1">Card Number</label>
+<div class="focus-ring bg-surface-container-low rounded-lg border border-transparent relative">
+<input class="w-full bg-transparent border-none py-3 px-md text-on-surface focus:ring-0" placeholder="0000 0000 0000 0000" type="text"/>
+<span class="absolute right-md top-1/2 -translate-y-1/2 material-symbols-outlined text-outline">lock</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-md">
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface-variant ml-1">Expiry Date</label>
+<div class="focus-ring bg-surface-container-low rounded-lg border border-transparent">
+<input class="w-full bg-transparent border-none py-3 px-md text-on-surface focus:ring-0" placeholder="MM/YY" type="text"/>
+</div>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface-variant ml-1">CVV</label>
+<div class="focus-ring bg-surface-container-low rounded-lg border border-transparent">
+<input class="w-full bg-transparent border-none py-3 px-md text-on-surface focus:ring-0" placeholder="000" type="text"/>
+</div>
+</div>
+</div>
+</div>
+<button class="w-full bg-primary text-on-primary font-headline-sm py-4 rounded-xl hover:bg-primary-container transition-all flex items-center justify-center gap-sm mt-md">
+                        Complete Secure Purchase
+                        <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<p class="text-center font-body-sm text-body-sm text-outline mt-sm flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">verified_user</span>
+                        Encrypted with 256-bit AES medical grade security.
+                    </p>
+</div>
+</div>
+<!-- Right Side: Sticky Order Summary -->
+<aside class="w-full lg:w-[400px] sticky top-24">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md card-shadow">
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-md">Order Summary</h3>
+<div class="space-y-md mb-md pb-md border-b border-outline-variant">
+<div class="flex gap-md">
+<div class="w-16 h-16 bg-surface-container rounded-lg flex-shrink-0 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Close up professional studio photograph of a white prescription pill bottle with a clean medical label against a soft blue clinical background. High-key lighting highlights the precision and purity of the pharmaceutical product, reflecting a modern healthcare aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJUS5Tk4qK83UJPeEkZuumSMXqLiFdKuoRch2qqZ6rnSV2EToCGQdCpp35dC-s-fCxMDxK_TUPeWas1VW6mEVty-HmQYkJQEaTuEio-Zyj9XZZzY-FJHzkixg82sGpu3aNJwsfieJ_3PtreB4lOaKAs3lS2fJkvitjqiJS5SdqTQOGt7fbaVgPdW_vdRhEObPhsnFVjVW3QDdbupb3yjOYZLrVqjqXSis7wa6fH9CbUpOzh8FYx1fXZ1XkN2F-qNfyqWDW3g_q17tK"/>
+</div>
+<div class="flex-grow">
+<h4 class="font-label-md text-label-md text-on-surface">Precision-Stat 500mg</h4>
+<p class="text-[12px] text-on-surface-variant">30 Day Supply • Prescription Refill</p>
+<div class="flex justify-between items-center mt-xs">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Qty: 1</span>
+<span class="font-body-md text-body-md font-bold text-primary">$89.00</span>
+</div>
+</div>
+</div>
+<div class="flex gap-md">
+<div class="w-16 h-16 bg-surface-container rounded-lg flex-shrink-0 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Detailed macro shot of a sleek glass bottle of high-end medical supplements on a white laboratory surface. The lighting is bright and atmospheric, casting soft shadows that emphasize the professional quality and precision of the medical grade packaging." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAAJj_2AKxk8K99TxKOVI77KryTGvZexpP8fOGzvA7q0kLnsSKm_RU-wCqNLhFerlzZFAg-mLpF7TGpGe0FmQ0MoC62Y7vvGyHYM4yjBKAkPaleGmVIz_YwGy0abdAaCUj2dYLxHKscE2KEuNTxeorJsbdkweCaYEQvl4z2qUYKCEj9tRvwRsxggAiM2WiBh4OFSXg5Os3E1vfRUK_aiH5_2mHUtGC6o0WM_vw-ID6qrIA9_Opdw5yIyITqkK1hY_4JSOyLaTd_TH1D"/>
+</div>
+<div class="flex-grow">
+<h4 class="font-label-md text-label-md text-on-surface">Immune-Sync Complex</h4>
+<p class="text-[12px] text-on-surface-variant">Vitamins • 60 Capsules</p>
+<div class="flex justify-between items-center mt-xs">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Qty: 1</span>
+<span class="font-body-md text-body-md font-bold text-primary">$45.00</span>
+</div>
+</div>
+</div>
+</div>
+<div class="space-y-sm">
+<div class="flex justify-between text-body-sm text-on-surface-variant">
+<span>Subtotal</span>
+<span>$134.00</span>
+</div>
+<div class="flex justify-between text-body-sm text-on-surface-variant">
+<span>Clinical Shipping</span>
+<span class="text-secondary font-bold">FREE</span>
+</div>
+<div class="flex justify-between text-body-sm text-on-surface-variant">
+<span>Est. Taxes</span>
+<span>$11.39</span>
+</div>
+<div class="pt-sm mt-sm border-t border-outline-variant flex justify-between items-center">
+<span class="font-headline-sm text-headline-sm text-on-surface">Total</span>
+<span class="font-headline-md text-headline-md text-primary">$145.39</span>
+</div>
+</div>
+<div class="mt-md bg-surface-container-low p-sm rounded-lg flex items-start gap-sm">
+<span class="material-symbols-outlined text-secondary text-[20px]">local_pharmacy</span>
+<p class="text-[12px] text-on-surface-variant leading-tight">
+                            Verified by Licensed Pharmacists. Delivery estimated within 24-48 hours.
+                        </p>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- Footer (Shared Component) -->
+<footer class="bg-on-background dark:bg-surface-container-lowest text-on-primary">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-lg px-lg py-xl max-w-container-max mx-auto">
+<div>
+<span class="font-headline-sm text-headline-sm font-bold text-on-primary dark:text-primary mb-md block">MedPrecision</span>
+<p class="font-body-sm text-body-sm text-surface-variant dark:text-on-surface-variant opacity-80">Advanced pharmaceutical precision delivered to your doorstep. Trust, technology, and care combined.</p>
+</div>
+<div class="flex flex-col gap-sm">
+<h4 class="font-label-md text-label-md mb-xs">Support</h4>
+<a class="font-body-sm text-body-sm text-surface-variant hover:text-primary-fixed-dim transition-colors cursor-pointer" href="#">Pharmacist Support</a>
+<a class="font-body-sm text-body-sm text-surface-variant hover:text-primary-fixed-dim transition-colors cursor-pointer" href="#">Returns</a>
+<a class="font-body-sm text-body-sm text-surface-variant hover:text-primary-fixed-dim transition-colors cursor-pointer" href="#">Shipping Info</a>
+</div>
+<div class="flex flex-col gap-sm">
+<h4 class="font-label-md text-label-md mb-xs">Legal</h4>
+<a class="font-body-sm text-body-sm text-surface-variant hover:text-primary-fixed-dim transition-colors cursor-pointer" href="#">Privacy Policy</a>
+<a class="font-body-sm text-body-sm text-surface-variant hover:text-primary-fixed-dim transition-colors cursor-pointer" href="#">Terms of Service</a>
+<a class="font-body-sm text-body-sm text-surface-variant hover:text-primary-fixed-dim transition-colors cursor-pointer" href="#">Quality Standards</a>
+</div>
+<div>
+<h4 class="font-label-md text-label-md mb-md">Newsletter</h4>
+<div class="flex gap-xs">
+<input class="bg-surface-variant/20 border-outline-variant rounded py-2 px-md text-body-sm w-full focus:ring-1 focus:ring-primary-fixed" placeholder="Email" type="email"/>
+<button class="bg-primary-fixed text-on-primary-fixed font-bold px-md rounded hover:bg-primary-fixed-dim transition-all">Join</button>
+</div>
+</div>
+</div>
+<div class="border-t border-surface-variant/10 max-w-container-max mx-auto py-md px-lg text-center">
+<p class="font-body-sm text-body-sm text-surface-variant/60">© 2024 MedPrecision Pharmaceuticals. All rights reserved.</p>
+</div>
+</footer>
+<script>
+        // Simple micro-interaction for payment method selection
+        const paymentButtons = document.querySelectorAll('button[class*="border-2"]');
+        paymentButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                paymentButtons.forEach(b => {
+                    b.classList.remove('border-primary', 'bg-primary-fixed');
+                    b.classList.add('border-outline-variant', 'bg-surface-container-lowest');
+                    const indicator = b.querySelector('.w-2\\.5');
+                    if(indicator) indicator.classList.add('hidden');
+                    const icon = b.querySelector('.material-symbols-outlined');
+                    if(icon) icon.classList.remove('text-primary');
+                    const ring = b.querySelector('.w-5');
+                    if(ring) ring.classList.add('border-outline-variant');
+                });
+                btn.classList.add('border-primary', 'bg-primary-fixed');
+                btn.classList.remove('border-outline-variant', 'bg-surface-container-lowest');
+                const indicator = btn.querySelector('.w-2\\.5');
+                if(indicator) indicator.classList.remove('hidden');
+                const icon = btn.querySelector('.material-symbols-outlined');
+                if(icon) icon.classList.add('text-primary');
+                const ring = btn.querySelector('.w-5');
+                if(ring) ring.classList.remove('border-outline-variant');
+            });
+        });
+    </script>
+</body></html>

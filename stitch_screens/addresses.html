@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Saved Addresses | Med Z</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-container": "#65fade",
+                    "error": "#ba1a1a",
+                    "primary": "#0058c3",
+                    "surface-container-highest": "#e0e2ed",
+                    "primary-fixed-dim": "#aec6ff",
+                    "on-surface-variant": "#414754",
+                    "primary-container": "#0070f3",
+                    "on-secondary-container": "#007262",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed-dim": "#ffb596",
+                    "outline": "#727786",
+                    "on-background": "#181b23",
+                    "on-secondary": "#ffffff",
+                    "surface-tint": "#0059c5",
+                    "on-surface": "#181b23",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-fixed-variant": "#7d2d00",
+                    "on-error-container": "#93000a",
+                    "secondary": "#006b5c",
+                    "surface-variant": "#e0e2ed",
+                    "inverse-primary": "#aec6ff",
+                    "on-tertiary-fixed": "#360f00",
+                    "on-tertiary-container": "#fffeff",
+                    "surface": "#faf9ff",
+                    "inverse-surface": "#2d3039",
+                    "inverse-on-surface": "#eff0fb",
+                    "surface-container-lowest": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-primary-fixed": "#001a43",
+                    "secondary-fixed-dim": "#41ddc2",
+                    "on-secondary-fixed-variant": "#005045",
+                    "primary-fixed": "#d8e2ff",
+                    "on-secondary-fixed": "#00201b",
+                    "on-primary-container": "#ffffff",
+                    "on-primary-fixed-variant": "#004397",
+                    "surface-container-low": "#f2f3fe",
+                    "surface-dim": "#d8d9e4",
+                    "surface-container": "#ecedf8",
+                    "tertiary": "#a23d00",
+                    "outline-variant": "#c1c6d7",
+                    "surface-container-high": "#e6e7f3",
+                    "tertiary-container": "#ca4e00",
+                    "background": "#faf9ff",
+                    "tertiary-fixed": "#ffdbcd",
+                    "on-primary": "#ffffff",
+                    "surface-bright": "#faf9ff",
+                    "secondary-fixed": "#65fade"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-desktop": "80px",
+                    "xs": "8px",
+                    "gutter": "24px",
+                    "sm": "16px",
+                    "xl": "64px",
+                    "margin-mobile": "16px",
+                    "lg": "40px",
+                    "base": "4px",
+                    "md": "24px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "display-lg": ["Plus Jakarta Sans"],
+                    "body-lg": ["Inter"],
+                    "price-lg": ["Plus Jakarta Sans"],
+                    "body-md": ["Inter"],
+                    "headline-lg": ["Plus Jakarta Sans"],
+                    "label-md": ["Plus Jakarta Sans"],
+                    "caption": ["Inter"],
+                    "headline-lg-mobile": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "price-lg": ["20px", {"lineHeight": "1.0", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                    "caption": ["12px", {"lineHeight": "1.4", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "700"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        body {
+            background-color: #faf9ff;
+            color: #181b23;
+            -webkit-font-smoothing: antialiased;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .address-card:hover .icon-box {
+            background-color: #001a43;
+            color: #ffffff;
+            transform: rotateY(180deg);
+        }
+        .icon-box {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-nav {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        /* Custom scrollbar for premium feel */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f2f3fe;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c1c6d7;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0058c3;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full h-[68px] z-50 border-b border-white/20 bg-white/70 dark:bg-on-background/70 backdrop-blur-md shadow-[0_8px_32px_0_rgba(0,88,195,0.08)] flex justify-between items-center px-margin-desktop max-w-full mx-auto">
+<div class="flex items-center gap-lg">
+<span class="text-headline-md font-headline-md font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">Med Z</span>
+<div class="hidden md:flex items-center gap-md">
+<a class="text-on-surface-variant font-medium hover:text-primary transition-all duration-200 text-label-md font-label-md" href="#">Medicines</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-all duration-200 text-label-md font-label-md" href="#">Consultations</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-all duration-200 text-label-md font-label-md" href="#">Contact Us</a>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="bg-primary text-on-primary px-sm py-xs rounded-lg text-label-md font-label-md hover:shadow-[0_0_15px_rgba(0,88,243,0.4)] transition-all duration-200 flex items-center gap-xs">
+<span>✦ Ask AI</span>
+</button>
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary cursor-pointer">dark_mode</span>
+<div class="relative cursor-pointer">
+<span class="material-symbols-outlined text-primary">shopping_cart</span>
+<span class="absolute -top-1 -right-1 bg-secondary text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">2</span>
+</div>
+<img alt="User Avatar" class="w-8 h-8 rounded-full border-2 border-primary/20" data-alt="A professional headshot of a young male professional in a clean white medical environment, wearing a minimalist modern polo shirt. The lighting is soft and high-key, emphasizing a clean and clinical yet friendly medical brand identity. The background features subtle blurred glass elements and clinical blue tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjQRhJD58D-p_UjiUc2-r985GsjuZUMYxswI1JZuoICIAXSDoQgBOBCksUmbm4e_ZD7rCbWbpN97ag0ondskD6MK5LIp7aprBytyoiiJb4yFy_kEeZHkgeU0jL01bE2B1ZepXrIJE7tSanrgcbmP95KN2iRxDpL1sm53Phv_JYFDsWGhaLXiJiHMQLRTjnVJKAedZNW93aAJuk85lPNo20xCT54XNCPqaTdMvnbbyh4IgWLrfR_OEP4WnKjS-a322sJAnnEw79GFyN"/>
+</div>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="pt-[108px] pb-xl px-margin-mobile md:px-margin-desktop min-h-screen">
+<div class="max-w-4xl mx-auto">
+<!-- Header Section -->
+<div class="flex flex-col gap-xs mb-lg">
+<a class="flex items-center gap-xs text-primary font-medium hover:translate-x-[-4px] transition-transform duration-200 text-label-md font-label-md" href="#">
+<span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                    Back
+                </a>
+<h2 class="text-headline-lg font-headline-lg text-on-background">Saved Addresses</h2>
+</div>
+<!-- Addresses 2-Column Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<!-- Home Address Card -->
+<div class="address-card group bg-white rounded-[20px] p-md shadow-[0_8px_32px_0_rgba(0,88,195,0.08)] border border-outline-variant/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_40px_0_rgba(0,88,195,0.12)]">
+<div class="flex items-start justify-between mb-sm">
+<div class="icon-box w-12 h-12 rounded-xl bg-surface-container-high flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+</div>
+<div class="flex gap-xs">
+<button class="p-xs rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-outline text-[20px]">edit</span>
+</button>
+<button class="p-xs rounded-full hover:bg-error-container/20 transition-colors">
+<span class="material-symbols-outlined text-error text-[20px]">delete</span>
+</button>
+</div>
+</div>
+<div class="flex flex-col gap-xs">
+<h3 class="text-[15px] font-bold text-on-surface">Rahul Sharma</h3>
+<div class="inline-flex">
+<span class="bg-secondary-container text-on-secondary-container text-[12px] font-semibold px-2 py-0.5 rounded-full">
+                                +91 98765 43210
+                            </span>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant mt-xs">
+                            Apt 402, Silver Heights, 12th Main Road, Indiranagar, Bengaluru, Karnataka 560038
+                        </p>
+</div>
+</div>
+<!-- Office Address Card -->
+<div class="address-card group bg-white rounded-[20px] p-md shadow-[0_8px_32px_0_rgba(0,88,195,0.08)] border border-outline-variant/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_40px_0_rgba(0,88,195,0.12)]">
+<div class="flex items-start justify-between mb-sm">
+<div class="icon-box w-12 h-12 rounded-xl bg-surface-container-high flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="work">work</span>
+</div>
+<div class="flex gap-xs">
+<button class="p-xs rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-outline text-[20px]">edit</span>
+</button>
+<button class="p-xs rounded-full hover:bg-error-container/20 transition-colors">
+<span class="material-symbols-outlined text-error text-[20px]">delete</span>
+</button>
+</div>
+</div>
+<div class="flex flex-col gap-xs">
+<h3 class="text-[15px] font-bold text-on-surface">Rahul Sharma (Office)</h3>
+<div class="inline-flex">
+<span class="bg-secondary-container text-on-secondary-container text-[12px] font-semibold px-2 py-0.5 rounded-full">
+                                +91 98765 43210
+                            </span>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant mt-xs">
+                            TechPark Tower B, 5th Floor, Electronics City Phase 1, Bengaluru, Karnataka 560100
+                        </p>
+</div>
+</div>
+<!-- Family Address Card -->
+<div class="address-card group bg-white rounded-[20px] p-md shadow-[0_8px_32px_0_rgba(0,88,195,0.08)] border border-outline-variant/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_40px_0_rgba(0,88,195,0.12)]">
+<div class="flex items-start justify-between mb-sm">
+<div class="icon-box w-12 h-12 rounded-xl bg-surface-container-high flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="family_restroom">family_restroom</span>
+</div>
+<div class="flex gap-xs">
+<button class="p-xs rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-outline text-[20px]">edit</span>
+</button>
+<button class="p-xs rounded-full hover:bg-error-container/20 transition-colors">
+<span class="material-symbols-outlined text-error text-[20px]">delete</span>
+</button>
+</div>
+</div>
+<div class="flex flex-col gap-xs">
+<h3 class="text-[15px] font-bold text-on-surface">Anjali Sharma</h3>
+<div class="inline-flex">
+<span class="bg-secondary-container text-on-secondary-container text-[12px] font-semibold px-2 py-0.5 rounded-full">
+                                +91 99001 22334
+                            </span>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant mt-xs">
+                            Plot No. 15, Green Meadows Colony, Banjara Hills, Hyderabad, Telangana 500034
+                        </p>
+</div>
+</div>
+<!-- Add New Address Button (Dashed variant) -->
+<div class="group flex flex-col items-center justify-center bg-surface-container-low rounded-[20px] p-md border-2 border-dashed border-primary/20 cursor-pointer hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 min-h-[220px]">
+<div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-sm group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[32px]">add_location_alt</span>
+</div>
+<span class="text-headline-md font-headline-md text-primary">Add New Address</span>
+<p class="text-label-md font-label-md text-on-surface-variant mt-xs text-center px-lg">Securely save a new delivery location for faster checkouts.</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-xl px-margin-desktop bg-surface-container-low border-t border-outline-variant">
+<div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-lg">
+<div class="col-span-1 md:col-span-1">
+<span class="text-headline-md font-headline-md font-bold text-primary mb-md block">Med Z</span>
+<p class="text-body-md font-body-md text-on-surface-variant">Your trusted digital pharmacy providing high-end pharmaceutical care and clinical expertise across India.</p>
+</div>
+<div class="flex flex-col gap-sm">
+<h4 class="text-label-md font-label-md font-bold text-primary">Explore</h4>
+<a class="text-body-md font-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Medicines</a>
+<a class="text-body-md font-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Consultations</a>
+<a class="text-body-md font-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Wellness</a>
+</div>
+<div class="flex flex-col gap-sm">
+<h4 class="text-label-md font-label-md font-bold text-primary">Support</h4>
+<a class="text-body-md font-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Contact Us</a>
+<a class="text-body-md font-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Shipping Policy</a>
+<a class="text-body-md font-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
+</div>
+<div class="flex flex-col gap-sm">
+<h4 class="text-label-md font-label-md font-bold text-primary">Legal</h4>
+<a class="text-body-md font-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<p class="text-caption font-caption text-on-surface-variant/70 mt-md">© 2024 Med Z Pharmacy. All rights reserved.</p>
+</div>
+</div>
+</footer>
+<script>
+        // Simple micro-interaction for scroll depth
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 20) {
+                nav.classList.add('shadow-lg');
+            } else {
+                nav.classList.remove('shadow-lg');
+            }
+        });
+    </script>
+</body></html>

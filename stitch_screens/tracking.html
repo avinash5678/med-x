@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(250, 249, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .map-gradient-overlay {
+            background: linear-gradient(to bottom, rgba(250,249,255,0.8) 0%, rgba(250,249,255,0) 15%, rgba(250,249,255,0) 85%, rgba(250,249,255,0.8) 100%);
+        }
+        @keyframes pulse-teal {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(101, 250, 222, 0.7); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(101, 250, 222, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(101, 250, 222, 0); }
+        }
+        .pulse-active {
+            animation: pulse-teal 2s infinite;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "background": "#faf9ff",
+                        "secondary-container": "#65fade",
+                        "tertiary-fixed": "#ffdbcd",
+                        "surface-container-highest": "#e0e2ed",
+                        "on-secondary-fixed-variant": "#005045",
+                        "secondary-fixed-dim": "#41ddc2",
+                        "primary": "#0058c3",
+                        "surface-tint": "#0059c5",
+                        "surface-dim": "#d8d9e4",
+                        "on-secondary-fixed": "#00201b",
+                        "error": "#ba1a1a",
+                        "tertiary-container": "#ca4e00",
+                        "surface-variant": "#e0e2ed",
+                        "on-primary-container": "#ffffff",
+                        "inverse-primary": "#aec6ff",
+                        "primary-fixed": "#d8e2ff",
+                        "on-primary-fixed": "#001a43",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "outline": "#727786",
+                        "secondary": "#006b5c",
+                        "on-tertiary": "#ffffff",
+                        "on-background": "#181b23",
+                        "secondary-fixed": "#65fade",
+                        "on-secondary": "#ffffff",
+                        "tertiary": "#a23d00",
+                        "on-tertiary-container": "#fffeff",
+                        "inverse-surface": "#2d3039",
+                        "surface-container": "#ecedf8",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#f2f3fe",
+                        "primary-fixed-dim": "#aec6ff",
+                        "on-surface": "#181b23",
+                        "surface": "#faf9ff",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "on-tertiary-fixed": "#360f00",
+                        "on-surface-variant": "#414754",
+                        "inverse-on-surface": "#eff0fb",
+                        "primary-container": "#0070f3",
+                        "on-error-container": "#93000a",
+                        "surface-bright": "#faf9ff",
+                        "on-secondary-container": "#007262",
+                        "on-primary": "#ffffff",
+                        "outline-variant": "#c1c6d7",
+                        "surface-container-high": "#e6e7f3",
+                        "on-primary-fixed-variant": "#004397"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "lg": "40px",
+                        "sm": "16px",
+                        "base": "4px",
+                        "xs": "8px",
+                        "xl": "64px",
+                        "md": "24px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "80px"
+                    },
+                    "fontFamily": {
+                        "price-lg": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "body-md": ["Inter"],
+                        "caption": ["Inter"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "label-md": ["Plus Jakarta Sans"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "price-lg": ["20px", {"lineHeight": "1.0", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "caption": ["12px", {"lineHeight": "1.4", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body-md overflow-hidden">
+<!-- Top Navigation (Shell Implementation) -->
+<header class="fixed top-0 w-full z-50 bg-surface/70 backdrop-blur-md border-b border-white/20 shadow-[0_8px_30px_rgb(0,88,195,0.08)]">
+<div class="flex justify-between items-center h-20 px-margin-desktop max-w-screen-2xl mx-auto">
+<div class="flex items-center gap-xl">
+<span class="font-headline-md text-headline-md font-bold text-primary">Med Z</span>
+<nav class="hidden md:flex items-center gap-lg">
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Medicines</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Consultations</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Contact Us</a>
+</nav>
+</div>
+<div class="flex items-center gap-sm">
+<button class="p-xs text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">shopping_cart</span>
+</button>
+<button class="p-xs text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="h-8 w-[1px] bg-outline-variant mx-xs"></div>
+<button class="flex items-center gap-xs px-sm py-xs rounded-full bg-primary text-on-primary font-label-md text-label-md hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-95">
+<span class="material-symbols-outlined text-[18px]">bolt</span>
+                    AI Assistant
+                </button>
+<div class="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden border border-outline-variant">
+<img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBANRu8gJhFk0KoUAwndbihYfYOfAsNyq7Z_4BFNsOLbQfbQ39xwj1oRanglXsDsXoGXu9eZbaDIQXE-pL1x5HiKKm9BiB0wEnx5ZDwnqskOU9-zKO3cNYZhd186ceoEftWYceD-SvOAkEiKmA0XHSG18bqQn7OSyssEriC0B2ltxoIbsIbNOfhfO3LPmFNSa9JHJjLAeUAnh7sBGHBL4_pjSSbxR29UOk4Gi3ap91sThkgm8zgyFK0fQodWhv9Ijvp-wyL8UrP6qpK"/>
+</div>
+</div>
+</div>
+</header>
+<main class="relative h-screen pt-20 overflow-hidden flex">
+<!-- Main Map Area -->
+<div class="relative flex-grow h-full bg-surface-container overflow-hidden">
+<!-- Mock Map Background -->
+<div class="absolute inset-0 z-0">
+<img class="w-full h-full object-cover grayscale-[0.2] brightness-[1.02]" data-alt="A clean, light-themed digital map of a modern urban city district in India with detailed road networks, parks, and building footprints. The style is minimalist and high-fidelity, using a soft color palette of grays, pale blues, and light greens. The lighting is bright and even, evoking a premium technological feel. Subtle glowing primary blue lines indicate the delivery route across the city grid." data-location="Mumbai" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjrY96vW3Ty6qs9f_Q5IMoN6Ta_JMNSQDQYatnwBXqyz6nV9ccgflGCuAbW4HYL8oZXloa1QknVSdDc5ELdNZjhTP1nsmR28dqyVicmgqQYp2qgJw3QahzI6ILKHKsDypCZcEDR1j3zQChYrJ2zN34ztCyNKEH3VYmmbVY76TQEhuA8HT1qWUFs8N6Qx0QY3GzmWmU79OHPLWqYDCusuibYhNPkhRuQbb8OJllqpNOGb7g5zsTgbPoVGES4acMNBByGORA7zXl6OXu"/>
+<div class="absolute inset-0 map-gradient-overlay pointer-events-none"></div>
+</div>
+<!-- Map Markers -->
+<div class="absolute top-[40%] left-[30%] z-10 flex flex-col items-center">
+<div class="bg-primary text-on-primary p-2 rounded-xl shadow-xl shadow-primary/30 flex items-center justify-center">
+<span class="material-symbols-outlined">local_pharmacy</span>
+</div>
+<div class="mt-2 px-3 py-1 bg-white rounded-lg shadow-md border border-outline-variant/30">
+<span class="font-label-md text-[12px] whitespace-nowrap">Med Z Store</span>
+</div>
+</div>
+<div class="absolute top-[60%] left-[65%] z-10 flex flex-col items-center">
+<div class="bg-secondary text-on-secondary p-2 rounded-xl shadow-xl shadow-secondary/30 flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+</div>
+<div class="mt-2 px-3 py-1 bg-white rounded-lg shadow-md border border-outline-variant/30">
+<span class="font-label-md text-[12px] whitespace-nowrap">Home</span>
+</div>
+</div>
+<!-- Delivery Bike Icon (Animated along a path mock) -->
+<div class="absolute top-[52%] left-[48%] z-20 flex flex-col items-center transition-all duration-1000 ease-in-out">
+<div class="bg-on-secondary-container text-on-primary p-3 rounded-full shadow-2xl pulse-active border-4 border-white">
+<span class="material-symbols-outlined text-[24px]">delivery_dining</span>
+</div>
+</div>
+<!-- Floating Glassmorphic ETA Bubble -->
+<div class="absolute top-8 left-1/2 -translate-x-1/2 z-30">
+<div class="glass-panel px-xl py-md rounded-[24px] shadow-2xl flex flex-col items-center min-w-[200px]">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest mb-1">Estimated Arrival</span>
+<div class="flex items-baseline gap-xs">
+<span class="font-display-lg text-display-lg text-primary">14</span>
+<span class="font-headline-md text-headline-md text-primary">mins</span>
+</div>
+<div class="mt-2 flex items-center gap-xs">
+<span class="w-2 h-2 rounded-full bg-secondary-container"></span>
+<span class="font-label-md text-[13px] text-on-surface-variant">On track for 4:25 PM</span>
+</div>
+</div>
+</div>
+<!-- Back Button -->
+<button class="absolute top-8 left-8 z-30 w-12 h-12 rounded-full glass-panel flex items-center justify-center text-on-surface-variant hover:text-primary transition-all active:scale-90">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+</div>
+<!-- Right Sidebar Tracking Info -->
+<aside class="w-[420px] h-full bg-surface border-l border-outline-variant/30 z-40 overflow-y-auto hidden lg:block">
+<div class="p-lg space-y-xl">
+<!-- Header -->
+<section>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-xs">Track Order</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Order #MZ-902418-B</p>
+</section>
+<!-- Status Timeline -->
+<section class="space-y-lg">
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest">Delivery Status</h3>
+<div class="relative space-y-lg pl-8">
+<!-- Connecting Line -->
+<div class="absolute left-3.5 top-2 bottom-2 w-[2px] bg-surface-container-highest">
+<div class="absolute top-0 left-0 w-full h-[66%] bg-secondary-container"></div>
+</div>
+<!-- Steps -->
+<div class="relative flex items-start gap-md">
+<div class="absolute -left-8 flex items-center justify-center w-7 h-7 rounded-full bg-secondary-container text-on-secondary-container">
+<span class="material-symbols-outlined text-[16px]">check</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Order Received</p>
+<p class="font-caption text-caption text-on-surface-variant">2:15 PM, Today</p>
+</div>
+</div>
+<div class="relative flex items-start gap-md">
+<div class="absolute -left-8 flex items-center justify-center w-7 h-7 rounded-full bg-secondary-container text-on-secondary-container">
+<span class="material-symbols-outlined text-[16px]">check</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Package Prepared</p>
+<p class="font-caption text-caption text-on-surface-variant">2:45 PM, Today</p>
+</div>
+</div>
+<div class="relative flex items-start gap-md">
+<div class="absolute -left-8 flex items-center justify-center w-7 h-7 rounded-full bg-secondary-container text-on-secondary-container pulse-active border-2 border-white">
+<span class="material-symbols-outlined text-[16px]">delivery_dining</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-primary font-bold">On the way</p>
+<p class="font-caption text-caption text-on-surface-variant">3:10 PM, Today</p>
+</div>
+</div>
+<div class="relative flex items-start gap-md opacity-40">
+<div class="absolute -left-8 flex items-center justify-center w-7 h-7 rounded-full bg-surface-container-highest text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Delivered</p>
+<p class="font-caption text-caption text-on-surface-variant">Expected by 4:25 PM</p>
+</div>
+</div>
+</div>
+</section>
+<hr class="border-outline-variant/30"/>
+<!-- Delivery Partner -->
+<section class="space-y-md">
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest">Delivery Partner</h3>
+<div class="bg-surface-container-low p-sm rounded-2xl flex items-center justify-between border border-outline-variant/20 hover:border-primary/30 transition-all cursor-pointer">
+<div class="flex items-center gap-sm">
+<div class="w-14 h-14 rounded-full overflow-hidden border-2 border-white">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a friendly, young male delivery driver wearing a clean navy blue polo shirt with a pharmacy logo. He has a warm smile and is standing against a soft, out-of-focus urban background. The lighting is bright and natural, reflecting a trustworthy and reliable service persona for a premium Indian pharmacy brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBs0aRudfBkE5TIAserRMxNUVFwMVrxb1Yp3KkuW3_maH61SHFMOjP6SI1NGXJ3NwxfQnisiqc7Acy23JsyUIaSUp2leETDawd9Dckv8uES_rVFyWihN65zMHSn6Gq05mmfzqyXjDyppr9kipJsslWJLby8r9KIj4Rrcb71tDeWVXnGlCx8Z7kXuo5NWdGxDd2TBb-fuK9Sa6eq7-P6PxvBPtuUukkn05rnRstD1fZC18kXFpq62wuMr6AF01qJvtRAjV_yhO-bl3OG"/>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Rahul Sharma</p>
+<div class="flex items-center gap-base text-secondary">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-caption text-caption font-bold">4.9</span>
+<span class="font-caption text-caption text-on-surface-variant">(1.2k reviews)</span>
+</div>
+</div>
+</div>
+<div class="flex gap-xs">
+<button class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-primary shadow-sm hover:bg-primary hover:text-on-primary transition-all">
+<span class="material-symbols-outlined">call</span>
+</button>
+<button class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-primary shadow-sm hover:bg-primary hover:text-on-primary transition-all">
+<span class="material-symbols-outlined">chat</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Store Details -->
+<section class="space-y-md">
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest">From Store</h3>
+<div class="bg-surface-container-low p-sm rounded-2xl border border-outline-variant/20">
+<div class="flex gap-sm">
+<div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">local_pharmacy</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Med Z - BKC Hub</p>
+<p class="font-caption text-caption text-on-surface-variant">G-Block, BKC, Mumbai 400051</p>
+</div>
+</div>
+<div class="mt-md pt-md border-t border-outline-variant/20 flex justify-between items-center">
+<span class="font-caption text-caption text-on-surface-variant">Order Total</span>
+<span class="font-price-lg text-price-lg text-on-surface">₹1,450.00</span>
+</div>
+</div>
+</section>
+<!-- Need Help -->
+<button class="w-full py-md text-center text-primary font-label-md text-label-md hover:underline transition-all">
+                    Need help with your order?
+                </button>
+</div>
+</aside>
+<!-- Mobile Bottom Sheet (Simulated) -->
+<div class="lg:hidden absolute bottom-0 w-full glass-panel rounded-t-[32px] p-margin-mobile shadow-2xl z-50">
+<div class="w-12 h-1 bg-outline-variant/40 rounded-full mx-auto mb-md"></div>
+<div class="flex justify-between items-center mb-lg">
+<div>
+<h3 class="font-headline-md text-headline-md text-primary">14 mins away</h3>
+<p class="font-caption text-caption text-on-surface-variant">Rahul is heading your way</p>
+</div>
+<button class="w-12 h-12 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined">expand_less</span>
+</button>
+</div>
+<div class="flex items-center justify-between p-sm bg-surface-container rounded-2xl">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-full overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Close up portrait of a professional delivery agent." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAkMf_AracRzkTKPMHZcmn4p8clqvwziRBCmZFA5nu9dHFYtuYfm6-EHqpKR16wSWIOr_YA4smv56360bthTGL7ELSzZeysCkX50u0PZgwmO7hwWV67bqvf7Ei_yD7AX4DNpcIGwCgm0-Y2QZqZPQ-MqGlGlu3JKS8D7zxrc_8hVCK7h42C8rYlaju0K2em3ICZRUR4sp4l4c14Ml-p8PRGl3xI5SZCzld2XPm9OByHkXp-iy8YYxuLfhRDsvGjT8BySAyfKfGEraQL"/>
+</div>
+<span class="font-label-md text-label-md">Rahul Sharma</span>
+</div>
+<div class="flex gap-sm">
+<button class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-primary"><span class="material-symbols-outlined text-[20px]">call</span></button>
+<button class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-primary"><span class="material-symbols-outlined text-[20px]">chat</span></button>
+</div>
+</div>
+</div>
+</main>
+<!-- Success Modal Interaction Overlay (Mock) -->
+<div class="fixed inset-0 bg-background/80 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-md" id="success-overlay">
+<div class="max-w-md w-full bg-white rounded-[32px] p-xl shadow-2xl text-center scale-95 opacity-0 transition-all duration-300 transform" id="success-modal">
+<div class="w-20 h-20 bg-secondary-container text-on-secondary-container rounded-full flex items-center justify-center mx-auto mb-lg">
+<span class="material-symbols-outlined text-[40px]">check_circle</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg mb-sm">Order Delivered!</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-xl">Your medicines have been safely delivered to your doorstep. Hope you feel better soon.</p>
+<div class="space-y-sm">
+<button class="w-full py-md bg-primary text-on-primary rounded-xl font-label-md text-label-md hover:shadow-lg hover:shadow-primary/20 transition-all" onclick="hideModal()">Rate Experience</button>
+<button class="w-full py-md text-on-surface-variant font-label-md text-label-md hover:bg-surface-container rounded-xl transition-all" onclick="hideModal()">Go to Home</button>
+</div>
+</div>
+</div>
+<script>
+        // Simple micro-interaction for demo
+        function showModal() {
+            const overlay = document.getElementById('success-overlay');
+            const modal = document.getElementById('success-modal');
+            overlay.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('scale-95', 'opacity-0');
+                modal.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function hideModal() {
+            const overlay = document.getElementById('success-overlay');
+            const modal = document.getElementById('success-modal');
+            modal.classList.add('scale-95', 'opacity-0');
+            modal.classList.remove('scale-100', 'opacity-100');
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+            }, 300);
+        }
+
+        // Simulating ETA countdown or movement
+        setInterval(() => {
+            // Randomly wiggle the bike icon or update something minor to show "live" feel
+            const bike = document.querySelector('.pulse-active');
+            if(bike) {
+                const randomX = (Math.random() - 0.5) * 2;
+                const randomY = (Math.random() - 0.5) * 2;
+                // bike.parentElement.style.transform = `translate(${randomX}px, ${randomY}px)`;
+            }
+        }, 3000);
+    </script>
+</body></html>

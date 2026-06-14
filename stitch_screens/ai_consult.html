@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI Health Consultation | Med Z</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Plus+Jakarta+Sans:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "background": "#faf9ff",
+                    "secondary-container": "#65fade",
+                    "tertiary-fixed": "#ffdbcd",
+                    "surface-container-highest": "#e0e2ed",
+                    "on-secondary-fixed-variant": "#005045",
+                    "secondary-fixed-dim": "#41ddc2",
+                    "primary": "#0058c3",
+                    "surface-tint": "#0059c5",
+                    "surface-dim": "#d8d9e4",
+                    "on-secondary-fixed": "#00201b",
+                    "error": "#ba1a1a",
+                    "tertiary-container": "#ca4e00",
+                    "surface-variant": "#e0e2ed",
+                    "on-primary-container": "#ffffff",
+                    "inverse-primary": "#aec6ff",
+                    "primary-fixed": "#d8e2ff",
+                    "on-primary-fixed": "#001a43",
+                    "on-error": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "outline": "#727786",
+                    "secondary": "#006b5c",
+                    "on-tertiary": "#ffffff",
+                    "on-background": "#181b23",
+                    "secondary-fixed": "#65fade",
+                    "on-secondary": "#ffffff",
+                    "tertiary": "#a23d00",
+                    "on-tertiary-container": "#fffeff",
+                    "inverse-surface": "#2d3039",
+                    "surface-container": "#ecedf8",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-low": "#f2f3fe",
+                    "primary-fixed-dim": "#aec6ff",
+                    "on-surface": "#181b23",
+                    "surface": "#faf9ff",
+                    "on-tertiary-fixed-variant": "#7d2d00",
+                    "tertiary-fixed-dim": "#ffb596",
+                    "on-tertiary-fixed": "#360f00",
+                    "on-surface-variant": "#414754",
+                    "inverse-on-surface": "#eff0fb",
+                    "primary-container": "#0070f3",
+                    "on-error-container": "#93000a",
+                    "surface-bright": "#faf9ff",
+                    "on-secondary-container": "#007262",
+                    "on-primary": "#ffffff",
+                    "outline-variant": "#c1c6d7",
+                    "surface-container-high": "#e6e7f3",
+                    "on-primary-fixed-variant": "#004397"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "24px",
+                    "lg": "40px",
+                    "sm": "16px",
+                    "base": "4px",
+                    "xs": "8px",
+                    "xl": "64px",
+                    "md": "24px",
+                    "margin-mobile": "16px",
+                    "margin-desktop": "80px"
+            },
+            "fontFamily": {
+                    "price-lg": ["Plus Jakarta Sans"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "display-lg": ["Plus Jakarta Sans"],
+                    "body-md": ["Inter"],
+                    "caption": ["Inter"],
+                    "headline-lg-mobile": ["Plus Jakarta Sans"],
+                    "headline-lg": ["Plus Jakarta Sans"],
+                    "label-md": ["Plus Jakarta Sans"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "price-lg": ["20px", {"lineHeight": "1.0", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "caption": ["12px", {"lineHeight": "1.4", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .chat-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .chat-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .chat-scroll::-webkit-scrollbar-thumb {
+            background: #e0e2ed;
+            border-radius: 10px;
+        }
+        .message-glow {
+            box-shadow: 0 4px 20px rgba(0, 88, 195, 0.08);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/70 backdrop-blur-md border-b border-white/20 shadow-[0_8px_30px_rgb(0,88,195,0.08)]">
+<div class="flex justify-between items-center h-20 px-margin-desktop max-w-screen-2xl mx-auto">
+<div class="flex items-center gap-xl">
+<h1 class="font-headline-md text-headline-md font-bold text-primary">Med Z</h1>
+<nav class="hidden md:flex gap-lg items-center">
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Medicines</a>
+<a class="font-label-md text-label-md text-primary relative after:content-[''] after:absolute after:-bottom-2 after:left-1/2 after:-translate-x-1/2 after:w-1 after:h-1 after:bg-secondary-fixed after:rounded-full" href="#">Consultations</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Contact Us</a>
+</nav>
+</div>
+<div class="flex items-center gap-md">
+<div class="flex items-center gap-sm">
+<button class="p-xs text-on-surface-variant hover:text-primary transition-all duration-200 active:scale-95">
+<span class="material-symbols-outlined">shopping_cart</span>
+</button>
+<button class="p-xs text-on-surface-variant hover:text-primary transition-all duration-200 active:scale-95">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</div>
+<button class="bg-primary-container text-on-primary-container px-md py-xs rounded-xl font-label-md text-label-md flex items-center gap-xs hover:shadow-[0_0_20px_rgba(0,112,243,0.3)] transition-all duration-200">
+<span class="material-symbols-outlined text-[20px]">smart_toy</span>
+                    AI Assistant
+                </button>
+<div class="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden border-2 border-primary/10">
+<img alt="Profile" class="w-full h-full object-cover" data-alt="A professional close-up portrait of a medical professional with a friendly expression, set against a clean, softly lit studio background that reflects a high-end, trustworthy healthcare brand. The lighting is bright and modern, with a cool-toned primary blue accent in the soft bokeh background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBx5yUZGmDq5myWhrwSZaxPlBLJ6vD9Jfgdk4Cdyy68eVCTx1mHf32fYMcCfX4m0j_-5fe9d2YH9zU6nM1sVFhDsEZ1HccP0Af2tEUlw1LLaeeApGfxO4rxSPznTPezjV8JRbZjVu0RS9bioK-UdmlYKaSavO2TDQjB3elvNpRDvC85va7sH0SabT9XErlmCq1uVBHLOBRdQmbtih2cXr_IIwJIppW1uL8ccDpR2NWRdc4ExaVlJQrIWsGWjKYSVwlmwzaKQGT5tmO5"/>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-1 pt-20 flex overflow-hidden">
+<!-- Sidebar: Navigation & History -->
+<aside class="hidden lg:flex w-80 bg-surface-container-low border-r border-outline-variant flex-col shrink-0">
+<div class="p-md flex flex-col gap-lg h-full overflow-y-auto">
+<!-- Consultation History Section -->
+<section>
+<div class="flex items-center justify-between mb-sm">
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Consultation History</h3>
+<span class="material-symbols-outlined text-outline text-[20px]">history</span>
+</div>
+<div class="space-y-sm">
+<button class="w-full text-left p-sm rounded-xl bg-surface-container-highest/50 border border-transparent hover:border-primary/20 hover:bg-white transition-all">
+<p class="font-label-md text-label-md text-on-surface">Seasonal Allergy Advice</p>
+<p class="text-caption font-caption text-outline">Yesterday, 4:30 PM</p>
+</button>
+<button class="w-full text-left p-sm rounded-xl hover:bg-white/50 transition-all">
+<p class="font-label-md text-label-md text-on-surface">Vitamin D Deficiency</p>
+<p class="text-caption font-caption text-outline">Oct 12, 2023</p>
+</button>
+<button class="w-full text-left p-sm rounded-xl hover:bg-white/50 transition-all">
+<p class="font-label-md text-label-md text-on-surface">Post-Surgery Care</p>
+<p class="text-caption font-caption text-outline">Sep 28, 2023</p>
+</button>
+</div>
+</section>
+<!-- Saved Recommendations Section -->
+<section>
+<div class="flex items-center justify-between mb-sm">
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Saved Recommendations</h3>
+<span class="material-symbols-outlined text-outline text-[20px]">bookmark</span>
+</div>
+<div class="space-y-sm">
+<div class="p-sm rounded-xl bg-secondary-container/10 border border-secondary/20">
+<div class="flex items-start gap-xs mb-xs">
+<span class="material-symbols-outlined text-secondary text-[18px]">verified</span>
+<p class="font-label-md text-label-md text-secondary">Hydration Protocol</p>
+</div>
+<p class="text-caption font-caption text-on-surface-variant">Recommended 3L daily intake with electrolytes during flu.</p>
+</div>
+<div class="p-sm rounded-xl bg-primary-fixed/30 border border-primary/10">
+<div class="flex items-start gap-xs mb-xs">
+<span class="material-symbols-outlined text-primary text-[18px]">pill</span>
+<p class="font-label-md text-label-md text-primary">Omega-3 Schedule</p>
+</div>
+<p class="text-caption font-caption text-on-surface-variant">Take 1000mg capsule after morning meal for absorption.</p>
+</div>
+</div>
+</section>
+<div class="mt-auto p-sm bg-primary/5 rounded-2xl border border-primary/10">
+<p class="text-caption font-caption text-primary font-bold mb-xs">Premium Support</p>
+<p class="text-caption font-caption text-on-surface-variant mb-sm">Get priority access to human doctors 24/7.</p>
+<button class="w-full py-xs rounded-lg bg-primary text-white font-label-md text-label-md hover:bg-primary-container transition-colors">Upgrade Plan</button>
+</div>
+</div>
+</aside>
+<!-- Main Chat Area -->
+<section class="flex-1 flex flex-col relative bg-background">
+<!-- Disclaimer Banner -->
+<div class="sticky top-0 z-40 px-md py-sm bg-error-container/40 backdrop-blur-sm border-b border-error/10 flex items-center gap-sm">
+<span class="material-symbols-outlined text-error">info</span>
+<p class="text-caption font-caption text-on-error-container">
+<strong>Medical Disclaimer:</strong> Med Z AI provides general health information and is not a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician for medical concerns. In an emergency, call your local emergency services immediately.
+                </p>
+</div>
+<!-- Messages Stream -->
+<div class="flex-1 overflow-y-auto chat-scroll px-md md:px-xl py-lg space-y-lg">
+<!-- AI Message -->
+<div class="flex gap-md max-w-3xl">
+<div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shrink-0 shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+</div>
+<div class="space-y-sm">
+<div class="flex items-center gap-xs">
+<span class="font-label-md text-label-md text-primary">Med Z AI</span>
+<span class="text-caption font-caption text-outline">Just now</span>
+</div>
+<div class="bg-white p-md rounded-2xl rounded-tl-none message-glow border border-surface-container-highest">
+<p class="font-body-md text-body-md text-on-surface leading-relaxed">
+                                Hello! I'm your Med Z Health Assistant. I can help you understand symptoms, explain medications, or provide wellness recommendations. 
+                                <br/><br/>
+                                How are you feeling today? Please describe any symptoms you're experiencing or ask a health-related question.
+                            </p>
+</div>
+</div>
+</div>
+<!-- User Message -->
+<div class="flex gap-md max-w-3xl ml-auto flex-row-reverse">
+<div class="w-10 h-10 rounded-xl bg-surface-container-highest flex items-center justify-center shrink-0 border border-outline-variant">
+<span class="material-symbols-outlined text-on-surface-variant">person</span>
+</div>
+<div class="space-y-sm text-right">
+<div class="flex items-center gap-xs justify-end">
+<span class="font-label-md text-label-md text-on-surface">You</span>
+<span class="text-caption font-caption text-outline">12:05 PM</span>
+</div>
+<div class="bg-primary text-white p-md rounded-2xl rounded-tr-none shadow-md">
+<p class="font-body-md text-body-md leading-relaxed">
+                                I've been having a persistent dry cough for the past 3 days. No fever, but my throat feels quite irritated, especially at night. What do you recommend?
+                            </p>
+</div>
+</div>
+</div>
+<!-- AI Message -->
+<div class="flex gap-md max-w-3xl">
+<div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shrink-0 shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+</div>
+<div class="space-y-sm">
+<div class="flex items-center gap-xs">
+<span class="font-label-md text-label-md text-primary">Med Z AI</span>
+<span class="text-caption font-caption text-outline">12:06 PM</span>
+</div>
+<div class="bg-white p-md rounded-2xl rounded-tl-none message-glow border border-surface-container-highest">
+<p class="font-body-md text-body-md text-on-surface mb-md">
+                                Based on your description of a dry cough and throat irritation without fever, here are some informative insights and recommendations:
+                            </p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-sm mb-md">
+<div class="p-sm bg-surface-container-low rounded-xl border border-outline-variant/30">
+<p class="font-label-md text-label-md text-primary mb-xs">Potential Causes</p>
+<ul class="text-caption font-caption text-on-surface-variant space-y-xs">
+<li class="flex items-center gap-xs"><span class="w-1 h-1 bg-primary rounded-full"></span> Post-nasal drip</li>
+<li class="flex items-center gap-xs"><span class="w-1 h-1 bg-primary rounded-full"></span> Environmental allergens</li>
+<li class="flex items-center gap-xs"><span class="w-1 h-1 bg-primary rounded-full"></span> Dry indoor air</li>
+</ul>
+</div>
+<div class="p-sm bg-secondary-container/5 rounded-xl border border-secondary/10">
+<p class="font-label-md text-label-md text-secondary mb-xs">Home Remedies</p>
+<ul class="text-caption font-caption text-on-surface-variant space-y-xs">
+<li class="flex items-center gap-xs"><span class="w-1 h-1 bg-secondary rounded-full"></span> Honey & Warm Water</li>
+<li class="flex items-center gap-xs"><span class="w-1 h-1 bg-secondary rounded-full"></span> Saltwater Gargle</li>
+<li class="flex items-center gap-xs"><span class="w-1 h-1 bg-secondary rounded-full"></span> Air Humidifier</li>
+</ul>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface mb-sm">
+                                You may want to consider over-the-counter cough suppressants. Would you like me to show you some highly-rated options available at Med Z?
+                            </p>
+<div class="flex flex-wrap gap-xs">
+<button class="px-sm py-xs rounded-full border border-primary text-primary font-label-md text-label-md hover:bg-primary hover:text-white transition-all">Show Medications</button>
+<button class="px-sm py-xs rounded-full border border-outline-variant text-on-surface-variant font-label-md text-label-md hover:bg-surface-container transition-all">Ask about night relief</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Input Bar -->
+<div class="p-md md:p-xl pt-0">
+<div class="max-w-4xl mx-auto relative">
+<div class="glass-panel rounded-2xl p-xs flex items-center gap-xs shadow-xl">
+<button class="p-sm text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center" title="Upload Prescription">
+<span class="material-symbols-outlined">attachment</span>
+</button>
+<button class="p-sm text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center" title="Capture Photo">
+<span class="material-symbols-outlined">photo_camera</span>
+</button>
+<input class="flex-1 bg-transparent border-none focus:ring-0 font-body-md text-body-md text-on-surface placeholder:text-outline/60 px-sm" placeholder="Type your symptoms or health question here..." type="text"/>
+<button class="bg-primary text-white p-sm rounded-xl flex items-center justify-center hover:bg-primary-container transition-all active:scale-95 shadow-md shadow-primary/20">
+<span class="material-symbols-outlined">send</span>
+</button>
+</div>
+<div class="mt-sm flex justify-center">
+<p class="text-caption font-caption text-outline flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">lock</span>
+                            Your consultation is encrypted and private.
+                        </p>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Side: Details/Recommendations (Desktop Only) -->
+<aside class="hidden xl:flex w-96 bg-white border-l border-outline-variant flex-col shrink-0 overflow-y-auto">
+<div class="p-md">
+<h3 class="font-headline-md text-[20px] font-bold text-on-surface mb-md">Quick Actions</h3>
+<div class="space-y-md">
+<!-- Prescription Card -->
+<div class="p-md rounded-2xl bg-surface-container border border-outline-variant/30 flex flex-col gap-sm">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">description</span>
+</div>
+<p class="font-label-md text-label-md text-on-surface">Digital Prescription</p>
+</div>
+<p class="text-caption font-caption text-on-surface-variant">Upload your physical prescription for AI-powered verification and medicine reminders.</p>
+<button class="w-full py-xs border-2 border-dashed border-outline-variant rounded-xl text-outline font-label-md text-label-md hover:bg-white hover:border-primary hover:text-primary transition-all">
+                            Upload Now
+                        </button>
+</div>
+<!-- Recommended Product Bento -->
+<div class="space-y-sm">
+<h4 class="font-label-md text-label-md text-on-surface-variant uppercase">Recommended for you</h4>
+<div class="group relative bg-white border border-outline-variant rounded-2xl p-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+<div class="aspect-square rounded-xl bg-surface-container overflow-hidden mb-sm relative">
+<img alt="Medicine" class="w-full h-full object-cover" data-alt="A clean, pharmaceutical-grade studio shot of a high-end cough syrup bottle with elegant minimalist branding. The setting is bright and clinical, with soft-focus glass medicine droppers and blue-tinted laboratory reflections in the background, maintaining a premium medical aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBj4mNMeB5LqXZfI_qyZ-P_Rq1ImIRXFPeXmVRPMIqzMvSRogfaXBQ6mRDHRGjBxzxE-MNEqA0dX9cNMvQiOdLrTnLNm96w53O8jNPnMULkeMKudSztU43Xs7dzaUHPf1TwcdzHd1Ec6pvciXKhql8WdXoSQUzgQeweqLzCa-8LuIeP4A1NClh8yXUR10U4ZEnwetViyCT3jsDbJDNMcidkrxim7LN1FLC_rXc3F6LBN67MdC-2KzqHQRlFZDhIkXRRe4AEJXfK-0k-"/>
+<span class="absolute top-2 right-2 bg-secondary text-white text-[10px] font-bold px-2 py-1 rounded-full">TOP RATED</span>
+</div>
+<div class="space-y-1">
+<p class="font-label-md text-label-md text-on-surface group-hover:text-primary transition-colors">Tussin Relief Syrup</p>
+<p class="text-caption font-caption text-outline">Honey-Based, 200ml</p>
+<div class="flex items-center justify-between mt-sm">
+<span class="font-price-lg text-price-lg text-on-surface">₹345</span>
+<button class="bg-primary-container text-white w-8 h-8 rounded-lg flex items-center justify-center hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[20px]">add</span>
+</button>
+</div>
+</div>
+</div>
+<div class="group relative bg-white border border-outline-variant rounded-2xl p-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+<div class="aspect-square rounded-xl bg-surface-container overflow-hidden mb-sm relative">
+<img alt="Lozenges" class="w-full h-full object-cover" data-alt="A macro photography shot of herbal throat lozenges arranged in a minimalist, satisfying pattern on a white marble surface. The lighting is bright and high-key, emphasizing the natural colors of the herbs and creating a clean, professional healthcare-inspired composition." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2BL0CGFu_8vNE9jMkk1DT713CgbuRngM4f5D9ix35vJAv7dqwTEr08sGcgEWPq0G4d7aDoj9zmUGMvEF7dfo3ty-3rNeYI2_MQvVaqw-CKBmYc7aGV8zRX-jugsdJQQH2IOsvHRRmcMqvfJka4KjdBZNrzdznnrbXxk6waNII532aZvM13YVjZwyEoUBnCKyBkFaT72d8XldpyIjI9jskLeb_ehzq5ndElNtjur7qFIJouC1S5MjLQahyJoItp_tt9C2KsAYIflee"/>
+</div>
+<div class="space-y-1">
+<p class="font-label-md text-label-md text-on-surface group-hover:text-primary transition-colors">Menthol Lozenges</p>
+<p class="text-caption font-caption text-outline">Pack of 12, Extra Strength</p>
+<div class="flex items-center justify-between mt-sm">
+<span class="font-price-lg text-price-lg text-on-surface">₹120</span>
+<button class="bg-primary-container text-white w-8 h-8 rounded-lg flex items-center justify-center hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[20px]">add</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Book Doctor -->
+<div class="p-md rounded-2xl bg-secondary/10 border border-secondary/20 relative overflow-hidden">
+<div class="relative z-10">
+<p class="font-label-md text-label-md text-secondary mb-xs">Need more clarity?</p>
+<p class="text-caption font-caption text-on-surface-variant mb-md">Book a video call with a certified MD in the next 15 minutes.</p>
+<button class="w-full py-xs bg-secondary text-white rounded-xl font-label-md text-label-md hover:bg-on-secondary-container transition-all">Book Video Consultation</button>
+</div>
+<span class="material-symbols-outlined absolute -bottom-4 -right-4 text-[100px] text-secondary/10 rotate-12">video_chat</span>
+</div>
+</div>
+</div>
+</aside>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-low border-t border-outline-variant w-full py-xl z-50">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-lg px-margin-desktop max-w-screen-2xl mx-auto">
+<div class="flex flex-col gap-sm">
+<h2 class="font-headline-lg text-headline-lg font-bold text-primary">Med Z</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Your trusted digital pharmacy partner for health, wellness, and expert AI consultation.</p>
+</div>
+<div class="flex flex-col gap-sm">
+<h3 class="font-label-md text-label-md text-on-surface uppercase font-bold">Quick Links</h3>
+<nav class="flex flex-col gap-xs">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-all" href="#">Privacy Policy</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-all" href="#">Terms of Service</a>
+</nav>
+</div>
+<div class="flex flex-col gap-sm">
+<h3 class="font-label-md text-label-md text-on-surface uppercase font-bold">Help</h3>
+<nav class="flex flex-col gap-xs">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-all" href="#">Shipping Info</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-all" href="#">Returns</a>
+</nav>
+</div>
+<div class="flex flex-col gap-sm">
+<h3 class="font-label-md text-label-md text-on-surface uppercase font-bold">Contact</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">support@medz.com<br/>1800-MED-Z-LIFE</p>
+<p class="text-caption font-caption text-outline mt-md">© 2024 Med Z Pharmacy. All rights reserved.</p>
+</div>
+</div>
+</footer>
+<script>
+        // Micro-interactions for chat messages
+        const chatInput = document.querySelector('input[type="text"]');
+        const sendBtn = chatInput.nextElementSibling;
+        const chatStream = document.querySelector('.chat-scroll');
+
+        sendBtn.addEventListener('click', () => {
+            if (chatInput.value.trim() !== '') {
+                const userMessage = chatInput.value;
+                appendMessage('user', userMessage);
+                chatInput.value = '';
+                
+                // Simulate AI response delay
+                setTimeout(() => {
+                    appendMessage('ai', "I'm processing that information. Can you tell me if you have any allergies or if you're currently taking other medications?");
+                }, 1000);
+            }
+        });
+
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendBtn.click();
+        });
+
+        function appendMessage(type, text) {
+            const msgDiv = document.createElement('div');
+            const isUser = type === 'user';
+            msgDiv.className = `flex gap-md max-w-3xl ${isUser ? 'ml-auto flex-row-reverse' : ''} animate-in fade-in slide-in-from-bottom-4 duration-300`;
+            
+            msgDiv.innerHTML = `
+                <div class="w-10 h-10 rounded-xl ${isUser ? 'bg-surface-container-highest' : 'bg-primary'} flex items-center justify-center shrink-0 shadow-lg ${isUser ? 'border border-outline-variant' : 'shadow-primary/20'}">
+                    <span class="material-symbols-outlined ${isUser ? 'text-on-surface-variant' : 'text-white'}" ${!isUser ? 'style="font-variation-settings: \'FILL\' 1;"' : ''}>${isUser ? 'person' : 'smart_toy'}</span>
+                </div>
+                <div class="space-y-sm ${isUser ? 'text-right' : ''}">
+                    <div class="flex items-center gap-xs ${isUser ? 'justify-end' : ''}">
+                        <span class="font-label-md text-label-md ${isUser ? 'text-on-surface' : 'text-primary'}">${isUser ? 'You' : 'Med Z AI'}</span>
+                        <span class="text-caption font-caption text-outline">Just now</span>
+                    </div>
+                    <div class="${isUser ? 'bg-primary text-white' : 'bg-white message-glow border border-surface-container-highest'} p-md rounded-2xl ${isUser ? 'rounded-tr-none' : 'rounded-tl-none'}">
+                        <p class="font-body-md text-body-md leading-relaxed">${text}</p>
+                    </div>
+                </div>
+            `;
+            chatStream.appendChild(msgDiv);
+            chatStream.scrollTop = chatStream.scrollHeight;
+        }
+    </script>
+</body></html>

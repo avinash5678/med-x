@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Your Cart | MedPrecision</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Plus+Jakarta+Sans:wght@600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Plus+Jakarta+Sans:wght@100..900&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+                  "primary-fixed": "#d8e2ff",
+                  "inverse-on-surface": "#eff1f6",
+                  "on-secondary-fixed": "#00201d",
+                  "on-background": "#181c20",
+                  "surface-variant": "#e0e2e7",
+                  "on-primary-container": "#c7d6ff",
+                  "secondary-container": "#86f2e4",
+                  "surface-container-high": "#e6e8ed",
+                  "on-primary": "#ffffff",
+                  "on-error-container": "#93000a",
+                  "inverse-surface": "#2d3135",
+                  "secondary-fixed-dim": "#6bd8cb",
+                  "on-secondary-fixed-variant": "#005049",
+                  "on-tertiary-container": "#c7d7f2",
+                  "surface-bright": "#f7f9fe",
+                  "primary-container": "#0058c3",
+                  "on-primary-fixed-variant": "#004397",
+                  "on-error": "#ffffff",
+                  "surface-container-low": "#f1f4f9",
+                  "on-primary-fixed": "#001a43",
+                  "secondary": "#006a61",
+                  "on-secondary-container": "#006f66",
+                  "primary-fixed-dim": "#afc6ff",
+                  "tertiary": "#37465c",
+                  "on-secondary": "#ffffff",
+                  "on-surface-variant": "#424753",
+                  "tertiary-container": "#4e5e74",
+                  "tertiary-fixed": "#d3e4fe",
+                  "surface-container-highest": "#e0e2e7",
+                  "surface-container": "#eceef3",
+                  "on-tertiary-fixed-variant": "#38485d",
+                  "inverse-primary": "#afc6ff",
+                  "error-container": "#ffdad6",
+                  "surface-container-lowest": "#ffffff",
+                  "background": "#f7f9fe",
+                  "outline-variant": "#c2c6d5",
+                  "surface": "#f7f9fe",
+                  "surface-tint": "#0559c4",
+                  "on-tertiary": "#ffffff",
+                  "on-tertiary-fixed": "#0b1c30",
+                  "on-surface": "#181c20",
+                  "outline": "#737784",
+                  "surface-dim": "#d8dadf",
+                  "primary": "#004295",
+                  "tertiary-fixed-dim": "#b7c8e1",
+                  "secondary-fixed": "#89f5e7",
+                  "error": "#ba1a1a"
+          },
+          "borderRadius": {
+                  "DEFAULT": "0.25rem",
+                  "lg": "0.5rem",
+                  "xl": "0.75rem",
+                  "full": "9999px"
+          },
+          "spacing": {
+                  "xl": "80px",
+                  "lg": "48px",
+                  "sm": "12px",
+                  "md": "24px",
+                  "container-max": "1280px",
+                  "gutter": "24px",
+                  "base": "8px",
+                  "xs": "4px"
+          },
+          "fontFamily": {
+                  "headline-sm": ["Plus Jakarta Sans"],
+                  "body-lg": ["Inter"],
+                  "display-lg": ["Plus Jakarta Sans"],
+                  "headline-md": ["Plus Jakarta Sans"],
+                  "headline-lg-mobile": ["Plus Jakarta Sans"],
+                  "headline-lg": ["Plus Jakarta Sans"],
+                  "body-md": ["Inter"],
+                  "body-sm": ["Inter"],
+                  "label-md": ["Inter"]
+          },
+          "fontSize": {
+                  "headline-sm": ["18px", {"lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                  "body-lg": ["18px", {"lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400"}],
+                  "display-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                  "headline-md": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                  "headline-lg-mobile": ["28px", {"lineHeight": "1.25", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                  "headline-lg": ["32px", {"lineHeight": "1.25", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                  "body-md": ["16px", {"lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400"}],
+                  "body-sm": ["14px", {"lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400"}],
+                  "label-md": ["14px", {"lineHeight": "1", "letterSpacing": "0.02em", "fontWeight": "600"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    body {
+      background-color: #F8FAFF;
+      color: #181C20;
+      -webkit-font-smoothing: antialiased;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .custom-shadow {
+      box-shadow: 0px 12px 32px rgba(0, 88, 195, 0.04);
+    }
+    .stepper-btn:active {
+      transform: scale(0.92);
+    }
+    .checkout-btn:hover {
+      box-shadow: 0px 8px 24px rgba(0, 66, 149, 0.2);
+    }
+  </style>
+</head>
+<body class="font-body-md text-body-md">
+<!-- TopNavBar Implementation -->
+<nav class="sticky top-0 w-full bg-surface-container-lowest dark:bg-inverse-surface border-b border-outline-variant dark:border-outline shadow-sm z-50">
+<div class="flex justify-between items-center h-16 px-lg max-w-container-max mx-auto">
+<div class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary cursor-pointer active:opacity-80">
+        MedPrecision
+      </div>
+<div class="hidden md:flex gap-md items-center font-body-md text-body-md">
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors cursor-pointer active:opacity-80" href="#">Medicines</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors cursor-pointer active:opacity-80" href="#">Consultations</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors cursor-pointer active:opacity-80" href="#">Contact Us</a>
+</div>
+<div class="flex items-center gap-sm">
+<div class="cursor-pointer text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">search</span>
+</div>
+<div class="cursor-pointer text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+</div>
+</div>
+</div>
+</nav>
+<main class="max-w-container-max mx-auto px-lg py-xl">
+<header class="mb-lg">
+<h1 class="font-display-lg text-display-lg text-primary mb-xs">Your Pharmacy Cart</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Review your prescriptions and health supplies before checkout.</p>
+</header>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-lg items-start">
+<!-- Cart Items Section -->
+<div class="lg:col-span-8 space-y-md">
+<!-- Cart Item 1 -->
+<div class="bg-surface-container-lowest rounded-xl p-md border border-outline-variant custom-shadow flex flex-col md:flex-row gap-md items-center">
+<div class="w-24 h-24 bg-surface-container rounded-lg flex items-center justify-center shrink-0">
+<img alt="Precision Medicine bottle" class="w-16 h-16 object-contain" data-alt="A clean, clinical close-up of a white pharmaceutical bottle with a minimalist professional label. The lighting is soft and high-key, emphasizing pharmaceutical precision and safety. The background is a soft, out-of-focus medical laboratory setting with hints of professional blue and clean whites, reflecting a modern healthcare aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZS2MrxNcE3T7owS7QpGS9_gZUITGu5ffid3UJjwQ_NovJWCZCi0VMe9wzrqMVTSviZFiLi_GDzpLtSx6xteqzQ9YgqfZgjhf2LPVnjslbpHZZpCAYe93wNIXGCT3HNtoRmCimOYTjEhalZjNVDCh19LZaQ93syztKC0W6InJDE-iYZ2XgdxhZH4rqytlBSbxZoazhhH01l6w0PogBG4NB3yEu-UtnnBFAJN0_99l7zqCx8KKi-LE6aUCX4pu5OD7ZEwg-tuSxOh75"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start mb-xs">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">CardioFlow Rx 20mg</h3>
+<span class="font-headline-sm text-headline-sm text-primary">$42.50</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-md">Daily dosage tablet • 30 Capsules • Refillable</p>
+<div class="flex items-center justify-between">
+<div class="flex items-center bg-surface-container-low rounded-full px-xs py-xs border border-outline-variant">
+<button class="stepper-btn w-8 h-8 flex items-center justify-center rounded-full text-primary hover:bg-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-sm">remove</span>
+</button>
+<span class="px-md font-label-md text-label-md">01</span>
+<button class="stepper-btn w-8 h-8 flex items-center justify-center rounded-full text-primary hover:bg-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+<button class="text-error font-label-md text-label-md flex items-center gap-xs hover:underline">
+<span class="material-symbols-outlined text-[18px]">delete</span> Remove
+              </button>
+</div>
+</div>
+</div>
+<!-- Cart Item 2 -->
+<div class="bg-surface-container-lowest rounded-xl p-md border border-outline-variant custom-shadow flex flex-col md:flex-row gap-md items-center">
+<div class="w-24 h-24 bg-surface-container rounded-lg flex items-center justify-center shrink-0">
+<img alt="Vitamins pack" class="w-16 h-16 object-contain" data-alt="A macro shot of professional-grade vitamin supplements in a sleek, semi-transparent container. The image is captured with professional studio lighting, creating soft highlights on the container's surface. The color palette is dominated by medicinal blues and clinical whites, conveying a sense of institutional reliability and health-focused precision in a clean, modern environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0sxOQyh1nTIe9Aj9zGyxXEOi9Llwg-rweEn1T5fBgFm2d3hxYE6qBg9fIXgw6ne85RWaRQWg6fLgzy1X0790c6996ONzLWK2ytAjMxfT4bPm0vS7XXSgWUACVB5tXtSS-LMNGxLVtfcIlSqlWC_BzTXdtM6EmpeFW1iDG1rsjg_99sk05LQGBvJrq2D5Aj5-lJrRAad-L9dQuAt3MJKY5Nz58l4o9ZNmFAgoBuebvsveIAHFJlZHUh9qO5D8NfxoObP5GmHkPqJTc"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start mb-xs">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Immune+ Complex</h3>
+<span class="font-headline-sm text-headline-sm text-primary">$28.00</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-md">High-potency Vitamin D3 & Zinc • 60 Tablets</p>
+<div class="flex items-center justify-between">
+<div class="flex items-center bg-surface-container-low rounded-full px-xs py-xs border border-outline-variant">
+<button class="stepper-btn w-8 h-8 flex items-center justify-center rounded-full text-primary hover:bg-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-sm">remove</span>
+</button>
+<span class="px-md font-label-md text-label-md">02</span>
+<button class="stepper-btn w-8 h-8 flex items-center justify-center rounded-full text-primary hover:bg-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+<button class="text-error font-label-md text-label-md flex items-center gap-xs hover:underline">
+<span class="material-symbols-outlined text-[18px]">delete</span> Remove
+              </button>
+</div>
+</div>
+</div>
+<!-- AI Interaction Check Feature Section -->
+<section class="mt-lg p-lg bg-primary-fixed text-on-primary-fixed rounded-xl border border-primary-container relative overflow-hidden">
+<div class="relative z-10 flex flex-col md:flex-row items-center gap-md">
+<div class="bg-primary text-on-primary p-md rounded-full shadow-lg">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">security</span>
+</div>
+<div>
+<h4 class="font-headline-md text-headline-md mb-xs">AI Prescription Guard</h4>
+<p class="font-body-md text-body-md opacity-90">Our AI has analyzed your cart for potential drug-to-drug interactions. Your current selection is 100% compatible with your medical history on file.</p>
+</div>
+<button class="md:ml-auto whitespace-nowrap bg-on-primary-fixed text-primary-fixed px-md py-sm rounded-lg font-label-md text-label-md hover:opacity-90 transition-opacity">
+              View Detailed Report
+            </button>
+</div>
+<!-- Abstract Background Pattern -->
+<div class="absolute top-0 right-0 opacity-10 pointer-events-none transform translate-x-1/4 -translate-y-1/4">
+<span class="material-symbols-outlined text-[240px]">hub</span>
+</div>
+</section>
+</div>
+<!-- Order Summary Column -->
+<aside class="lg:col-span-4">
+<div class="bg-surface-container-lowest rounded-xl p-lg border border-outline-variant custom-shadow sticky top-24">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-md">Order Summary</h2>
+<div class="space-y-sm mb-lg">
+<div class="flex justify-between font-body-md text-body-md text-on-surface-variant">
+<span>Subtotal</span>
+<span>$98.50</span>
+</div>
+<div class="flex justify-between font-body-md text-body-md text-on-surface-variant">
+<span>Shipping</span>
+<span class="text-secondary font-bold">FREE</span>
+</div>
+<div class="flex justify-between font-body-md text-body-md text-on-surface-variant">
+<span>Estimated Tax</span>
+<span>$7.88</span>
+</div>
+<div class="pt-sm border-t border-outline-variant flex justify-between font-headline-md text-headline-md text-on-surface">
+<span>Total</span>
+<span>$106.38</span>
+</div>
+</div>
+<div class="mb-lg">
+<label class="font-label-md text-label-md text-on-surface-variant block mb-xs">Promo Code</label>
+<div class="flex gap-xs">
+<input class="flex-grow bg-surface-container-low border-outline-variant rounded-lg px-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-all" placeholder="Enter code" type="text"/>
+<button class="bg-surface-container-highest text-on-surface-variant px-md py-sm rounded-lg font-label-md text-label-md hover:bg-outline-variant transition-colors">Apply</button>
+</div>
+</div>
+<button class="checkout-btn w-full bg-primary text-on-primary py-md rounded-xl font-headline-sm text-headline-sm flex items-center justify-center gap-sm active:opacity-90 transition-all">
+            Proceed to Checkout
+            <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<div class="mt-md flex items-center gap-sm p-sm bg-surface-container rounded-lg">
+<span class="material-symbols-outlined text-secondary">verified_user</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant leading-tight">Secure 256-bit SSL encrypted pharmacy payment.</span>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- Footer Implementation -->
+<footer class="bg-on-background dark:bg-surface-container-lowest mt-xl">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-lg px-lg py-xl max-w-container-max mx-auto text-on-primary">
+<div class="col-span-1 md:col-span-1">
+<div class="font-headline-sm text-headline-sm font-bold text-on-primary dark:text-primary mb-md">
+          MedPrecision
+        </div>
+<p class="font-body-sm text-body-sm text-surface-variant mb-md">Advancing healthcare through precision pharmaceutical solutions and clinician-first tools.</p>
+</div>
+<div class="flex flex-col gap-sm">
+<h5 class="font-label-md text-label-md uppercase tracking-wider opacity-60">Services</h5>
+<a class="text-surface-variant hover:text-primary-fixed-dim transition-colors font-body-sm text-body-sm" href="#">Medicines</a>
+<a class="text-surface-variant hover:text-primary-fixed-dim transition-colors font-body-sm text-body-sm" href="#">Pharmacist Support</a>
+<a class="text-surface-variant hover:text-primary-fixed-dim transition-colors font-body-sm text-body-sm" href="#">Quality Standards</a>
+</div>
+<div class="flex flex-col gap-sm">
+<h5 class="font-label-md text-label-md uppercase tracking-wider opacity-60">Legal</h5>
+<a class="text-surface-variant hover:text-primary-fixed-dim transition-colors font-body-sm text-body-sm" href="#">Privacy Policy</a>
+<a class="text-surface-variant hover:text-primary-fixed-dim transition-colors font-body-sm text-body-sm" href="#">Terms of Service</a>
+<a class="text-surface-variant hover:text-primary-fixed-dim transition-colors font-body-sm text-body-sm" href="#">Returns</a>
+</div>
+<div class="flex flex-col gap-sm">
+<h5 class="font-label-md text-label-md uppercase tracking-wider opacity-60">Connect</h5>
+<div class="flex gap-md">
+<span class="material-symbols-outlined cursor-pointer hover:text-primary-fixed-dim">mail</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-primary-fixed-dim">call</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-primary-fixed-dim">share</span>
+</div>
+</div>
+</div>
+<div class="border-t border-on-surface-variant/20 max-w-container-max mx-auto px-lg py-md">
+<p class="font-body-sm text-body-sm text-surface-variant text-center md:text-left">
+        © 2024 MedPrecision Pharmaceuticals. All rights reserved.
+      </p>
+</div>
+</footer>
+<script>
+    // Micro-interactions for stepper buttons
+    document.querySelectorAll('.stepper-btn').forEach(button => {
+      button.addEventListener('click', (e) => {
+        const span = e.currentTarget.parentElement.querySelector('span:not(.material-symbols-outlined)');
+        let val = parseInt(span.textContent);
+        if (e.currentTarget.querySelector('.material-symbols-outlined').textContent === 'add') {
+          val++;
+        } else {
+          if (val > 1) val--;
+        }
+        span.textContent = val < 10 ? '0' + val : val;
+      });
+    });
+
+    // Subtle fade in on load
+    window.addEventListener('load', () => {
+      document.body.style.opacity = '0';
+      document.body.style.transition = 'opacity 0.6s ease-in-out';
+      setTimeout(() => {
+        document.body.style.opacity = '1';
+      }, 50);
+    });
+  </script>
+</body></html>
