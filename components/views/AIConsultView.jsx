@@ -1,16 +1,15 @@
 'use client';
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { Send, ChevronRight, X, AlertTriangle } from 'lucide-react';
 
 export default function AIConsultView({
   doctorMessages,
-  doctorInput,
-  setDoctorInput,
   handleDoctorMessage,
   isDoctorTyping,
   setCurrentView,
   addToCart,
 }) {
+  const [localDoctorInput, setLocalDoctorInput] = useState('');
   const messagesEndRef = useRef(null);
 
   // Auto-scroll to bottom of chat
@@ -160,7 +159,16 @@ export default function AIConsultView({
 
         {/* Input Bar */}
         <div className="p-6 pt-0 bg-gradient-to-t from-[var(--color-background)] via-[var(--color-background)] to-transparent">
-          <form onSubmit={handleDoctorMessage} className="max-w-4xl mx-auto">
+          <form 
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (localDoctorInput.trim()) {
+                handleDoctorMessage(localDoctorInput.trim());
+                setLocalDoctorInput('');
+              }
+            }} 
+            className="max-w-4xl mx-auto"
+          >
             <div className="glass-panel rounded-2xl p-1.5 flex items-center gap-1 shadow-xl bg-white/80 dark:bg-slate-900/80 border border-[var(--color-outline-variant)]/20">
               <button type="button" className="p-3 text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary)] hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all flex items-center justify-center cursor-pointer" title="Upload Prescription">
                 <span className="material-symbols-outlined text-xl">attachment</span>
@@ -172,12 +180,12 @@ export default function AIConsultView({
                 className="flex-1 bg-transparent border-none focus:outline-none focus:ring-0 text-sm text-[var(--color-on-surface)] placeholder:text-[var(--color-outline)]/60 px-4"
                 placeholder="Type symptoms (cough, allergy, pain) or ask medical questions..."
                 type="text"
-                value={doctorInput}
-                onChange={(e) => setDoctorInput(e.target.value)}
+                value={localDoctorInput}
+                onChange={(e) => setLocalDoctorInput(e.target.value)}
               />
               <button
                 type="submit"
-                disabled={!doctorInput.trim() || isDoctorTyping}
+                disabled={!localDoctorInput.trim() || isDoctorTyping}
                 className="bg-[var(--color-primary)] text-white p-3 rounded-xl flex items-center justify-center hover:bg-[var(--color-primary-container)] transition-all active:scale-95 shadow-md shadow-[var(--color-primary)]/20 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
               >
                 <Send size={16} />
