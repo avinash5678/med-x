@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Sparkles, Package, X, ShoppingCart, ArrowLeft } from 'lucide-react';
 
 export default function ShopView({
@@ -9,6 +9,29 @@ export default function ShopView({
   setIsDoctorOpen, setIsChatOpen, setIsMobileSidebarOpen, isMobileSidebarOpen,
   user, handleLogout,
 }) {
+  const [localSearch, setLocalSearch] = useState(searchQuery);
+  const [visibleCount, setVisibleCount] = useState(24);
+
+  // Sync local search when parent query changes (e.g. if cleared from outside)
+  useEffect(() => {
+    setLocalSearch(searchQuery);
+  }, [searchQuery]);
+
+  // Debounce search input to avoid lag during typing
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearchQuery(localSearch);
+    }, 200);
+    return () => clearTimeout(timer);
+  }, [localSearch, setSearchQuery]);
+
+  // Reset visible count when category or search query changes
+  useEffect(() => {
+    setVisibleCount(24);
+  }, [activeCategory, searchQuery]);
+
+  const displayedProducts = filteredProducts.slice(0, visibleCount);
+
   return (
     <div className="flex flex-col md:flex-row flex-1 h-full overflow-hidden animate-fade-in">
       <main className="flex-1 p-4 md:p-8 lg:p-12 pb-28 md:pb-6 w-full overflow-y-auto scrollbar-hide bg-[var(--color-background)]">
@@ -32,8 +55,8 @@ export default function ShopView({
         </section>
 
         {/* Product Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 pb-24">
-          {filteredProducts.map((product) => {
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 pb-12">
+          {displayedProducts.map((product) => {
             const Icon = product.icon;
             return (
               <div key={product.id}
@@ -61,6 +84,17 @@ export default function ShopView({
             );
           })}
         </div>
+
+        {filteredProducts.length > visibleCount && (
+          <div className="flex justify-center pb-16">
+            <button 
+              onClick={() => setVisibleCount(prev => prev + 24)}
+              className="px-8 py-3.5 bg-[var(--color-surface-container-lowest)] hover:bg-[var(--color-surface-container-low)] border border-[var(--color-outline-variant)] text-[var(--color-primary)] font-heading font-semibold text-sm rounded-xl transition-all shadow-md active:scale-95 cursor-pointer flex items-center gap-2"
+            >
+              <span className="material-symbols-outlined text-lg">expand_more</span> Load More Medicines
+            </button>
+          </div>
+        )}
         
         {filteredProducts.length === 0 && (
           <div className="text-center py-32 text-[var(--color-on-surface-variant)] flex flex-col items-center">
@@ -122,7 +156,7 @@ export default function ShopView({
             </h2>
             <div className="relative group">
               <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--color-outline)] group-focus-within:text-[var(--color-primary)] transition-colors">search</span>
-              <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search by name or generic..."
+              <input type="text" value={localSearch} onChange={(e) => setLocalSearch(e.target.value)} placeholder="Search by name or generic..."
                 className="w-full pl-10 pr-4 py-3 rounded-lg border border-[var(--color-outline-variant)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:border-[var(--color-primary)] transition-all bg-[var(--color-surface-container-low)] text-[var(--color-on-surface)]" />
             </div>
           </div>
