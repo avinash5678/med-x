@@ -41,15 +41,15 @@ export default function AIConsultView({
               <span className="material-symbols-outlined text-[var(--color-outline)] text-lg">history</span>
             </div>
             <div className="space-y-3">
-              <button className="w-full text-left p-3.5 rounded-xl bg-[var(--color-surface-container-highest)]/50 border border-transparent hover:border-[var(--color-primary)]/20 hover:bg-white transition-all cursor-pointer">
+              <button onClick={() => alert("Loading historical consultation log: Seasonal Allergy Advice... (Simulated)")} className="w-full text-left p-3.5 rounded-xl bg-[var(--color-surface-container-highest)]/50 border border-transparent hover:border-[var(--color-primary)]/20 hover:bg-white transition-all cursor-pointer">
                 <p className="font-heading font-semibold text-xs text-[var(--color-on-surface)]">Seasonal Allergy Advice</p>
                 <p className="text-[10px] text-[var(--color-outline)] mt-1">Yesterday, 4:30 PM</p>
               </button>
-              <button className="w-full text-left p-3.5 rounded-xl hover:bg-white/50 border border-transparent transition-all cursor-pointer">
+              <button onClick={() => alert("Loading historical consultation log: Vitamin D Deficiency... (Simulated)")} className="w-full text-left p-3.5 rounded-xl hover:bg-white/50 border border-transparent transition-all cursor-pointer">
                 <p className="font-heading font-semibold text-xs text-[var(--color-on-surface)]">Vitamin D Deficiency</p>
                 <p className="text-[10px] text-[var(--color-outline)] mt-1">Oct 12, 2023</p>
               </button>
-              <button className="w-full text-left p-3.5 rounded-xl hover:bg-white/50 border border-transparent transition-all cursor-pointer">
+              <button onClick={() => alert("Loading historical consultation log: Post-Surgery Care... (Simulated)")} className="w-full text-left p-3.5 rounded-xl hover:bg-white/50 border border-transparent transition-all cursor-pointer">
                 <p className="font-heading font-semibold text-xs text-[var(--color-on-surface)]">Post-Surgery Care</p>
                 <p className="text-[10px] text-[var(--color-outline)] mt-1">Sep 28, 2023</p>
               </button>
@@ -83,7 +83,7 @@ export default function AIConsultView({
           <div className="mt-auto p-4 bg-[var(--color-primary)]/5 rounded-2xl border border-[var(--color-primary)]/10">
             <p className="text-xs font-heading font-bold text-[var(--color-primary)] mb-1">Premium Support</p>
             <p className="text-[11px] text-[var(--color-on-surface-variant)] mb-3 leading-normal">Get priority access to human doctors 24/7.</p>
-            <button className="w-full py-2 bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-container)] rounded-lg font-heading font-semibold text-xs transition-colors cursor-pointer active:scale-[0.98]">
+            <button onClick={() => alert("Plan upgrade simulated successfully! Welcome to Med Z Premium.")} className="w-full py-2 bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-container)] rounded-lg font-heading font-semibold text-xs transition-colors cursor-pointer active:scale-[0.98]">
               Upgrade Plan
             </button>
           </div>
@@ -170,10 +170,20 @@ export default function AIConsultView({
             className="max-w-4xl mx-auto"
           >
             <div className="glass-panel rounded-2xl p-1.5 flex items-center gap-1 shadow-xl bg-white/80 dark:bg-slate-900/80 border border-[var(--color-outline-variant)]/20">
-              <button type="button" className="p-3 text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary)] hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all flex items-center justify-center cursor-pointer" title="Upload Prescription">
+              <button 
+                onClick={() => alert("Prescription attachment feature is simulated in this consultation sandbox. In a production environment, this would upload your PDF/image to our HIPAA-compliant server for OCR verification.")}
+                type="button" 
+                className="p-3 text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary)] hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all flex items-center justify-center cursor-pointer" 
+                title="Upload Prescription"
+              >
                 <span className="material-symbols-outlined text-xl">attachment</span>
               </button>
-              <button type="button" className="p-3 text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary)] hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all flex items-center justify-center cursor-pointer" title="Capture Photo">
+              <button 
+                onClick={() => alert("Camera capture feature is simulated in this consultation sandbox. In a production environment, this would open your camera or photo gallery to capture a snapshot of your prescription.")}
+                type="button" 
+                className="p-3 text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary)] hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all flex items-center justify-center cursor-pointer" 
+                title="Capture Photo"
+              >
                 <span className="material-symbols-outlined text-xl">photo_camera</span>
               </button>
               <input
@@ -216,7 +226,7 @@ export default function AIConsultView({
                 <p className="font-heading font-bold text-sm text-[var(--color-on-surface)]">Digital Prescription</p>
               </div>
               <p className="text-xs text-[var(--color-on-surface-variant)] leading-normal">Upload your physical prescription for AI-powered verification and medicine reminders.</p>
-              <button className="w-full py-2.5 border-2 border-dashed border-[var(--color-outline-variant)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] rounded-xl text-[var(--color-outline)] font-heading font-semibold text-xs hover:bg-white dark:hover:bg-slate-800 transition-all cursor-pointer">
+              <button onClick={() => alert("Prescription upload simulated successfully! AI is analyzing your prescription.")} className="w-full py-2.5 border-2 border-dashed border-[var(--color-outline-variant)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] rounded-xl text-[var(--color-outline)] font-heading font-semibold text-xs hover:bg-white dark:hover:bg-slate-800 transition-all cursor-pointer">
                 Upload Now
               </button>
             </div>
@@ -270,7 +280,7 @@ export default function AIConsultView({
               <div className="relative z-10">
                 <p className="font-heading font-bold text-sm text-[var(--color-secondary)] mb-1">Need more clarity?</p>
                 <p className="text-xs text-[var(--color-on-surface-variant)] mb-4 leading-normal">Book a video call with a certified MD in the next 15 minutes.</p>
-                <button className="w-full py-2.5 bg-[var(--color-secondary)] hover:bg-[var(--color-on-secondary-container)] text-white rounded-xl font-heading font-bold text-xs transition-all cursor-pointer active:scale-[0.98]">
+                <button onClick={() => alert("Connecting you with a board-certified doctor for a video consultation... (Simulated)")} className="w-full py-2.5 bg-[var(--color-secondary)] hover:bg-[var(--color-on-secondary-container)] text-white rounded-xl font-heading font-bold text-xs transition-all cursor-pointer active:scale-[0.98]">
                   Book Video Consultation
                 </button>
               </div>

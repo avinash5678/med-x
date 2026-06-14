@@ -95,8 +95,11 @@ export default function HomeView({ setCurrentView, setIsDoctorOpen, setIsChatOpe
               </div>
               <h3 className="font-heading font-semibold text-2xl text-[var(--color-on-background)]">Virtual Consultations</h3>
               <p className="font-body text-sm text-[var(--color-on-surface-variant)]">Connect with board-certified pharmacists and specialists within minutes from the comfort of your home.</p>
+              <button onClick={() => setIsDoctorOpen(true)} className="inline-flex items-center text-[var(--color-primary)] font-heading text-sm font-semibold gap-1 group-hover:gap-2 transition-all cursor-pointer mt-2">
+                Consult a Doctor <span className="material-symbols-outlined text-lg">arrow_forward</span>
+              </button>
             </div>
-            <div className="mt-8 pt-8 border-t border-[var(--color-outline-variant)] flex items-center justify-between">
+            <div className="mt-6 pt-6 border-t border-[var(--color-outline-variant)] flex items-center justify-between">
               <span className="font-heading text-sm font-semibold text-[var(--color-on-surface)]">Available Now</span>
               <div className="flex -space-x-2">
                 <div className="w-8 h-8 rounded-full border-2 border-white bg-[var(--color-surface-dim)]"></div>
@@ -176,16 +179,37 @@ export default function HomeView({ setCurrentView, setIsDoctorOpen, setIsChatOpe
           <div>
             <h5 className="text-[var(--color-on-primary)] dark:text-[var(--color-primary)] font-heading font-semibold text-sm mb-4">Company</h5>
             <ul className="space-y-2">
-              <li><a className="font-body text-sm text-[var(--color-surface-variant)] dark:text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary-fixed-dim)] transition-colors" href="#">Privacy Policy</a></li>
-              <li><a className="font-body text-sm text-[var(--color-surface-variant)] dark:text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary-fixed-dim)] transition-colors" href="#">Terms of Service</a></li>
-              <li><a className="font-body text-sm text-[var(--color-surface-variant)] dark:text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary-fixed-dim)] transition-colors" href="#">Quality Standards</a></li>
+              <li>
+                <button 
+                  onClick={() => alert("Med Z Privacy Policy: Your data security is our priority. We comply with relevant digital healthcare information privacy rules.")} 
+                  className="font-body text-sm text-[var(--color-surface-variant)] dark:text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary-fixed-dim)] dark:hover:text-[var(--color-primary)] transition-colors bg-transparent border-0 cursor-pointer p-0 text-left"
+                >
+                  Privacy Policy
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => alert("Med Z Terms of Service: By using the Med Z platform, you agree to our digital healthcare delivery and consultation guidelines.")} 
+                  className="font-body text-sm text-[var(--color-surface-variant)] dark:text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary-fixed-dim)] dark:hover:text-[var(--color-primary)] transition-colors bg-transparent border-0 cursor-pointer p-0 text-left"
+                >
+                  Terms of Service
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => alert("Med Z Quality Standards: All our partner pharmacies and fulfillment hubs comply with ISO 9001 quality management guidelines.")} 
+                  className="font-body text-sm text-[var(--color-surface-variant)] dark:text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary-fixed-dim)] dark:hover:text-[var(--color-primary)] transition-colors bg-transparent border-0 cursor-pointer p-0 text-left"
+                >
+                  Quality Standards
+                </button>
+              </li>
             </ul>
           </div>
           <div className="space-y-4">
             <h5 className="text-[var(--color-on-primary)] dark:text-[var(--color-primary)] font-heading font-semibold text-sm mb-4">Newsletter</h5>
             <div className="flex">
               <input className="flex-1 px-4 py-2 bg-[var(--color-surface-container-high)]/10 border border-white/20 rounded-l-lg text-white focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]" placeholder="Clinical updates..." type="email" />
-              <button className="px-6 py-2 bg-[var(--color-primary)] text-[var(--color-on-primary)] rounded-r-lg hover:bg-[var(--color-primary-container)] transition-all">Join</button>
+              <button onClick={() => alert("Thank you for subscribing to the Med Z Newsletter!")} className="px-6 py-2 bg-[var(--color-primary)] text-[var(--color-on-primary)] rounded-r-lg hover:bg-[var(--color-primary-container)] transition-all cursor-pointer">Join</button>
             </div>
           </div>
         </div>

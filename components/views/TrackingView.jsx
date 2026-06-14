@@ -310,7 +310,13 @@ export default function TrackingView({ order, setCurrentView }) {
           </section>
 
           {/* Support Line */}
-          <button className="w-full py-3 text-center text-[var(--color-primary)] hover:text-[var(--color-primary-container)] font-heading font-semibold text-xs transition-colors cursor-pointer bg-transparent border-0 outline-none">
+          <button 
+            onClick={() => {
+              alert("Connecting you to Med Z customer support... Please feel free to also reach out via our Contact form.");
+              setCurrentView('contact');
+            }}
+            className="w-full py-3 text-center text-[var(--color-primary)] hover:text-[var(--color-primary-container)] font-heading font-semibold text-xs transition-colors cursor-pointer bg-transparent border-0 outline-none"
+          >
             Need help with your delivery?
           </button>
         </div>

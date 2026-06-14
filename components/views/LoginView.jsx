@@ -255,7 +255,7 @@ export default function LoginView({
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                  <button className="flex items-center justify-center gap-2 py-3 border border-[var(--color-outline-variant)] rounded-xl hover:bg-[var(--color-surface-container-low)] transition-colors font-heading text-sm font-semibold text-[var(--color-on-surface)] group">
+                  <button onClick={() => alert("Google Sign-In is simulated for this demo.")} className="flex items-center justify-center gap-2 py-3 border border-[var(--color-outline-variant)] rounded-xl hover:bg-[var(--color-surface-container-low)] transition-colors font-heading text-sm font-semibold text-[var(--color-on-surface)] group cursor-pointer">
                     <svg className="w-5 h-5 group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
                       <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
                       <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
@@ -264,7 +264,7 @@ export default function LoginView({
                     </svg>
                     Google
                   </button>
-                  <button className="flex items-center justify-center gap-2 py-3 border border-[var(--color-outline-variant)] rounded-xl hover:bg-[var(--color-surface-container-low)] transition-colors font-heading text-sm font-semibold text-[var(--color-on-surface)] group">
+                  <button onClick={() => alert("Apple Sign-In is simulated for this demo.")} className="flex items-center justify-center gap-2 py-3 border border-[var(--color-outline-variant)] rounded-xl hover:bg-[var(--color-surface-container-low)] transition-colors font-heading text-sm font-semibold text-[var(--color-on-surface)] group cursor-pointer">
                     <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M17.05 20.28c-.96.95-2.21 1.72-3.74 1.72-1.39 0-2.43-.53-3.32-.53-.9 0-2.04.53-3.32.53-1.53 0-2.78-.77-3.74-1.72C1.51 17.51 1 14.17 1 11.5c0-4.17 2.4-6.44 4.71-6.44 1.22 0 2.21.52 3.14.52.93 0 1.93-.52 3.14-.52 2.31 0 4.71 2.27 4.71 6.44 0 2.67-.51 6.01-1.65 8.78zM12.03 5.07c0-2.1 1.69-3.8 3.77-3.8.05.47-.13 1.93-.97 2.83-.84.9-2.1 1.7-3.77 1.7.05-.73-.03-.73 0-.73z"></path>
                     </svg>
@@ -291,8 +291,24 @@ export default function LoginView({
           </div>
 
           <div className="absolute bottom-4 flex gap-6">
-            <a className="font-body text-xs text-[var(--color-outline)] hover:text-[var(--color-on-surface-variant)] transition-colors" href="#">Privacy Policy</a>
-            <a className="font-body text-xs text-[var(--color-outline)] hover:text-[var(--color-on-surface-variant)] transition-colors" href="#">Terms of Service</a>
+            <button 
+              onClick={(e) => {
+                e.preventDefault();
+                alert("Med Z Privacy Policy: Your data security is our priority. We comply with relevant digital healthcare information privacy rules.");
+              }}
+              className="font-body text-xs text-[var(--color-outline)] hover:text-[var(--color-on-surface-variant)] transition-colors bg-transparent border-0 cursor-pointer"
+            >
+              Privacy Policy
+            </button>
+            <button 
+              onClick={(e) => {
+                e.preventDefault();
+                alert("Med Z Terms of Service: By using the Med Z platform, you agree to our digital healthcare delivery and consultation guidelines.");
+              }}
+              className="font-body text-xs text-[var(--color-outline)] hover:text-[var(--color-on-surface-variant)] transition-colors bg-transparent border-0 cursor-pointer"
+            >
+              Terms of Service
+            </button>
           </div>
         </section>
       </main>
