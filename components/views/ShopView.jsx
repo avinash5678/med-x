@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { Plus, Sparkles, Package, X, ShoppingCart, ArrowLeft } from 'lucide-react';
+import { Plus, Sparkles, Package, X, ShoppingCart, ArrowLeft, ChevronLeft, ChevronRight, Pill } from 'lucide-react';
 
 export default function ShopView({
   filteredProducts, activeCategory, setActiveCategory, CATEGORIES,
@@ -8,16 +8,16 @@ export default function ShopView({
   cart, cartCount, cartTotal, setCurrentView,
   setIsDoctorOpen, setIsChatOpen, setIsMobileSidebarOpen, isMobileSidebarOpen,
   user, handleLogout,
+  loading, total, page, setPage, totalPages, ICON_MAP,
 }) {
   const [localSearch, setLocalSearch] = useState(searchQuery);
-  const [visibleCount, setVisibleCount] = useState(24);
 
   // Sync local search when parent query changes (e.g. if cleared from outside)
   useEffect(() => {
     setLocalSearch(searchQuery);
   }, [searchQuery]);
 
-  // Debounce search input to avoid lag during typing
+  // Debounce search input to parent — parent handles its own 400ms debounce to API
   useEffect(() => {
     const timer = setTimeout(() => {
       setSearchQuery(localSearch);
@@ -25,12 +25,17 @@ export default function ShopView({
     return () => clearTimeout(timer);
   }, [localSearch, setSearchQuery]);
 
-  // Reset visible count when category or search query changes
-  useEffect(() => {
-    setVisibleCount(24);
-  }, [activeCategory, searchQuery]);
-
-  const displayedProducts = filteredProducts.slice(0, visibleCount);
+  // Resolve icon string to component
+  const resolveIcon = (iconName) => {
+    if (ICON_MAP && typeof iconName === 'string') {
+      return ICON_MAP[iconName] || Pill;
+    }
+    // Fallback: if it's already a component (shouldn't happen with API but safety)
+    if (typeof iconName === 'function' || typeof iconName === 'object') {
+      return iconName;
+    }
+    return Pill;
+  };
 
   return (
     <div className="flex flex-col md:flex-row flex-1 h-full overflow-hidden animate-fade-in">
@@ -39,7 +44,9 @@ export default function ShopView({
         <section className="mb-12">
           <div className="flex items-center justify-between mb-6">
             <h1 className="font-heading font-semibold text-3xl text-[var(--color-on-surface)]">{activeCategory} Medicines</h1>
-            <span className="font-body text-sm text-[var(--color-outline)]">Showing {filteredProducts.length} products</span>
+            <span className="font-body text-sm text-[var(--color-outline)]">
+              {loading ? 'Loading...' : `Showing ${filteredProducts.length} of ${total} products`}
+            </span>
           </div>
           <div className="flex flex-wrap gap-3">
             {CATEGORIES.map(category => (
@@ -54,54 +61,139 @@ export default function ShopView({
           </div>
         </section>
 
-        {/* Product Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 pb-12">
-          {displayedProducts.map((product) => {
-            const Icon = product.icon;
-            return (
-              <div key={product.id}
-                className="bg-[var(--color-surface-container-lowest)] border border-[var(--color-outline-variant)] rounded-xl overflow-hidden atmospheric-shadow hover:border-[var(--color-primary)]/30 transition-all group">
-                <div className="h-40 bg-[var(--color-surface-container)] overflow-hidden flex items-center justify-center">
-                  <Icon size={48} strokeWidth={1.5} className="text-[var(--color-outline)] group-hover:text-[var(--color-primary)] transition-colors group-hover:scale-110 duration-500" />
-                </div>
-                <div className="p-6">
-                  <div className="flex justify-between items-start mb-1">
-                    <span className="text-[10px] font-bold tracking-wider uppercase text-[var(--color-on-secondary-container)] bg-[var(--color-secondary-container)] px-2 py-1 rounded">{product.category}</span>
-                    <span className="font-body text-sm font-bold text-[var(--color-primary)]">₹{product.price}</span>
+        {/* Loading Skeleton */}
+        {loading && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 pb-12">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="bg-[var(--color-surface-container-lowest)] border border-[var(--color-outline-variant)] rounded-xl overflow-hidden animate-pulse">
+                <div className="h-40 bg-[var(--color-surface-container)]" />
+                <div className="p-6 space-y-3">
+                  <div className="flex justify-between">
+                    <div className="h-4 w-20 bg-[var(--color-surface-container)] rounded" />
+                    <div className="h-4 w-12 bg-[var(--color-surface-container)] rounded" />
                   </div>
-                  <h3 className="font-heading font-semibold text-lg text-[var(--color-on-surface)] mb-1 mt-2">{product.name}</h3>
-                  <p className="font-body text-sm text-[var(--color-on-surface-variant)] mb-4 line-clamp-2">{product.description}</p>
-                  <button onClick={() => handleAiExplain(product)}
-                    className="text-xs text-[var(--color-primary)] font-semibold flex items-center gap-1.5 hover:gap-2 transition-all bg-[var(--color-primary-fixed)] px-3 py-2 rounded-lg w-fit mb-4 cursor-pointer">
-                    <Sparkles size={14} /> AI Explain
-                  </button>
-                  <button onClick={() => addToCart(product)}
-                    className="w-full py-2.5 bg-[var(--color-primary-container)] text-white font-heading text-sm font-semibold rounded-lg hover:bg-[var(--color-primary)] transition-colors flex items-center justify-center gap-2 cursor-pointer">
-                    <span className="material-symbols-outlined text-lg">add_shopping_cart</span> Add to Order
-                  </button>
+                  <div className="h-5 w-3/4 bg-[var(--color-surface-container)] rounded" />
+                  <div className="h-4 w-full bg-[var(--color-surface-container)] rounded" />
+                  <div className="h-4 w-2/3 bg-[var(--color-surface-container)] rounded" />
+                  <div className="h-8 w-24 bg-[var(--color-surface-container)] rounded-lg" />
+                  <div className="h-10 w-full bg-[var(--color-surface-container)] rounded-lg" />
                 </div>
               </div>
-            );
-          })}
-        </div>
-
-        {filteredProducts.length > visibleCount && (
-          <div className="flex justify-center pb-16">
-            <button 
-              onClick={() => setVisibleCount(prev => prev + 24)}
-              className="px-8 py-3.5 bg-[var(--color-surface-container-lowest)] hover:bg-[var(--color-surface-container-low)] border border-[var(--color-outline-variant)] text-[var(--color-primary)] font-heading font-semibold text-sm rounded-xl transition-all shadow-md active:scale-95 cursor-pointer flex items-center gap-2"
-            >
-              <span className="material-symbols-outlined text-lg">expand_more</span> Load More Medicines
-            </button>
+            ))}
           </div>
         )}
-        
-        {filteredProducts.length === 0 && (
+
+        {/* Product Grid */}
+        {!loading && filteredProducts.length > 0 && (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 pb-8">
+              {filteredProducts.map((product) => {
+                const Icon = resolveIcon(product.icon);
+                return (
+                  <div key={product.id}
+                    className="bg-[var(--color-surface-container-lowest)] border border-[var(--color-outline-variant)] rounded-xl overflow-hidden atmospheric-shadow hover:border-[var(--color-primary)]/30 transition-all group">
+                    <div className="h-40 bg-[var(--color-surface-container)] overflow-hidden flex items-center justify-center">
+                      {product.image ? (
+                        <img src={product.image} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      ) : (
+                        <Icon size={48} strokeWidth={1.5} className="text-[var(--color-outline)] group-hover:text-[var(--color-primary)] transition-colors group-hover:scale-110 duration-500" />
+                      )}
+                    </div>
+                    <div className="p-6">
+                      <div className="flex justify-between items-start mb-1">
+                        <span className="text-[10px] font-bold tracking-wider uppercase text-[var(--color-on-secondary-container)] bg-[var(--color-secondary-container)] px-2 py-1 rounded">{product.category}</span>
+                        <span className="font-body text-sm font-bold text-[var(--color-primary)]">₹{product.price}</span>
+                      </div>
+                      <h3 className="font-heading font-semibold text-lg text-[var(--color-on-surface)] mb-1 mt-2">{product.name}</h3>
+                      <p className="font-body text-sm text-[var(--color-on-surface-variant)] mb-4 line-clamp-2">{product.description}</p>
+                      <button onClick={() => handleAiExplain(product)}
+                        className="text-xs text-[var(--color-primary)] font-semibold flex items-center gap-1.5 hover:gap-2 transition-all bg-[var(--color-primary-fixed)] px-3 py-2 rounded-lg w-fit mb-4 cursor-pointer">
+                        <Sparkles size={14} /> AI Explain
+                      </button>
+                      <button onClick={() => addToCart(product)}
+                        className="w-full py-2.5 bg-[var(--color-primary-container)] text-white font-heading text-sm font-semibold rounded-lg hover:bg-[var(--color-primary)] transition-colors flex items-center justify-center gap-2 cursor-pointer">
+                        <span className="material-symbols-outlined text-lg">add_shopping_cart</span> Add to Order
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-center gap-3 pb-16">
+                <button
+                  onClick={() => setPage(Math.max(1, page - 1))}
+                  disabled={page <= 1}
+                  className="flex items-center gap-1.5 px-5 py-2.5 bg-[var(--color-surface-container-lowest)] hover:bg-[var(--color-surface-container-low)] border border-[var(--color-outline-variant)] text-[var(--color-on-surface)] font-heading font-semibold text-sm rounded-xl transition-all shadow-sm active:scale-95 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100"
+                >
+                  <ChevronLeft size={16} /> Previous
+                </button>
+
+                <div className="flex items-center gap-1.5">
+                  {(() => {
+                    const pages = [];
+                    let start = Math.max(1, page - 2);
+                    let end = Math.min(totalPages, page + 2);
+                    // Ensure at least 5 pages shown when possible
+                    if (end - start < 4) {
+                      if (start === 1) end = Math.min(totalPages, start + 4);
+                      else start = Math.max(1, end - 4);
+                    }
+                    if (start > 1) {
+                      pages.push(
+                        <button key={1} onClick={() => setPage(1)}
+                          className="w-9 h-9 rounded-lg text-sm font-semibold transition-all bg-[var(--color-surface-container-lowest)] border border-[var(--color-outline-variant)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-low)] cursor-pointer">
+                          1
+                        </button>
+                      );
+                      if (start > 2) pages.push(<span key="start-ellipsis" className="text-[var(--color-outline)] px-1">…</span>);
+                    }
+                    for (let i = start; i <= end; i++) {
+                      pages.push(
+                        <button key={i} onClick={() => setPage(i)}
+                          className={`w-9 h-9 rounded-lg text-sm font-semibold transition-all cursor-pointer ${
+                            i === page
+                              ? 'bg-[var(--color-primary)] text-[var(--color-on-primary)] shadow-md'
+                              : 'bg-[var(--color-surface-container-lowest)] border border-[var(--color-outline-variant)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-low)]'
+                          }`}>
+                          {i}
+                        </button>
+                      );
+                    }
+                    if (end < totalPages) {
+                      if (end < totalPages - 1) pages.push(<span key="end-ellipsis" className="text-[var(--color-outline)] px-1">…</span>);
+                      pages.push(
+                        <button key={totalPages} onClick={() => setPage(totalPages)}
+                          className="w-9 h-9 rounded-lg text-sm font-semibold transition-all bg-[var(--color-surface-container-lowest)] border border-[var(--color-outline-variant)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-low)] cursor-pointer">
+                          {totalPages}
+                        </button>
+                      );
+                    }
+                    return pages;
+                  })()}
+                </div>
+
+                <button
+                  onClick={() => setPage(Math.min(totalPages, page + 1))}
+                  disabled={page >= totalPages}
+                  className="flex items-center gap-1.5 px-5 py-2.5 bg-[var(--color-surface-container-lowest)] hover:bg-[var(--color-surface-container-low)] border border-[var(--color-outline-variant)] text-[var(--color-on-surface)] font-heading font-semibold text-sm rounded-xl transition-all shadow-sm active:scale-95 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100"
+                >
+                  Next <ChevronRight size={16} />
+                </button>
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Empty State */}
+        {!loading && filteredProducts.length === 0 && (
           <div className="text-center py-32 text-[var(--color-on-surface-variant)] flex flex-col items-center">
             <div className="w-20 h-20 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center mb-4">
               <Package size={32} className="text-[var(--color-outline)]" />
             </div>
-            <p className="text-lg font-heading font-bold text-[var(--color-on-surface)] mb-1">No products found</p>
+            <p className="text-lg font-heading font-bold text-[var(--color-on-surface)] mb-1">No medicines found</p>
             <p className="text-sm font-body">Try searching for a different medicine or category.</p>
           </div>
         )}

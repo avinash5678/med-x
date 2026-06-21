@@ -35,6 +35,29 @@ export default function PaymentView({
     }
   };
 
+  const onSubmit = (e) => {
+    e.preventDefault();
+    if (paymentMethod === 'razorpay') {
+      if (!cardName.trim()) {
+        alert('Please enter cardholder name');
+        return;
+      }
+      if (!cardNumber.trim() || cardNumber.replace(/\s/g, '').length < 16) {
+        alert('Please enter a valid 16-digit card number');
+        return;
+      }
+      if (!expiry.trim() || !expiry.includes('/')) {
+        alert('Please enter expiry date (MM/YY)');
+        return;
+      }
+      if (!cvv.trim() || cvv.length < 3) {
+        alert('Please enter a valid 3-digit CVV');
+        return;
+      }
+    }
+    handlePaymentSubmit(e);
+  };
+
   return (
     <div className="flex-1 overflow-y-auto bg-[var(--color-background)] p-6 lg:p-12 pb-28 md:pb-6 scrollbar-hide">
       <div className="max-w-[1280px] mx-auto animate-fade-in">
@@ -261,7 +284,7 @@ export default function PaymentView({
 
               {/* Payment Action Button */}
               <button
-                onClick={handlePaymentSubmit}
+                onClick={onSubmit}
                 disabled={isProcessingPayment}
                 className="w-full bg-[var(--color-primary)] hover:bg-[var(--color-primary-container)] text-[var(--color-on-primary)] py-4 rounded-xl font-heading font-bold text-base hover:shadow-lg hover:shadow-[var(--color-primary)]/20 transition-all active:scale-[0.98] duration-200 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
               >

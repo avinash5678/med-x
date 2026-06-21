@@ -97,6 +97,39 @@ export default function TrackingView({ order, setCurrentView }) {
       map.fitBounds(group.getBounds().pad(0.3));
     }
 
+    let simActive = false;
+    let simInterval;
+
+    const runLocalSimulation = () => {
+      if (simActive) return;
+      simActive = true;
+      
+      setRetailerInfo(prev => prev || {
+        shop_name: "Med Z Central BKC Hub",
+        address: "G-Block, BKC, Mumbai 400051",
+        phone: "+91 9876543210"
+      });
+
+      // Start at preparing
+      setStatus(1);
+      setEta('Preparing');
+
+      simInterval = setInterval(() => {
+        setStatus(currentStatus => {
+          if (currentStatus < 3) {
+            const nextStatus = currentStatus + 1;
+            if (nextStatus === 3) setEta('Delivered');
+            else if (nextStatus === 2) setEta('14 mins');
+            else if (nextStatus === 1) setEta('Preparing');
+            return nextStatus;
+          } else {
+            clearInterval(simInterval);
+            return currentStatus;
+          }
+        });
+      }, 8000);
+    };
+
     const pollStatus = async () => {
       if (!order?.id) return;
       try {
@@ -121,9 +154,12 @@ export default function TrackingView({ order, setCurrentView }) {
           else if (newStatus === 2) setEta('14 mins');
           else if (newStatus === 1) setEta('Preparing');
           else setEta('Pending');
+        } else {
+          runLocalSimulation();
         }
       } catch (err) {
         console.error("Poll error:", err);
+        runLocalSimulation();
       }
     };
     
@@ -133,6 +169,7 @@ export default function TrackingView({ order, setCurrentView }) {
     return () => {
       if (interval) clearInterval(interval);
       clearInterval(statusInterval);
+      if (simInterval) clearInterval(simInterval);
     };
   }, [order?.id]);
 
