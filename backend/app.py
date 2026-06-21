@@ -664,6 +664,32 @@ def get_order_status(order_id):
 
 
 if __name__ == "__main__":
-    debug = os.environ.get("FLASK_DEBUG", "false").lower() == "true"
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=debug)
+   medicines_col = db["medicines"]
+
+   @app.route("/medicines", methods=["GET"])
+   def get_medicines():
+       search = request.args.get("search", "")
+       category = request.args.get("category", "")
+       page = int(request.args.get("page", 1))
+       limit = int(request.args.get("limit", 20))
+
+       query = {}
+       if search:
+           query["name"] = {"$regex": search, "$options": "i"}
+       if category and category != "All":
+           query["category"] = category
+
+       skip = (page - 1) * limit
+       medicines = list(medicines_col.find(query).skip(skip).limit(limit))
+       total = medicines_col.count_documents(query)
+
+       for m in medicines:
+           m["_id"] = str(m["_id"])
+
+       return jsonify({"medicines": medicines, "total": total, "page": page}), 200
+
+
+   if __name__ == "__main__":
+       debug = os.environ.get("FLASK_DEBUG", "false").lower() == "true"
+       port = int(os.environ.get("PORT", 5000))
+       app.run(host="0.0.0.0", port=port, debug=debug)
