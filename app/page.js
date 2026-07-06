@@ -186,8 +186,7 @@ export default function App() {
           page: medicinesPage.toString(),
           limit: MEDICINES_LIMIT.toString(),
         });
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
-        const res = await fetch(`${apiUrl}/medicines?${params}`);
+        const res = await fetch(`/api/medicines?${params}`);
         if (!res.ok) throw new Error('Failed to fetch medicines');
         const data = await res.json();
         setMedicines(data.medicines || []);
