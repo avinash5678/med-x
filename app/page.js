@@ -265,6 +265,84 @@ export default function App() {
     }
   }, [addressForm.pincode]);
 
+  // --- Google OAuth Login ---
+  const handleGoogleLogin = async (credentialResponse) => {
+    setAuthError('');
+    try {
+      const res = await fetch('/api/auth/google', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ credential: credentialResponse.credential }),
+      });
+      const data = await res.json();
+
+      if (res.ok) {
+        localStorage.setItem('medz_user', JSON.stringify(data));
+        setUser(data);
+      } else {
+        setAuthError(data.error || 'Google authentication failed');
+      }
+    } catch (err) {
+      console.error('Google login error:', err);
+      setAuthError('Failed to connect to server. Please try again.');
+    }
+  };
+
+  // --- Login with OTP (Passwordless) ---
+  const handleSendLoginOtp = async () => {
+    if (!authForm.email) return;
+    setAuthError('');
+    setOtpSending(true);
+
+    try {
+      const res = await fetch('/api/auth/send-login-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: authForm.email }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setAuthError(data.error);
+        setOtpSending(false);
+        return;
+      }
+
+      setAuthStep('login-otp');
+      setOtpCountdown(60);
+    } catch (err) {
+      console.error('Send login OTP failed:', err);
+      setAuthError('Failed to connect to server. Please try again.');
+    } finally {
+      setOtpSending(false);
+    }
+  };
+
+  const handleVerifyLoginOtp = async (e) => {
+    e.preventDefault();
+    if (!otpCode.trim()) return;
+    setAuthError('');
+
+    try {
+      const res = await fetch('/api/auth/verify-login-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: authForm.email, otp: otpCode }),
+      });
+      const data = await res.json();
+
+      if (res.ok) {
+        localStorage.setItem('medz_user', JSON.stringify(data));
+        setUser(data);
+      } else {
+        setAuthError(data.error || 'OTP verification failed');
+      }
+    } catch (err) {
+      console.error('Verify login OTP failed:', err);
+      setAuthError('Failed to connect to server. Please try again.');
+    }
+  };
+
   // --- Send OTP ---
   const handleSendOtp = async () => {
     if (!authForm.email) return;
@@ -288,11 +366,8 @@ export default function App() {
       setAuthStep('otp');
       setOtpCountdown(60);
     } catch (err) {
-      console.warn('Send OTP failed, using local simulation:', err);
-      setAuthStep('otp');
-      setOtpCountdown(60);
-      setOtpCode('123456');
-      setAuthSuccessMsg('Simulated OTP: 123456 sent (locally bypassed)');
+      console.error('Send OTP failed:', err);
+      setAuthError('Failed to connect to server. Please try again.');
     } finally {
       setOtpSending(false);
     }
@@ -322,11 +397,8 @@ export default function App() {
       setAuthStep('reset-otp');
       setOtpCountdown(60);
     } catch (err) {
-      console.warn('Send Reset OTP failed, using local simulation:', err);
-      setAuthStep('reset-otp');
-      setOtpCountdown(60);
-      setOtpCode('123456');
-      setAuthSuccessMsg('Simulated Reset Code: 123456 sent (locally bypassed)');
+      console.error('Send Reset OTP failed:', err);
+      setAuthError('Failed to connect to server. Please try again.');
     } finally {
       setOtpSending(false);
     }
@@ -352,12 +424,8 @@ export default function App() {
 
       setAuthStep('new-password');
     } catch (err) {
-      console.warn('Verify reset OTP failed, using local simulation:', err);
-      if (otpCode !== '123456') {
-        setAuthError('Invalid code. Please use 123456.');
-        return;
-      }
-      setAuthStep('new-password');
+      console.error('Verify reset OTP failed:', err);
+      setAuthError('Failed to connect to server. Please try again.');
     }
   };
 
@@ -389,17 +457,8 @@ export default function App() {
       setAuthForm({ ...authForm, password: '' });
       setOtpCode('');
     } catch (err) {
-      console.warn('Reset password failed, using local simulation:', err);
-      const usersKey = 'mock_users';
-      const users = JSON.parse(localStorage.getItem(usersKey)) || [];
-      const updated = users.map(u => u.email.toLowerCase() === authForm.email.toLowerCase() ? { ...u, password: authForm.password } : u);
-      localStorage.setItem(usersKey, JSON.stringify(updated));
-
-      setAuthSuccessMsg('Simulated Reset Successful! Please sign in with your new password.');
-      setAuthMode('login');
-      setAuthStep('form');
-      setAuthForm({ ...authForm, password: '' });
-      setOtpCode('');
+      console.error('Reset password failed:', err);
+      setAuthError('Failed to connect to server. Please try again.');
     }
   };
 
@@ -438,19 +497,8 @@ export default function App() {
       localStorage.setItem('medz_user', JSON.stringify(safeUser));
       setUser(safeUser);
     } catch (err) {
-      console.warn('Signup failed, using local simulation:', err);
-      if (otpCode !== '123456') {
-        setAuthError('Invalid code. Please use 123456.');
-        return;
-      }
-      const safeUser = { name: authForm.name, email: authForm.email };
-      const usersKey = 'mock_users';
-      const users = JSON.parse(localStorage.getItem(usersKey)) || [];
-      users.push({ ...safeUser, password: authForm.password });
-      localStorage.setItem(usersKey, JSON.stringify(users));
-
-      localStorage.setItem('medz_user', JSON.stringify(safeUser));
-      setUser(safeUser);
+      console.error('Signup failed:', err);
+      setAuthError('Failed to connect to server. Please try again.');
     }
   };
 
@@ -485,28 +533,11 @@ export default function App() {
           setUser(data);
           return;
         } else {
-          if (res.status === 401) {
-            setAuthError(data.error || 'Invalid credentials');
-            return;
-          }
+          setAuthError(data.error || 'Invalid credentials');
         }
       } catch (err) {
-        console.warn('Login proxy failed, using local simulation:', err);
-      }
-
-      const usersKey = 'mock_users';
-      const users = JSON.parse(localStorage.getItem(usersKey)) || [];
-      const matched = users.find(u => u.email.toLowerCase() === authForm.email.toLowerCase());
-      if (matched) {
-        const userObj = { name: matched.name, email: matched.email };
-        localStorage.setItem('medz_user', JSON.stringify(userObj));
-        setUser(userObj);
-      } else {
-        const namePart = authForm.email.split('@')[0];
-        const formattedName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
-        const userObj = { name: formattedName, email: authForm.email };
-        localStorage.setItem('medz_user', JSON.stringify(userObj));
-        setUser(userObj);
+        console.error('Login failed:', err);
+        setAuthError('Failed to connect to server. Please try again.');
       }
     }
   };
@@ -862,6 +893,9 @@ const placeOrder = async () => {
         handleSendResetOtp={handleSendResetOtp}
         handleVerifyResetOtp={handleVerifyResetOtp}
         handleResetPassword={handleResetPassword}
+        handleGoogleLogin={handleGoogleLogin}
+        handleSendLoginOtp={handleSendLoginOtp}
+        handleVerifyLoginOtp={handleVerifyLoginOtp}
       />
     );
   }

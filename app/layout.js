@@ -56,6 +56,7 @@ export default function RootLayout({ children }) {
             `
           }}
         />
+        <script src="https://accounts.google.com/gsi/client" async defer></script>
       </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

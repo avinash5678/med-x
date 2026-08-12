@@ -8,6 +8,8 @@ import resend
 from dotenv import load_dotenv
 from pymongo import MongoClient
 from bson import ObjectId
+from google.oauth2 import id_token
+from google.auth.transport import requests as google_requests
 
 # Load environment variables from .env file
 load_dotenv()
@@ -22,6 +24,9 @@ CORS(app, origins=[origin.strip() for origin in FRONTEND_URL.split(",")])
 # --- Resend Configuration ---
 resend.api_key = os.environ.get("RESEND_API_KEY", "")
 FROM_EMAIL = os.environ.get("FROM_EMAIL", "noreply@med-z.store")
+
+# --- Google OAuth Configuration ---
+GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", "")
 DEVELOPER_EMAIL = os.environ.get("DEVELOPER_EMAIL", "noreply.medz.care@gmail.com")
 
 # In-memory OTP store: { email: { "otp": "123456", "expires": timestamp } }
@@ -76,6 +81,145 @@ def login():
         return jsonify(safe_user), 200
 
     return jsonify({"error": "Invalid credentials"}), 401
+
+
+# 🔵 GOOGLE OAUTH LOGIN
+@app.route("/auth/google", methods=["POST"])
+def google_login():
+    if users_col is None:
+        return jsonify({"error": "Database is not connected."}), 500
+
+    data = request.json
+    token = data.get("credential", "")
+
+    if not token:
+        return jsonify({"error": "Google credential token is required"}), 400
+
+    try:
+        # Verify the Google ID token
+        idinfo = id_token.verify_oauth2_token(
+            token, google_requests.Request(), GOOGLE_CLIENT_ID
+        )
+
+        email = idinfo.get("email", "").lower()
+        name = idinfo.get("name", "")
+
+        if not email:
+            return jsonify({"error": "Could not retrieve email from Google account"}), 400
+
+        # Check if user already exists
+        existing_user = users_col.find_one({"email": {"$regex": f"^{email}$", "$options": "i"}})
+
+        if existing_user:
+            # User exists — log them in
+            safe_user = {
+                "name": existing_user.get("name", name),
+                "email": existing_user["email"]
+            }
+            return jsonify(safe_user), 200
+        else:
+            # New user — create account automatically
+            new_user = {
+                "name": name,
+                "email": email,
+                "password": generate_password_hash(os.urandom(32).hex()),  # random password for OAuth users
+                "auth_provider": "google"
+            }
+            users_col.insert_one(new_user)
+            safe_user = {"name": name, "email": email}
+            return jsonify(safe_user), 200
+
+    except ValueError as e:
+        print(f"Google token verification failed: {e}")
+        return jsonify({"error": "Invalid Google token. Please try again."}), 401
+    except Exception as e:
+        print(f"Google auth error: {e}")
+        return jsonify({"error": "Google authentication failed."}), 500
+
+
+# 📱 SEND LOGIN OTP (passwordless)
+@app.route("/send-login-otp", methods=["POST"])
+def send_login_otp():
+    if users_col is None:
+        return jsonify({"error": "Database is not connected."}), 500
+
+    data = request.json
+    email = data.get("email", "").strip()
+
+    if not email:
+        return jsonify({"error": "Email is required"}), 400
+
+    user = users_col.find_one({"email": {"$regex": f"^{email}$", "$options": "i"}})
+    if not user:
+        return jsonify({"error": "No account found with this email. Please sign up first."}), 404
+
+    # Generate 6-digit OTP
+    otp = str(random.randint(100000, 999999))
+    otp_store[f"login_{email.lower()}"] = {"otp": otp, "expires": time.time() + 300}
+
+    try:
+        html_body = f"""
+        <div style="font-family: sans-serif; max-width: 480px; margin: auto; padding: 32px; background: #f8fafc; border-radius: 16px;">
+            <h2 style="color: #0f172a; margin-bottom: 8px;">Med Z</h2>
+            <p style="color: #64748b; font-size: 14px;">Your login verification code is:</p>
+            <div style="background: #0f172a; color: white; font-size: 32px; font-weight: bold; letter-spacing: 8px; padding: 20px; border-radius: 12px; text-align: center; margin: 16px 0;">
+                {otp}
+            </div>
+            <p style="color: #94a3b8; font-size: 12px;">This code expires in 5 minutes. If you didn't request this, please ignore this email.</p>
+        </div>
+        """
+
+        params = {
+            "from": FROM_EMAIL,
+            "to": [email],
+            "subject": "Med Z - Login Verification Code",
+            "html": html_body,
+        }
+        resend.Emails.send(params)
+
+        print(f"Login OTP sent to {email}")
+        return jsonify({"message": "Login OTP sent successfully"}), 200
+
+    except Exception as e:
+        print(f"Login OTP email error: {e}")
+        return jsonify({"error": "Failed to send OTP email."}), 500
+
+
+# ✅ VERIFY LOGIN OTP (passwordless)
+@app.route("/verify-login-otp", methods=["POST"])
+def verify_login_otp():
+    if users_col is None:
+        return jsonify({"error": "Database is not connected."}), 500
+
+    data = request.json
+    email = data.get("email", "").strip()
+    otp = data.get("otp", "").strip()
+
+    if not email or not otp:
+        return jsonify({"error": "Email and OTP are required"}), 400
+
+    stored = otp_store.get(f"login_{email.lower()}")
+
+    if not stored:
+        return jsonify({"error": "No OTP was requested for this email"}), 400
+    if time.time() > stored["expires"]:
+        del otp_store[f"login_{email.lower()}"]
+        return jsonify({"error": "OTP has expired. Please request a new one."}), 400
+    if stored["otp"] != otp:
+        return jsonify({"error": "Invalid OTP. Please try again."}), 400
+
+    del otp_store[f"login_{email.lower()}"]
+
+    # Find the user and return their profile
+    user = users_col.find_one({"email": {"$regex": f"^{email}$", "$options": "i"}})
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    safe_user = {
+        "name": user.get("name", ""),
+        "email": user["email"]
+    }
+    return jsonify(safe_user), 200
 
 
 # 📧 SEND OTP API

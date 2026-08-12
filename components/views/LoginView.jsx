@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
 export default function LoginView({
   authMode, setAuthMode, authForm, setAuthForm, authError, setAuthError,
@@ -7,7 +7,50 @@ export default function LoginView({
   otpCode, setOtpCode, otpSending, otpCountdown,
   handleAuthSubmit, handleSendOtp, handleVerifyAndSignup,
   handleSendResetOtp, handleVerifyResetOtp, handleResetPassword,
+  handleGoogleLogin, handleSendLoginOtp, handleVerifyLoginOtp,
 }) {
+  const googleBtnRef = useRef(null);
+
+  // Initialize Google Sign-In button
+  useEffect(() => {
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+    if (!clientId || clientId === 'YOUR_GOOGLE_CLIENT_ID_HERE') return;
+
+    const initGoogleBtn = () => {
+      if (window.google && googleBtnRef.current) {
+        window.google.accounts.id.initialize({
+          client_id: clientId,
+          callback: handleGoogleLogin,
+        });
+        window.google.accounts.id.renderButton(
+          googleBtnRef.current,
+          {
+            type: 'standard',
+            theme: 'outline',
+            size: 'large',
+            text: 'continue_with',
+            shape: 'pill',
+            width: '100%',
+            logo_alignment: 'center',
+          }
+        );
+      }
+    };
+
+    // GIS script might not be loaded yet
+    if (window.google) {
+      initGoogleBtn();
+    } else {
+      const interval = setInterval(() => {
+        if (window.google) {
+          initGoogleBtn();
+          clearInterval(interval);
+        }
+      }, 100);
+      return () => clearInterval(interval);
+    }
+  }, [handleGoogleLogin, authMode, authStep]);
+
   return (
     <div className="min-h-screen bg-[var(--color-surface)] flex flex-col relative overflow-hidden">
       <main className="w-full h-screen flex flex-col md:flex-row overflow-hidden">
@@ -71,18 +114,22 @@ export default function LoginView({
             <header className="mb-8 text-center md:text-left">
               <h2 className="font-heading font-bold text-3xl text-[var(--color-on-surface)] mb-2">
                 {authStep === 'otp' ? 'Verify Email'
+                  : authStep === 'login-otp' ? 'Verify Login'
                   : authStep === 'reset-otp' ? 'Reset Code'
                   : authStep === 'new-password' ? 'New Password'
                   : authMode === 'login' ? 'Welcome back'
                   : authMode === 'forgot-password' ? 'Reset Password'
+                  : authMode === 'login-otp-entry' ? 'Login with OTP'
                   : 'Create Account'}
               </h2>
               <p className="font-body text-base text-[var(--color-on-surface-variant)]">
                 {authStep === 'otp' ? 'Enter the code sent to your email'
+                  : authStep === 'login-otp' ? 'Enter the code sent to your email to sign in'
                   : authStep === 'reset-otp' ? 'Enter your password reset code'
                   : authStep === 'new-password' ? 'Choose a new secure password'
                   : authMode === 'login' ? 'Please enter your details to access your account.'
                   : authMode === 'forgot-password' ? 'We\'ll send a reset code to your email.'
+                  : authMode === 'login-otp-entry' ? 'Enter your email to receive a login code.'
                   : 'Fill in your details to get started.'}
               </p>
             </header>
@@ -99,7 +146,7 @@ export default function LoginView({
               </div>
             )}
 
-            {/* OTP Verification */}
+            {/* OTP Verification (Signup) */}
             {authStep === 'otp' ? (
               <form onSubmit={handleVerifyAndSignup} className="space-y-5">
                 <div className="bg-[var(--color-surface-container-low)] border border-[var(--color-outline-variant)] rounded-xl p-4 text-center">
@@ -129,6 +176,38 @@ export default function LoginView({
                   ← Back to signup
                 </button>
               </form>
+
+            /* Login OTP Verification (Passwordless) */
+            ) : authStep === 'login-otp' ? (
+              <form onSubmit={handleVerifyLoginOtp} className="space-y-5 animate-fade-in">
+                <div className="bg-[var(--color-surface-container-low)] border border-[var(--color-outline-variant)] rounded-xl p-4 text-center">
+                  <p className="text-sm text-[var(--color-on-surface-variant)]">Login code sent to</p>
+                  <p className="text-sm font-bold text-[var(--color-on-surface)] mt-1">{authForm.email}</p>
+                </div>
+                <div className="relative group">
+                  <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-outline-variant)] group-focus-within:text-[var(--color-primary)] transition-colors">verified_user</span>
+                  <input type="text" required maxLength={6} inputMode="numeric" pattern="[0-9]{6}" placeholder="Enter 6-digit code" value={otpCode}
+                    onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                    className="w-full pl-14 pr-4 py-4 bg-[var(--color-surface-container-low)] border border-[var(--color-outline-variant)] rounded-xl focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:border-[var(--color-primary)] transition-all outline-none font-body text-[var(--color-on-surface)] placeholder:text-[var(--color-outline)] text-center tracking-[0.3em] font-bold text-lg" autoFocus
+                  />
+                </div>
+                <button type="submit" className="w-full py-4 bg-[var(--color-primary-container)] hover:bg-[var(--color-primary)] text-[var(--color-on-primary)] font-heading font-semibold text-sm rounded-xl transition-all duration-300 shadow-lg primary-glow hover:scale-[1.02] active:scale-[0.98]">
+                  Verify & Sign In
+                </button>
+                <div className="text-center pt-2">
+                  {otpCountdown > 0 ? (
+                    <p className="text-xs text-[var(--color-outline)] font-medium">Resend code in {otpCountdown}s</p>
+                  ) : (
+                    <button type="button" onClick={handleSendLoginOtp} disabled={otpSending} className="text-sm font-medium text-[var(--color-primary)] hover:underline transition-colors disabled:opacity-50">
+                      {otpSending ? 'Sending...' : 'Resend Code'}
+                    </button>
+                  )}
+                </div>
+                <button type="button" onClick={() => { setAuthStep('form'); setAuthMode('login'); setOtpCode(''); setAuthError(''); }} className="w-full text-sm font-medium text-[var(--color-on-surface-variant)] hover:text-[var(--color-on-surface)] transition-colors mt-2">
+                  ← Back to login
+                </button>
+              </form>
+
             ) : authStep === 'reset-otp' ? (
               <form onSubmit={handleVerifyResetOtp} className="space-y-5 animate-fade-in">
                 <div className="bg-[var(--color-surface-container-low)] border border-[var(--color-outline-variant)] rounded-xl p-4 text-center">
@@ -192,6 +271,30 @@ export default function LoginView({
                   </button>
                 </div>
               </form>
+
+            /* Login with OTP — email entry */
+            ) : authMode === 'login-otp-entry' ? (
+              <form onSubmit={(e) => { e.preventDefault(); handleSendLoginOtp(); }} className="space-y-5 animate-fade-in">
+                <div className="space-y-2">
+                  <label className="font-heading text-sm font-semibold text-[var(--color-on-surface)]" htmlFor="otp-login-email">Email Address</label>
+                  <div className="relative group">
+                    <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-outline-variant)] group-focus-within:text-[var(--color-primary)] transition-colors">mail</span>
+                    <input id="otp-login-email" type="email" required placeholder="name@company.com" value={authForm.email}
+                      onChange={(e) => setAuthForm({ ...authForm, email: e.target.value })}
+                      className="w-full pl-14 pr-4 py-4 bg-[var(--color-surface-container-low)] border border-[var(--color-outline-variant)] rounded-xl focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:border-[var(--color-primary)] transition-all outline-none font-body text-[var(--color-on-surface)] placeholder:text-[var(--color-outline)]"
+                    />
+                  </div>
+                </div>
+                <button type="submit" disabled={otpSending} className="w-full py-4 bg-[var(--color-primary-container)] hover:bg-[var(--color-primary)] text-[var(--color-on-primary)] font-heading font-semibold text-sm rounded-xl transition-all duration-300 shadow-lg primary-glow hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50">
+                  {otpSending ? 'Sending OTP...' : 'Send Login Code'}
+                </button>
+                <div className="mt-4 text-center">
+                  <button type="button" onClick={() => { setAuthMode('login'); setAuthStep('form'); setAuthError(''); setAuthSuccessMsg(''); }} className="text-sm font-medium text-[var(--color-primary)] hover:underline transition-colors">
+                    Back to password login
+                  </button>
+                </div>
+              </form>
+
             ) : (
               /* Login / Signup Form */
               <>
@@ -245,6 +348,20 @@ export default function LoginView({
                   </button>
                 </form>
 
+                {/* Login with OTP link */}
+                {authMode === 'login' && (
+                  <div className="mt-4 text-center">
+                    <button
+                      type="button"
+                      onClick={() => { setAuthMode('login-otp-entry'); setAuthError(''); setAuthSuccessMsg(''); }}
+                      className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-primary)] hover:underline underline-offset-4 decoration-2 transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-base" style={{ fontSize: '18px' }}>passkey</span>
+                      Login with OTP instead
+                    </button>
+                  </div>
+                )}
+
                 <div className="relative my-10">
                   <div className="absolute inset-0 flex items-center">
                     <span className="w-full border-t border-[var(--color-outline-variant)]"></span>
@@ -254,30 +371,26 @@ export default function LoginView({
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <button onClick={() => {
-                    const mockUser = { name: 'Google User', email: 'google.user@example.com' };
-                    localStorage.setItem('medz_user', JSON.stringify(mockUser));
-                    window.location.reload();
-                  }} className="flex items-center justify-center gap-2 py-3 border border-[var(--color-outline-variant)] rounded-xl hover:bg-[var(--color-surface-container-low)] transition-colors font-heading text-sm font-semibold text-[var(--color-on-surface)] group cursor-pointer">
-                    <svg className="w-5 h-5 group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
-                      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
-                      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
-                      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"></path>
-                      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path>
-                    </svg>
-                    Google
-                  </button>
-                  <button onClick={() => {
-                    const mockUser = { name: 'Apple User', email: 'apple.user@example.com' };
-                    localStorage.setItem('medz_user', JSON.stringify(mockUser));
-                    window.location.reload();
-                  }} className="flex items-center justify-center gap-2 py-3 border border-[var(--color-outline-variant)] rounded-xl hover:bg-[var(--color-surface-container-low)] transition-colors font-heading text-sm font-semibold text-[var(--color-on-surface)] group cursor-pointer">
-                    <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M17.05 20.28c-.96.95-2.21 1.72-3.74 1.72-1.39 0-2.43-.53-3.32-.53-.9 0-2.04.53-3.32.53-1.53 0-2.78-.77-3.74-1.72C1.51 17.51 1 14.17 1 11.5c0-4.17 2.4-6.44 4.71-6.44 1.22 0 2.21.52 3.14.52.93 0 1.93-.52 3.14-.52 2.31 0 4.71 2.27 4.71 6.44 0 2.67-.51 6.01-1.65 8.78zM12.03 5.07c0-2.1 1.69-3.8 3.77-3.8.05.47-.13 1.93-.97 2.83-.84.9-2.1 1.7-3.77 1.7.05-.73-.03-.73 0-.73z"></path>
-                    </svg>
-                    Apple
-                  </button>
+                {/* Google Sign-In Button */}
+                <div className="flex flex-col items-center gap-3">
+                  <div ref={googleBtnRef} className="w-full flex justify-center" style={{ minHeight: '44px' }}></div>
+                  
+                  {/* Fallback Google button if GIS hasn't loaded or no client ID configured */}
+                  {(!process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID === 'YOUR_GOOGLE_CLIENT_ID_HERE') && (
+                    <button
+                      type="button"
+                      onClick={() => setAuthError('Google Sign-In is not configured yet. Please set your Google Client ID in the environment variables.')}
+                      className="w-full flex items-center justify-center gap-3 py-3.5 border border-[var(--color-outline-variant)] rounded-xl hover:bg-[var(--color-surface-container-low)] transition-colors font-heading text-sm font-semibold text-[var(--color-on-surface)] group cursor-pointer"
+                    >
+                      <svg className="w-5 h-5 group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
+                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"></path>
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path>
+                      </svg>
+                      Continue with Google
+                    </button>
+                  )}
                 </div>
 
                 <footer className="mt-8 text-center">

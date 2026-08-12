@@ -4,7 +4,7 @@ export async function POST(req) {
   try {
     const body = await req.json();
 
-    const res = await fetch(`${BACKEND_URL}/send-otp`, {
+    const res = await fetch(`${BACKEND_URL}/send-login-otp`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
@@ -13,7 +13,7 @@ export async function POST(req) {
     const data = await res.json();
     return Response.json(data, { status: res.status });
   } catch (err) {
-    console.error("Send OTP proxy error:", err);
+    console.error("Send Login OTP proxy error:", err);
     return Response.json(
       { error: "Failed to connect to backend." },
       { status: 502 }

@@ -5,3 +5,5 @@ werkzeug
 python-dotenv
 pymongo[srv]
 resend
+google-auth
+requests
