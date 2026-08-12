@@ -808,7 +808,7 @@ def get_order_status(order_id):
 
 
 # --- Medicines Collection & Route (must be at module level for WSGI/Gunicorn) ---
-medicines_col = db["medicines"] if db else None
+medicines_col = db["medicines"] if db is not None else None
 
 
 @app.route("/medicines", methods=["GET"])
