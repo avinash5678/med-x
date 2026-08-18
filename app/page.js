@@ -47,6 +47,8 @@ import {
   Store,
   Sun,
   Moon,
+  RefreshCw,
+  TestTube2,
 } from 'lucide-react';
 
 // View components imports
@@ -62,6 +64,19 @@ import ContactView from '@/components/views/ContactView';
 import AddressesView from '@/components/views/AddressesView';
 import OrdersView, { TransactionsView } from '@/components/views/OrdersView';
 import PharmacistChat from '@/components/PharmacistChat';
+import SubstituteModal from '@/components/SubstituteModal';
+import PrescriptionsView from '@/components/views/PrescriptionsView';
+import PrescriptionUploadModal from '@/components/PrescriptionUploadModal';
+import InvoiceModal from '@/components/InvoiceModal';
+import RefillsView from '@/components/views/RefillsView';
+import RefillScheduleModal from '@/components/RefillScheduleModal';
+import DrugInteractionModal from '@/components/DrugInteractionModal';
+import { analyzeCartSafety } from '@/utils/drugSafetyEngine';
+import LabTestsView from '@/components/views/LabTestsView';
+import LabBookingModal from '@/components/LabBookingModal';
+import LabReportModal from '@/components/LabReportModal';
+import PharmaciesView from '@/components/views/PharmaciesView';
+import { PHARMACIES_DATA } from '@/data/pharmaciesData';
 
 
 // --- Categories & Localized Indian Products ---
@@ -153,6 +168,32 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [explainerModal, setExplainerModal] = useState({ isOpen: false, product: null, text: '', isLoading: false });
   const [interactionModal, setInteractionModal] = useState({ isOpen: false, text: '', isLoading: false });
+  const [substituteModal, setSubstituteModal] = useState({ isOpen: false, product: null });
+  const [genericOnlyFilter, setGenericOnlyFilter] = useState(false);
+
+  // --- Prescriptions Vault State ---
+  const [prescriptions, setPrescriptions] = useState([]);
+  const [currentPrescription, setCurrentPrescription] = useState(null);
+  const [isPrescriptionModalOpen, setIsPrescriptionModalOpen] = useState(false);
+
+  // --- Invoice Modal State ---
+  const [invoiceModalOrder, setInvoiceModalOrder] = useState(null);
+
+  // --- Refills & Pill Reminders State ---
+  const [refills, setRefills] = useState([]);
+  const [refillModal, setRefillModal] = useState({ isOpen: false, product: null });
+
+  // --- Clinical Drug Safety State ---
+  const [isSafetyModalOpen, setIsSafetyModalOpen] = useState(false);
+  const cartSafetyAnalysis = useMemo(() => analyzeCartSafety(cart), [cart]);
+
+  // --- Diagnostic Lab Tests State ---
+  const [labBookings, setLabBookings] = useState([]);
+  const [bookingModalTest, setBookingModalTest] = useState(null);
+  const [reportModalBooking, setReportModalBooking] = useState(null);
+
+  // --- Nearby 24/7 Pharmacies State ---
+  const [selectedPickupStore, setSelectedPickupStore] = useState(PHARMACIES_DATA[0]);
 
   // --- Medicines API State ---
   const [medicines, setMedicines] = useState([]);
@@ -186,6 +227,9 @@ export default function App() {
           page: medicinesPage.toString(),
           limit: MEDICINES_LIMIT.toString(),
         });
+        if (genericOnlyFilter) {
+          params.set('genericOnly', 'true');
+        }
         const res = await fetch(`/api/medicines?${params}`);
         if (!res.ok) throw new Error('Failed to fetch medicines');
         const data = await res.json();
@@ -200,7 +244,131 @@ export default function App() {
       }
     };
     fetchMedicines();
-  }, [debouncedSearch, activeCategory, medicinesPage]);
+  }, [debouncedSearch, activeCategory, medicinesPage, genericOnlyFilter]);
+
+  useEffect(() => {
+    if (user?.email) {
+      const saved = localStorage.getItem(`prescriptions_${user.email}`);
+      if (saved) {
+        try {
+          setPrescriptions(JSON.parse(saved));
+        } catch (e) {}
+      }
+
+      const savedRefills = localStorage.getItem(`refills_${user.email}`);
+      if (savedRefills) {
+        try {
+          setRefills(JSON.parse(savedRefills));
+        } catch (e) {}
+      }
+
+      const savedLabBookings = localStorage.getItem(`lab_bookings_${user.email}`);
+      if (savedLabBookings) {
+        try {
+          setLabBookings(JSON.parse(savedLabBookings));
+        } catch (e) {}
+      }
+    }
+  }, [user]);
+
+  const handleConfirmLabBooking = (newBooking) => {
+    if (!newBooking) return;
+    setLabBookings(prev => {
+      const updated = [newBooking, ...prev];
+      if (user?.email) {
+        localStorage.setItem(`lab_bookings_${user.email}`, JSON.stringify(updated));
+      }
+      return updated;
+    });
+    setCurrentView('lab_tests');
+  };
+
+  const handleSaveRefillSchedule = (newSchedule) => {
+    if (!newSchedule) return;
+    setRefills(prev => {
+      const exists = prev.some(r => r.id === newSchedule.id);
+      const updated = exists ? prev.map(r => r.id === newSchedule.id ? newSchedule : r) : [newSchedule, ...prev];
+      if (user?.email) {
+        localStorage.setItem(`refills_${user.email}`, JSON.stringify(updated));
+      }
+      return updated;
+    });
+  };
+
+  const handleUpdateRefillStatus = (id, newStatus) => {
+    setRefills(prev => {
+      const updated = prev.map(r => r.id === id ? { ...r, status: newStatus } : r);
+      if (user?.email) {
+        localStorage.setItem(`refills_${user.email}`, JSON.stringify(updated));
+      }
+      return updated;
+    });
+  };
+
+  const handleDeleteRefill = (id) => {
+    setRefills(prev => {
+      const updated = prev.filter(r => r.id !== id);
+      if (user?.email) {
+        localStorage.setItem(`refills_${user.email}`, JSON.stringify(updated));
+      }
+      return updated;
+    });
+  };
+
+  const handleToggleDoseTaken = (refillId, slot) => {
+    setRefills(prev => {
+      const updated = prev.map(r => {
+        if (r.id !== refillId) return r;
+        const currentSlotState = r.dosesTakenToday?.[slot] || false;
+        return {
+          ...r,
+          dosesTakenToday: {
+            ...r.dosesTakenToday,
+            [slot]: !currentSlotState
+          }
+        };
+      });
+      if (user?.email) {
+        localStorage.setItem(`refills_${user.email}`, JSON.stringify(updated));
+      }
+      return updated;
+    });
+  };
+
+  const handleRefillNow = (refill) => {
+    const medProduct = medicines.find(m => m.id === refill.productId) || {
+      id: refill.productId,
+      name: refill.productName,
+      price: refill.productPrice,
+      salt: refill.salt,
+      category: refill.category,
+      image: refill.image,
+    };
+    addToCart(medProduct);
+    setCurrentView('cart');
+  };
+
+  const handleSavePrescriptionToVault = (newRx) => {
+    if (!newRx) return;
+    setPrescriptions(prev => {
+      const exists = prev.some(p => p.id === newRx.id);
+      const updated = exists ? prev.map(p => p.id === newRx.id ? newRx : p) : [newRx, ...prev];
+      if (user?.email) {
+        localStorage.setItem(`prescriptions_${user.email}`, JSON.stringify(updated));
+      }
+      return updated;
+    });
+  };
+
+  const handleDeletePrescription = (rxId) => {
+    setPrescriptions(prev => {
+      const updated = prev.filter(p => p.id !== rxId);
+      if (user?.email) {
+        localStorage.setItem(`prescriptions_${user.email}`, JSON.stringify(updated));
+      }
+      return updated;
+    });
+  };
 
   const totalPages = Math.ceil(medicinesTotal / MEDICINES_LIMIT);
 
@@ -585,6 +753,22 @@ export default function App() {
     });
   };
 
+  const switchInCart = (oldId, newProduct) => {
+    setCart((prevCart) => {
+      const oldItem = prevCart.find((item) => item.id === oldId);
+      if (!oldItem) return prevCart;
+      const qty = oldItem.quantity || 1;
+      const withoutOld = prevCart.filter((item) => item.id !== oldId);
+      const existingNew = withoutOld.find((item) => item.id === newProduct.id);
+      if (existingNew) {
+        return withoutOld.map((item) =>
+          item.id === newProduct.id ? { ...item, quantity: item.quantity + qty } : item
+        );
+      }
+      return [...withoutOld, { ...newProduct, quantity: qty }];
+    });
+  };
+
   const updateQuantity = (id, delta) => {
     setCart((prevCart) => {
       return prevCart.map((item) => {
@@ -639,7 +823,8 @@ const placeOrder = async () => {
         email: user?.email,
         items: cart,
         total: cartTotal,
-        address: addressForm
+        address: addressForm,
+        prescription: currentPrescription,
       })
     });
     const data = await res.json();
@@ -666,6 +851,8 @@ const placeOrder = async () => {
         total: cartTotal,
         paymentMethod: paymentMethod,
         address: addressForm,
+        prescription: currentPrescription,
+        prescription_status: currentPrescription ? 'verified' : (cart.some(it => it.requiresPrescription) ? 'pending_verification' : 'not_required'),
         status: 'Processing'
       };
 
@@ -682,6 +869,7 @@ const placeOrder = async () => {
       }
 
       setCart([]);
+      setCurrentPrescription(null);
       setActiveDeliveryOrder(newOrder);
       setShowOrderModal(true);
       setTimeout(() => {
@@ -918,9 +1106,21 @@ const placeOrder = async () => {
           <div className="hidden md:flex gap-8">
             <button 
               onClick={() => setCurrentView('medicines')} 
-              className="text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400 transition-colors cursor-pointer"
+              className={`text-sm font-semibold transition-colors cursor-pointer ${currentView === 'medicines' ? 'text-teal-600 dark:text-teal-400 font-bold' : 'text-slate-600 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400'}`}
             >
               Medicines
+            </button>
+            <button 
+              onClick={() => setCurrentView('lab_tests')} 
+              className={`text-sm font-semibold transition-colors cursor-pointer ${currentView === 'lab_tests' ? 'text-teal-600 dark:text-teal-400 font-bold' : 'text-slate-600 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400'}`}
+            >
+              Lab Tests
+            </button>
+            <button 
+              onClick={() => setCurrentView('pharmacies')} 
+              className={`text-sm font-semibold transition-colors cursor-pointer ${currentView === 'pharmacies' ? 'text-teal-600 dark:text-teal-400 font-bold' : 'text-slate-600 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400'}`}
+            >
+              Nearby 24/7
             </button>
             <button onClick={() => setIsDoctorOpen(true)} className="text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400 transition-colors cursor-pointer">Consultations</button>
             <button onClick={() => setCurrentView('contact')} className="text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400 transition-colors cursor-pointer">Contact Us</button>
@@ -983,6 +1183,30 @@ const placeOrder = async () => {
                       className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-450 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 rounded-xl transition-colors cursor-pointer"
                     >
                       <Package size={16} /> Order History
+                    </button>
+                    <button 
+                      onClick={() => { setCurrentView('pharmacies'); setIsProfileMenuOpen(false); }}
+                      className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-450 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 rounded-xl transition-colors cursor-pointer"
+                    >
+                      <Store size={16} /> Nearby 24/7 Pharmacies
+                    </button>
+                    <button 
+                      onClick={() => { setCurrentView('lab_tests'); setIsProfileMenuOpen(false); }}
+                      className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-450 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 rounded-xl transition-colors cursor-pointer"
+                    >
+                      <TestTube2 size={16} /> Lab Bookings & Reports
+                    </button>
+                    <button 
+                      onClick={() => { setCurrentView('refills'); setIsProfileMenuOpen(false); }}
+                      className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-450 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 rounded-xl transition-colors cursor-pointer"
+                    >
+                      <RefreshCw size={16} /> Pill Reminders & Refills
+                    </button>
+                    <button 
+                      onClick={() => { setCurrentView('prescriptions'); setIsProfileMenuOpen(false); }}
+                      className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-450 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 rounded-xl transition-colors cursor-pointer"
+                    >
+                      <FileText size={16} /> My Prescriptions (Vault)
                     </button>
                     <button 
                       onClick={() => { setCurrentView('transactions'); setIsProfileMenuOpen(false); }}
@@ -1049,6 +1273,10 @@ const placeOrder = async () => {
             setPage={setMedicinesPage}
             totalPages={totalPages}
             ICON_MAP={ICON_MAP}
+            onOpenSubstitutes={(product) => setSubstituteModal({ isOpen: true, product })}
+            genericOnlyFilter={genericOnlyFilter}
+            setGenericOnlyFilter={setGenericOnlyFilter}
+            onScheduleRefill={(product) => setRefillModal({ isOpen: true, product })}
           />
         ) : currentView === 'contact' ? (
           <ContactView
@@ -1068,6 +1296,11 @@ const placeOrder = async () => {
             proceedToCheckout={proceedToCheckout}
             handleCheckInteractions={handleCheckInteractions}
             setCurrentView={setCurrentView}
+            allMedicines={medicines}
+            switchInCart={switchInCart}
+            onOpenSubstitutes={(product) => setSubstituteModal({ isOpen: true, product })}
+            onScheduleRefill={(product) => setRefillModal({ isOpen: true, product })}
+            onOpenInteractionModal={() => setIsSafetyModalOpen(true)}
           />
         ) : currentView === 'checkout' ? (
           checkoutStep === 1 ? (
@@ -1097,6 +1330,10 @@ const placeOrder = async () => {
                   pincode: addr.pincode || '',
                 });
               }}
+              prescription={currentPrescription}
+              onOpenPrescriptionModal={() => setIsPrescriptionModalOpen(true)}
+              onRemovePrescription={() => setCurrentPrescription(null)}
+              selectedPickupStore={selectedPickupStore}
             />
           ) : (
             <PaymentView
@@ -1111,16 +1348,52 @@ const placeOrder = async () => {
               isProcessingPayment={isProcessingPayment}
             />
           )
+        ) : currentView === 'prescriptions' ? (
+          <PrescriptionsView
+            prescriptions={prescriptions}
+            onOpenUploadModal={() => setIsPrescriptionModalOpen(true)}
+            onDeletePrescription={handleDeletePrescription}
+            setCurrentView={setCurrentView}
+          />
+        ) : currentView === 'refills' ? (
+          <RefillsView
+            refills={refills}
+            onOpenScheduleModal={() => setRefillModal({ isOpen: true, product: null })}
+            onUpdateRefillStatus={handleUpdateRefillStatus}
+            onDeleteRefill={handleDeleteRefill}
+            onToggleDoseTaken={handleToggleDoseTaken}
+            onRefillNow={handleRefillNow}
+            setCurrentView={setCurrentView}
+          />
+        ) : currentView === 'lab_tests' ? (
+          <LabTestsView
+            userBookings={labBookings}
+            onOpenBookingModal={(test) => setBookingModalTest(test)}
+            onOpenReportModal={(booking) => setReportModalBooking(booking)}
+            setCurrentView={setCurrentView}
+          />
+        ) : currentView === 'pharmacies' ? (
+          <PharmaciesView
+            medicines={medicines}
+            selectedPickupStore={selectedPickupStore}
+            onSelectPickupStore={(store) => {
+              setSelectedPickupStore(store);
+              setCurrentView('checkout');
+            }}
+            setCurrentView={setCurrentView}
+          />
         ) : currentView === 'orders' ? (
           <OrdersView
             ordersHistory={ordersHistory}
             setCurrentView={setCurrentView}
             setActiveDeliveryOrder={setActiveDeliveryOrder}
+            onOpenInvoice={(ord) => setInvoiceModalOrder(ord)}
           />
         ) : currentView === 'transactions' ? (
           <TransactionsView
             ordersHistory={ordersHistory}
             setCurrentView={setCurrentView}
+            onOpenInvoice={(ord) => setInvoiceModalOrder(ord)}
           />
         ) : currentView === 'addresses' ? (
           <AddressesView
@@ -1131,6 +1404,7 @@ const placeOrder = async () => {
           <TrackingView
             order={activeDeliveryOrder}
             setCurrentView={setCurrentView}
+            onOpenInvoice={(ord) => setInvoiceModalOrder(ord)}
           />
         ) : currentView === 'consult' ? (
           <AIConsultView
@@ -1168,8 +1442,20 @@ const placeOrder = async () => {
             <div className="w-20 h-20 bg-green-50 dark:bg-green-950/20 rounded-full flex items-center justify-center mb-6">
               <CheckCircle size={40} className="text-green-500 animate-pulse" />
             </div>
-            <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-3">Order Confirmed</h2>
-            <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">Your Med Z package is being processed and will be delivered securely to your address.</p>
+            <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-2">Order Confirmed</h2>
+            <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-4">Your Med Z package is being processed and will be delivered securely to your address.</p>
+            {activeDeliveryOrder && (
+              <button
+                type="button"
+                onClick={() => {
+                  setShowOrderModal(false);
+                  setInvoiceModalOrder(activeDeliveryOrder);
+                }}
+                className="w-full py-2.5 px-4 bg-teal-50 dark:bg-teal-950/40 text-teal-700 dark:text-teal-300 hover:bg-teal-100 border border-teal-200 dark:border-teal-800 rounded-xl text-xs font-bold font-heading flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+              >
+                <Receipt size={14} /> View GST Invoice
+              </button>
+            )}
           </div>
         </div>
       )}
@@ -1249,6 +1535,75 @@ const placeOrder = async () => {
           </div>
         </div>
       )}
+
+      {/* Generic Salt Substitutes & Savings Modal */}
+      <SubstituteModal
+        isOpen={substituteModal.isOpen}
+        onClose={() => setSubstituteModal({ isOpen: false, product: null })}
+        targetProduct={substituteModal.product}
+        allMedicines={medicines}
+        addToCart={addToCart}
+        switchInCart={switchInCart}
+        isInCart={Boolean(cart.find(item => item.id === substituteModal.product?.id))}
+      />
+
+      {/* Prescription Upload / Doctor Consultation Modal */}
+      <PrescriptionUploadModal
+        isOpen={isPrescriptionModalOpen}
+        onClose={() => setIsPrescriptionModalOpen(false)}
+        onAttachPrescription={(rx) => {
+          setCurrentPrescription(rx);
+          handleSavePrescriptionToVault(rx);
+        }}
+        savedPrescriptions={prescriptions}
+        currentPrescription={currentPrescription}
+      />
+
+      {/* Downloadable Medical GST Tax Invoice Modal */}
+      <InvoiceModal
+        isOpen={Boolean(invoiceModalOrder)}
+        onClose={() => setInvoiceModalOrder(null)}
+        order={invoiceModalOrder}
+      />
+
+      {/* Pill Refill & Chronic Medicine Reminder Modal */}
+      <RefillScheduleModal
+        isOpen={refillModal.isOpen}
+        onClose={() => setRefillModal({ isOpen: false, product: null })}
+        product={refillModal.product}
+        onSaveSchedule={handleSaveRefillSchedule}
+        allMedicines={medicines}
+        user={user}
+      />
+
+      {/* Proactive Clinical Drug Interaction & Safety Modal */}
+      <DrugInteractionModal
+        isOpen={isSafetyModalOpen}
+        onClose={() => setIsSafetyModalOpen(false)}
+        safetyAnalysis={cartSafetyAnalysis}
+        onRemoveItem={(itemId) => removeItem(itemId)}
+        onProceedAnyway={() => {
+          setCheckoutStep(1);
+          setCurrentView('checkout');
+        }}
+      />
+
+      {/* Diagnostic Lab Test Booking Modal */}
+      <LabBookingModal
+        isOpen={Boolean(bookingModalTest)}
+        onClose={() => setBookingModalTest(null)}
+        testPackage={bookingModalTest}
+        onConfirmBooking={handleConfirmLabBooking}
+        user={user}
+        savedAddresses={savedAddresses}
+      />
+
+      {/* Digital NABL Lab Report Viewer Modal */}
+      <LabReportModal
+        isOpen={Boolean(reportModalBooking)}
+        onClose={() => setReportModalBooking(null)}
+        booking={reportModalBooking}
+      />
 
       {isDoctorOpen && (
         <div className="fixed inset-0 z-[110] flex items-center justify-center bg-slate-900/40 dark:bg-slate-950/60 backdrop-blur-sm p-4 md:p-6">

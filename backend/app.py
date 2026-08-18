@@ -445,13 +445,18 @@ def chat():
 def place_order():
     data = request.json
 
-    order_id = f"ORD-{random.randint(10000, 99999)}"
+    prescription = data.get("prescription")
+    has_rx = any(it.get("requiresPrescription") for it in data.get("items", []))
+    prescription_status = "verified" if prescription else ("not_required" if not has_rx else "pending_verification")
+
     new_order = {
         "order_id": order_id,
         "email": data["email"].lower(),
         "items": data["items"],
         "total": data["total"],
         "address": data.get("address", {}),
+        "prescription": prescription,
+        "prescription_status": prescription_status,
         "status": "pending",
         "retailer_status": "pending",
         "delivery_status": "none",

@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { Plus, Sparkles, Package, X, ShoppingCart, ArrowLeft, ChevronLeft, ChevronRight, Pill } from 'lucide-react';
+import { Plus, Sparkles, Package, X, ShoppingCart, ArrowLeft, ChevronLeft, ChevronRight, Pill, TrendingDown, ShieldCheck, FileText, RefreshCw } from 'lucide-react';
 
 export default function ShopView({
   filteredProducts, activeCategory, setActiveCategory, CATEGORIES,
@@ -9,6 +9,8 @@ export default function ShopView({
   setIsDoctorOpen, setIsChatOpen, setIsMobileSidebarOpen, isMobileSidebarOpen,
   user, handleLogout,
   loading, total, page, setPage, totalPages, ICON_MAP,
+  onOpenSubstitutes, genericOnlyFilter, setGenericOnlyFilter,
+  onScheduleRefill,
 }) {
   const [localSearch, setLocalSearch] = useState(searchQuery);
 
@@ -48,7 +50,7 @@ export default function ShopView({
               {loading ? 'Loading...' : `Showing ${filteredProducts.length} of ${total} products`}
             </span>
           </div>
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-3 items-center">
             {CATEGORIES.map(category => (
               <button key={category} onClick={() => setActiveCategory(category)}
                 className={`px-6 py-2 rounded-full font-heading text-sm font-semibold transition-all duration-200
@@ -58,6 +60,19 @@ export default function ShopView({
                 {category}
               </button>
             ))}
+            {setGenericOnlyFilter && (
+              <button
+                type="button"
+                onClick={() => setGenericOnlyFilter(!genericOnlyFilter)}
+                className={`px-5 py-2 rounded-full font-heading text-sm font-semibold transition-all duration-200 flex items-center gap-1.5 cursor-pointer ${
+                  genericOnlyFilter
+                    ? 'bg-emerald-600 text-white shadow-md'
+                    : 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/60'
+                }`}
+              >
+                <TrendingDown size={14} /> Jan Aushadhi (Generics)
+              </button>
+            )}
           </div>
         </section>
 
@@ -99,21 +114,87 @@ export default function ShopView({
                         <Icon size={48} strokeWidth={1.5} className="text-[var(--color-outline)] group-hover:text-[var(--color-primary)] transition-colors group-hover:scale-110 duration-500" />
                       )}
                     </div>
-                    <div className="p-6">
-                      <div className="flex justify-between items-start mb-1">
-                        <span className="text-[10px] font-bold tracking-wider uppercase text-[var(--color-on-secondary-container)] bg-[var(--color-secondary-container)] px-2 py-1 rounded">{product.category}</span>
-                        <span className="font-body text-sm font-bold text-[var(--color-primary)]">₹{product.price}</span>
+                    <div className="p-6 flex flex-col justify-between flex-1">
+                      <div>
+                        <div className="flex justify-between items-start mb-1">
+                          <div className="flex flex-wrap items-center gap-1.5">
+                            <span className="text-[10px] font-bold tracking-wider uppercase text-[var(--color-on-secondary-container)] bg-[var(--color-secondary-container)] px-2 py-0.5 rounded">
+                              {product.category}
+                            </span>
+                            {product.requiresPrescription && (
+                              <span className="text-[10px] font-bold tracking-wider uppercase text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-950/80 px-2 py-0.5 rounded flex items-center gap-1 border border-blue-200 dark:border-blue-800">
+                                <FileText size={10} /> Rx Required
+                              </span>
+                            )}
+                            {product.isGeneric ? (
+                              <span className="text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300 px-2 py-0.5 rounded">
+                                Generic / Jan Aushadhi
+                              </span>
+                            ) : onOpenSubstitutes ? (
+                              <button
+                                type="button"
+                                onClick={() => onOpenSubstitutes(product)}
+                                className="text-[10px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 border border-emerald-200 dark:border-emerald-800/80 px-2 py-0.5 rounded-full flex items-center gap-1 cursor-pointer transition-colors"
+                              >
+                                <TrendingDown size={10} /> Cheaper Generic Available
+                              </button>
+                            ) : null}
+                          </div>
+                          <span className="font-body text-base font-bold text-[var(--color-primary)] shrink-0">
+                            ₹{product.price}
+                          </span>
+                        </div>
+
+                        <h3 className="font-heading font-semibold text-lg text-[var(--color-on-surface)] mb-0.5 mt-2">
+                          {product.name}
+                        </h3>
+
+                        <p className="text-xs text-[var(--color-primary)] font-medium mb-1 line-clamp-1">
+                          <span className="text-[var(--color-outline)] font-normal">Salt: </span> 
+                          {product.salt || product.description}
+                        </p>
+
+                        <p className="text-[11px] text-[var(--color-outline)] mb-3">
+                          Mfr: {product.manufacturer || 'Pharma Care'} • {product.packSize || product.dosageForm || 'Standard Pack'}
+                        </p>
+
+                        <p className="font-body text-xs text-[var(--color-on-surface-variant)] mb-4 line-clamp-2">
+                          {product.description}
+                        </p>
                       </div>
-                      <h3 className="font-heading font-semibold text-lg text-[var(--color-on-surface)] mb-1 mt-2">{product.name}</h3>
-                      <p className="font-body text-sm text-[var(--color-on-surface-variant)] mb-4 line-clamp-2">{product.description}</p>
-                      <button onClick={() => handleAiExplain(product)}
-                        className="text-xs text-[var(--color-primary)] font-semibold flex items-center gap-1.5 hover:gap-2 transition-all bg-[var(--color-primary-fixed)] px-3 py-2 rounded-lg w-fit mb-4 cursor-pointer">
-                        <Sparkles size={14} /> AI Explain
-                      </button>
-                      <button onClick={() => addToCart(product)}
-                        className="w-full py-2.5 bg-[var(--color-primary-container)] text-white font-heading text-sm font-semibold rounded-lg hover:bg-[var(--color-primary)] transition-colors flex items-center justify-center gap-2 cursor-pointer">
-                        <span className="material-symbols-outlined text-lg">add_shopping_cart</span> Add to Order
-                      </button>
+
+                      <div>
+                        <div className="flex items-center gap-2 mb-3">
+                          <button onClick={() => handleAiExplain(product)}
+                            className="flex-1 text-xs text-[var(--color-primary)] font-semibold flex items-center justify-center gap-1.5 hover:gap-2 transition-all bg-[var(--color-primary-fixed)] px-3 py-2 rounded-lg cursor-pointer">
+                            <Sparkles size={14} /> AI Explain
+                          </button>
+                          {onOpenSubstitutes && (
+                            <button onClick={() => onOpenSubstitutes(product)}
+                              className="flex-1 text-xs text-emerald-700 dark:text-emerald-300 font-semibold flex items-center justify-center gap-1.5 hover:gap-2 transition-all bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800/60 px-3 py-2 rounded-lg cursor-pointer">
+                              <TrendingDown size={14} /> Substitutes
+                            </button>
+                          )}
+                        </div>
+
+                        <div className="flex gap-2">
+                          <button onClick={() => addToCart(product)}
+                            className="flex-1 py-2.5 bg-[var(--color-primary-container)] text-white font-heading text-xs font-semibold rounded-lg hover:bg-[var(--color-primary)] transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-sm active:scale-98">
+                            <Plus size={15} /> Add to Cart
+                          </button>
+                          {onScheduleRefill && (
+                            <button 
+                              type="button"
+                              onClick={() => onScheduleRefill(product)}
+                              className="px-3 py-2.5 bg-teal-50 dark:bg-teal-950/40 text-teal-700 dark:text-teal-300 hover:bg-teal-100 border border-teal-200 dark:border-teal-800 rounded-lg transition-colors cursor-pointer flex items-center gap-1 text-xs font-semibold"
+                              title="Schedule Auto-Refill"
+                            >
+                              <RefreshCw size={13} />
+                              <span className="hidden sm:inline">Refill</span>
+                            </button>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 );

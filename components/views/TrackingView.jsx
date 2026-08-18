@@ -1,8 +1,8 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { Phone, ArrowLeft, Store, User, Check, Navigation, AlertCircle, ShoppingBag } from 'lucide-react';
+import { Phone, ArrowLeft, Store, User, Check, Navigation, AlertCircle, ShoppingBag, Receipt } from 'lucide-react';
 
-export default function TrackingView({ order, setCurrentView }) {
+export default function TrackingView({ order, setCurrentView, onOpenInvoice }) {
   const [status, setStatus] = useState(0); // 0: Placed, 1: Packed, 2: Out for Delivery, 3: Delivered
   const [eta, setEta] = useState('Waiting for confirmation');
   const [mapLoaded, setMapLoaded] = useState(false);
@@ -345,6 +345,40 @@ export default function TrackingView({ order, setCurrentView }) {
               </div>
             </div>
           </section>
+
+          {/* Prescription Status if attached */}
+          {order?.prescription && (
+            <section className="space-y-2">
+              <h3 className="font-heading font-bold text-xs text-[var(--color-on-surface-variant)] uppercase tracking-widest">Prescription Status</h3>
+              <div className="bg-[var(--color-surface-container-low)] p-3.5 rounded-2xl border border-blue-200/50 dark:border-blue-900/50 flex items-center justify-between text-xs">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                    <span className="material-symbols-outlined text-base">verified</span>
+                  </div>
+                  <div>
+                    <p className="font-heading font-bold text-xs text-[var(--color-on-surface)]">
+                      {order.prescription.type === 'doctor_call' ? 'Doctor E-Consult Verified' : 'Prescription Verified'}
+                    </p>
+                    <p className="text-[11px] text-[var(--color-outline)]">
+                      Dispensed by Med Z Licensed Pharmacist
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* Download Invoice Button */}
+          {onOpenInvoice && order && (
+            <button
+              type="button"
+              onClick={() => onOpenInvoice(order)}
+              className="w-full py-3 px-4 rounded-xl bg-[var(--color-surface-container-high)] hover:bg-[var(--color-surface-variant)] text-[var(--color-on-surface)] font-heading font-bold text-xs flex items-center justify-center gap-2 border border-[var(--color-outline-variant)] transition-all shadow-sm cursor-pointer active:scale-98"
+            >
+              <Receipt size={15} className="text-[var(--color-primary)]" />
+              <span>Download Official GST Tax Invoice</span>
+            </button>
+          )}
 
           {/* Support Line */}
           <button 

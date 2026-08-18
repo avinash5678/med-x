@@ -6,7 +6,13 @@
     "category": "Pain Relief",
     "description": "Rapid release formula for neurological comfort and muscle relaxation.",
     "icon": "Zap",
-    "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuAUafx17L_BWZG-fshbbdBVoqGk7GEBFv_7fzm7ucgEqLLV0iY1pciuBqCBys2E9vMOxCGzAmWNXg5aNBcHZW0fsqb45IfrPMl3BraSSJVbj58DJR5oWU3zWAnNOO5LEAHUqpbLMQHLSdXmj0IsqVpMkcLlrxZhBDj6i7q_IsI06Iy4jLVBe7Qzns-3OuEaWjbv6iSSygLoyhYPpcizlonZItTP6L42c4QCIRdzQgOtIfKJnnT8e6lPzRrPcEC4qS7w2PLaVy_Pjig"
+    "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuAUafx17L_BWZG-fshbbdBVoqGk7GEBFv_7fzm7ucgEqLLV0iY1pciuBqCBys2E9vMOxCGzAmWNXg5aNBcHZW0fsqb45IfrPMl3BraSSJVbj58DJR5oWU3zWAnNOO5LEAHUqpbLMQHLSdXmj0IsqVpMkcLlrxZhBDj6i7q_IsI06Iy4jLVBe7Qzns-3OuEaWjbv6iSSygLoyhYPpcizlonZItTP6L42c4QCIRdzQgOtIfKJnnT8e6lPzRrPcEC4qS7w2PLaVy_Pjig",
+    "salt": "Pregabalin 75mg + Methylcobalamin 750mcg",
+    "manufacturer": "Apex Laboratories",
+    "isGeneric": false,
+    "dosageForm": "Capsule",
+    "packSize": "10 Capsules",
+    "requiresPrescription": true
   },
   {
     "id": 902,
@@ -15,7 +21,13 @@
     "category": "Diabetes",
     "description": "Daily maintenance supplement for stable metabolic health and sugar levels.",
     "icon": "Activity",
-    "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuCcdxdTinU_JYCYFnk1AEOsAVe_Xm2kJR9G16o1BIcGC5EQNpetXr1Tfo0h7pKMcMKwx0nzpcnAHfWoo9BOlNpPnB49L2qy8mts19yMdrtZL0sg2IHp2P8_6bvAJXi4gCgOJfSfJ9pOVhLIFQNtTxpeAA5YvgKcaF1iXMFemfSnzVPKyvZQ3qj2ACo74B9HBuzmyI0yTK6RQI3i3Yyngw0W7vNzsNrJJVo0a8NA3-zr6eZ-BaK0kchTRFYlxicwUCb1RpeKmcxDxRg"
+    "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuCcdxdTinU_JYCYFnk1AEOsAVe_Xm2kJR9G16o1BIcGC5EQNpetXr1Tfo0h7pKMcMKwx0nzpcnAHfWoo9BOlNpPnB49L2qy8mts19yMdrtZL0sg2IHp2P8_6bvAJXi4gCgOJfSfJ9pOVhLIFQNtTxpeAA5YvgKcaF1iXMFemfSnzVPKyvZQ3qj2ACo74B9HBuzmyI0yTK6RQI3i3Yyngw0W7vNzsNrJJVo0a8NA3-zr6eZ-BaK0kchTRFYlxicwUCb1RpeKmcxDxRg",
+    "salt": "Metformin HCl 500mg (Sustained Release)",
+    "manufacturer": "BioPharma Care",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "30 Tablets",
+    "requiresPrescription": true
   },
   {
     "id": 903,
@@ -24,7 +36,13 @@
     "category": "Skin Care",
     "description": "Advanced dermatological repair cream with bio-available nutrients.",
     "icon": "Sparkles",
-    "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuAoxTl4hspZ_7gM_hXRj4h2Cc5p9rcZJPgDed7ZiBqkeSeck6grwgBh3o2ImXRTSll3_lGKg9g8NGOUkvFkd4xtJpLjHn16kr48tPhtGi0YP-wQH0s8dc_gpphVHCoyEqrY-GTL8FaIm6tE1ekkkLiemw168_Ol3NEJKdY8O7XPKHPKreYUdX30g13N1ma0Btfjo6jNxVaOs4K-2I-s5PlShkxS7_KNisiH6KaIwfUKb0Ospg9op1mYkz5OVcrkFsq5Cb3RHF8wN8g"
+    "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuAoxTl4hspZ_7gM_hXRj4h2Cc5p9rcZJPgDed7ZiBqkeSeck6grwgBh3o2ImXRTSll3_lGKg9g8NGOUkvFkd4xtJpLjHn16kr48tPhtGi0YP-wQH0s8dc_gpphVHCoyEqrY-GTL8FaIm6tE1ekkkLiemw168_Ol3NEJKdY8O7XPKHPKreYUdX30g13N1ma0Btfjo6jNxVaOs4K-2I-s5PlShkxS7_KNisiH6KaIwfUKb0Ospg9op1mYkz5OVcrkFsq5Cb3RHF8wN8g",
+    "salt": "Hyaluronic Acid + Niacinamide 5% + Ceramide Complex",
+    "manufacturer": "DermaCare Clinical",
+    "isGeneric": false,
+    "dosageForm": "Cream",
+    "packSize": "50g",
+    "requiresPrescription": false
   },
   {
     "id": 904,
@@ -33,7 +51,13 @@
     "category": "Supplements",
     "description": "Comprehensive multivitamin optimized for 21st-century lifestyles.",
     "icon": "Zap",
-    "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuBpNCFR0fCwjRMpFSWOr_MenKlR-9RMxlTgOCavPC3OuqhJYg_bMYpsIdayRlA4Uw82Trv4SlsU7BzX_6KwHYs-zc_vX0Y27L7_co40TGJWU4-4bkNrZMATISxKRjGaPb27oW3nUynPEg_sk6Gr9a70zAnX7YXjoBK3ZRXZXjILx1EVsoWjtMZx_VtHwVSh9uC7tKFmSt6lpCR8xHSgZl8BHsbK0UrD3e2cCCFSUoah6cO_QEkyAuKd7rLq2aPYljuXJJWfa4AJUVQ"
+    "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuBpNCFR0fCwjRMpFSWOr_MenKlR-9RMxlTgOCavPC3OuqhJYg_bMYpsIdayRlA4Uw82Trv4SlsU7BzX_6KwHYs-zc_vX0Y27L7_co40TGJWU4-4bkNrZMATISxKRjGaPb27oW3nUynPEg_sk6Gr9a70zAnX7YXjoBK3ZRXZXjILx1EVsoWjtMZx_VtHwVSh9uC7tKFmSt6lpCR8xHSgZl8BHsbK0UrD3e2cCCFSUoah6cO_QEkyAuKd7rLq2aPYljuXJJWfa4AJUVQ",
+    "salt": "Multivitamins + Minerals + Ginseng Extract",
+    "manufacturer": "Zenith Nutrition",
+    "isGeneric": false,
+    "dosageForm": "Capsule",
+    "packSize": "30 Capsules",
+    "requiresPrescription": false
   },
   {
     "id": 1,
@@ -41,7 +65,13 @@
     "price": 30,
     "category": "Fever",
     "description": "Fast relief from fever and pain. 15 tablets.",
-    "icon": "Thermometer"
+    "icon": "Thermometer",
+    "salt": "Paracetamol 650mg",
+    "manufacturer": "Micro Labs Ltd",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "15 Tablets",
+    "requiresPrescription": false
   },
   {
     "id": 2,
@@ -49,7 +79,13 @@
     "price": 20,
     "category": "Fever",
     "description": "Paracetamol fast release tablets.",
-    "icon": "Thermometer"
+    "icon": "Thermometer",
+    "salt": "Paracetamol 500mg",
+    "manufacturer": "GlaxoSmithKline (GSK)",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "20 Tablets",
+    "requiresPrescription": false
   },
   {
     "id": 3,
@@ -57,7 +93,13 @@
     "price": 15,
     "category": "Fever",
     "description": "Effective fever reducer.",
-    "icon": "Thermometer"
+    "icon": "Thermometer",
+    "salt": "Paracetamol 500mg",
+    "manufacturer": "GSK Pharmaceuticals",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "15 Tablets",
+    "requiresPrescription": false
   },
   {
     "id": 4,
@@ -65,7 +107,13 @@
     "price": 12,
     "category": "Fever",
     "description": "Mild pain and fever relief.",
-    "icon": "Thermometer"
+    "icon": "Thermometer",
+    "salt": "Paracetamol 500mg",
+    "manufacturer": "Cipla Ltd (Generic)",
+    "isGeneric": true,
+    "dosageForm": "Tablet",
+    "packSize": "10 Tablets",
+    "requiresPrescription": false
   },
   {
     "id": 5,
@@ -73,7 +121,13 @@
     "price": 45,
     "category": "Fever",
     "description": "Nimesulide & Paracetamol for fever.",
-    "icon": "Thermometer"
+    "icon": "Thermometer",
+    "salt": "Nimesulide 100mg + Paracetamol 325mg",
+    "manufacturer": "Alkem Laboratories",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "10 Tablets",
+    "requiresPrescription": true
   },
   {
     "id": 6,
@@ -81,7 +135,13 @@
     "price": 28,
     "category": "Fever",
     "description": "High fever relief.",
-    "icon": "Thermometer"
+    "icon": "Thermometer",
+    "salt": "Paracetamol 650mg",
+    "manufacturer": "Macleods Pharma",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "15 Tablets",
+    "requiresPrescription": false
   },
   {
     "id": 7,
@@ -89,7 +149,13 @@
     "price": 35,
     "category": "Fever",
     "description": "Fever and pain relief syrup for children.",
-    "icon": "Baby"
+    "icon": "Baby",
+    "salt": "Mefenamic Acid 100mg/5ml",
+    "manufacturer": "Blue Cross Labs",
+    "isGeneric": false,
+    "dosageForm": "Syrup",
+    "packSize": "60ml",
+    "requiresPrescription": false
   },
   {
     "id": 8,
@@ -97,7 +163,13 @@
     "price": 90,
     "category": "Fever",
     "description": "Imported fever reducer.",
-    "icon": "Thermometer"
+    "icon": "Thermometer",
+    "salt": "Paracetamol 500mg",
+    "manufacturer": "Johnson & Johnson",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "24 Tablets",
+    "requiresPrescription": false
   },
   {
     "id": 9,
@@ -105,7 +177,13 @@
     "price": 120,
     "category": "Cold & Cough",
     "description": "Effective relief from cough and throat irritation. 150ml.",
-    "icon": "Wind"
+    "icon": "Wind",
+    "salt": "Diphenhydramine HCl 14mg + Ammonium Chloride 138mg",
+    "manufacturer": "Johnson & Johnson",
+    "isGeneric": false,
+    "dosageForm": "Syrup",
+    "packSize": "150ml",
+    "requiresPrescription": false
   },
   {
     "id": 10,
@@ -113,7 +191,13 @@
     "price": 85,
     "category": "Cold & Cough",
     "description": "Multi-symptom cold relief. 50g pack.",
-    "icon": "Wind"
+    "icon": "Wind",
+    "salt": "Camphor 5.26% + Menthol 2.82% + Eucalyptus Oil 1.33%",
+    "manufacturer": "Procter & Gamble",
+    "isGeneric": false,
+    "dosageForm": "Balm",
+    "packSize": "50g",
+    "requiresPrescription": false
   },
   {
     "id": 11,
@@ -121,7 +205,13 @@
     "price": 95,
     "category": "Cold & Cough",
     "description": "Dabur herbal cough syrup.",
-    "icon": "Activity"
+    "icon": "Activity",
+    "salt": "Tulsi + Mulethi + Banapsha Herbal Blend",
+    "manufacturer": "Dabur India Ltd",
+    "isGeneric": false,
+    "dosageForm": "Syrup",
+    "packSize": "100ml",
+    "requiresPrescription": false
   },
   {
     "id": 12,
@@ -129,7 +219,13 @@
     "price": 110,
     "category": "Cold & Cough",
     "description": "Expectorant for wet cough.",
-    "icon": "Activity"
+    "icon": "Activity",
+    "salt": "Levosalbutamol 1mg + Ambroxol 30mg + Guaifenesin 50mg",
+    "manufacturer": "Glenmark Pharmaceuticals",
+    "isGeneric": false,
+    "dosageForm": "Syrup",
+    "packSize": "100ml",
+    "requiresPrescription": true
   },
   {
     "id": 13,
@@ -137,7 +233,13 @@
     "price": 105,
     "category": "Cold & Cough",
     "description": "Dry cough relief.",
-    "icon": "Activity"
+    "icon": "Activity",
+    "salt": "Dextromethorphan HBr 10mg + Chlorpheniramine Maleate 4mg",
+    "manufacturer": "Pfizer Ltd",
+    "isGeneric": false,
+    "dosageForm": "Syrup",
+    "packSize": "100ml",
+    "requiresPrescription": false
   },
   {
     "id": 14,
@@ -145,7 +247,13 @@
     "price": 65,
     "category": "Cold & Cough",
     "description": "Cold and sinus relief tablets.",
-    "icon": "Pill"
+    "icon": "Pill",
+    "salt": "Paracetamol 500mg + Phenylephrine 10mg + Chlorpheniramine 2mg",
+    "manufacturer": "Centaur Pharmaceuticals",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "10 Tablets",
+    "requiresPrescription": false
   },
   {
     "id": 15,
@@ -153,7 +261,13 @@
     "price": 45,
     "category": "Cold & Cough",
     "description": "Anti-allergic and cold relief.",
-    "icon": "Pill"
+    "icon": "Pill",
+    "salt": "Cetirizine 5mg + Paracetamol 325mg + Phenylephrine 10mg",
+    "manufacturer": "Cipla Ltd",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "10 Tablets",
+    "requiresPrescription": false
   },
   {
     "id": 16,
@@ -161,7 +275,13 @@
     "price": 80,
     "category": "Cold & Cough",
     "description": "Blocked nose relief spray.",
-    "icon": "Droplet"
+    "icon": "Droplet",
+    "salt": "Xylometazoline HCl 0.1%",
+    "manufacturer": "GSK Healthcare",
+    "isGeneric": false,
+    "dosageForm": "Nasal Spray",
+    "packSize": "10ml",
+    "requiresPrescription": false
   },
   {
     "id": 17,
@@ -169,7 +289,13 @@
     "price": 40,
     "category": "Cold & Cough",
     "description": "Headache and cold relief.",
-    "icon": "Pill"
+    "icon": "Pill",
+    "salt": "Paracetamol 500mg + Phenylephrine 10mg + Caffeine 30mg",
+    "manufacturer": "Procter & Gamble",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "10 Tablets",
+    "requiresPrescription": false
   },
   {
     "id": 18,
@@ -177,7 +303,13 @@
     "price": 30,
     "category": "Cold & Cough",
     "description": "Himalaya cough drops.",
-    "icon": "Pill"
+    "icon": "Pill",
+    "salt": "Trikatu + Lavanga + Licorice Extract",
+    "manufacturer": "Himalaya Wellness",
+    "isGeneric": false,
+    "dosageForm": "Lozenge",
+    "packSize": "10 Lozenges",
+    "requiresPrescription": false
   },
   {
     "id": 19,
@@ -185,7 +317,13 @@
     "price": 150,
     "category": "Pain Relief",
     "description": "Instant relief from muscle ache and joint pain. 60g.",
-    "icon": "Zap"
+    "icon": "Zap",
+    "salt": "Diclofenac Diethylamine 1.16% + Linseed Oil",
+    "manufacturer": "Sun Pharmaceutical",
+    "isGeneric": false,
+    "dosageForm": "Spray",
+    "packSize": "60g",
+    "requiresPrescription": false
   },
   {
     "id": 20,
@@ -193,7 +331,13 @@
     "price": 40,
     "category": "Pain Relief",
     "description": "Combines Ibuprofen and Paracetamol for strong pain relief. 20 tablets.",
-    "icon": "Pill"
+    "icon": "Pill",
+    "salt": "Ibuprofen 400mg + Paracetamol 325mg",
+    "manufacturer": "Sanofi India",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "20 Tablets",
+    "requiresPrescription": false
   },
   {
     "id": 21,
@@ -201,7 +345,13 @@
     "price": 140,
     "category": "Pain Relief",
     "description": "Back pain relief cream.",
-    "icon": "Zap"
+    "icon": "Zap",
+    "salt": "Oil of Wintergreen + Menthol + Turpentine Oil",
+    "manufacturer": "Reckitt Benckiser",
+    "isGeneric": false,
+    "dosageForm": "Ointment",
+    "packSize": "50g",
+    "requiresPrescription": false
   },
   {
     "id": 22,
@@ -209,7 +359,13 @@
     "price": 50,
     "category": "Pain Relief",
     "description": "Multipurpose pain balm.",
-    "icon": "Zap"
+    "icon": "Zap",
+    "salt": "Methyl Salicylate 5% + Menthol 4%",
+    "manufacturer": "GSK Consumer",
+    "isGeneric": false,
+    "dosageForm": "Balm",
+    "packSize": "40g",
+    "requiresPrescription": false
   },
   {
     "id": 23,
@@ -217,7 +373,13 @@
     "price": 160,
     "category": "Pain Relief",
     "description": "Aerosol spray for sports injuries.",
-    "icon": "Zap"
+    "icon": "Zap",
+    "salt": "Diclofenac + Wintergreen Oil + Menthol",
+    "manufacturer": "Midas Care",
+    "isGeneric": false,
+    "dosageForm": "Spray",
+    "packSize": "55g",
+    "requiresPrescription": false
   },
   {
     "id": 24,
@@ -225,7 +387,13 @@
     "price": 45,
     "category": "Pain Relief",
     "description": "Headache and body ache balm.",
-    "icon": "Zap"
+    "icon": "Zap",
+    "salt": "Mentha Extract + Gaultheria Oil + Eucalyptus",
+    "manufacturer": "Emami Ltd",
+    "isGeneric": false,
+    "dosageForm": "Balm",
+    "packSize": "25g",
+    "requiresPrescription": false
   },
   {
     "id": 25,
@@ -233,7 +401,13 @@
     "price": 35,
     "category": "Pain Relief",
     "description": "Severe headache relief.",
-    "icon": "Pill"
+    "icon": "Pill",
+    "salt": "Paracetamol 250mg + Propyphenazone 150mg + Caffeine 50mg",
+    "manufacturer": "Piramal Healthcare",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "10 Tablets",
+    "requiresPrescription": false
   },
   {
     "id": 26,
@@ -241,7 +415,13 @@
     "price": 15,
     "category": "Pain Relief",
     "description": "Water soluble pain reliever.",
-    "icon": "Pill"
+    "icon": "Pill",
+    "salt": "Aspirin (Acetylsalicylic Acid) 350mg",
+    "manufacturer": "Reckitt Benckiser",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "10 Tablets",
+    "requiresPrescription": true
   },
   {
     "id": 27,
@@ -249,7 +429,13 @@
     "price": 95,
     "category": "Pain Relief",
     "description": "Muscle pain and swelling relief.",
-    "icon": "Pill"
+    "icon": "Pill",
+    "salt": "Aceclofenac 100mg + Paracetamol 325mg + Serratiopeptidase 15mg",
+    "manufacturer": "Ipca Laboratories",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "10 Tablets",
+    "requiresPrescription": true
   },
   {
     "id": 28,
@@ -257,7 +443,13 @@
     "price": 120,
     "category": "Pain Relief",
     "description": "Diclofenac gel for joint pain.",
-    "icon": "Zap"
+    "icon": "Zap",
+    "salt": "Voveran Gel Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 29,
@@ -265,7 +457,13 @@
     "price": 60,
     "category": "Immunity",
     "description": "Daily immunity booster. Orange flavor, 15 chewable tablets.",
-    "icon": "ShieldPlus"
+    "icon": "ShieldPlus",
+    "salt": "Limcee Vitamin C Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 30,
@@ -273,7 +471,13 @@
     "price": 105,
     "category": "Immunity",
     "description": "Multivitamin and multimineral tablets.",
-    "icon": "ShieldPlus"
+    "icon": "ShieldPlus",
+    "salt": "Multivitamins + Multiminerals + Grape Seed Extract",
+    "manufacturer": "Apex Laboratories",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "15 Tablets",
+    "requiresPrescription": false
   },
   {
     "id": 31,
@@ -281,7 +485,13 @@
     "price": 290,
     "category": "Immunity",
     "description": "Dabur ayurvedic immunity paste.",
-    "icon": "ShieldPlus"
+    "icon": "ShieldPlus",
+    "salt": "Amla + Ashwagandha + Pippali (40+ Ayurvedic Herbs)",
+    "manufacturer": "Dabur India Ltd",
+    "isGeneric": false,
+    "dosageForm": "Paste",
+    "packSize": "500g",
+    "requiresPrescription": false
   },
   {
     "id": 32,
@@ -289,7 +499,13 @@
     "price": 110,
     "category": "Immunity",
     "description": "Patanjali natural immunity booster.",
-    "icon": "ShieldPlus"
+    "icon": "ShieldPlus",
+    "salt": "Tinospora Cordifolia (Giloy Extract) 500mg",
+    "manufacturer": "Patanjali Ayurved",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "60 Tablets",
+    "requiresPrescription": false
   },
   {
     "id": 33,
@@ -297,7 +513,13 @@
     "price": 140,
     "category": "Immunity",
     "description": "Himalaya tablets for immune support.",
-    "icon": "ShieldPlus"
+    "icon": "ShieldPlus",
+    "salt": "Guggulu + Licorice + Maharasnadi Quath",
+    "manufacturer": "Himalaya Wellness",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "60 Tablets",
+    "requiresPrescription": false
   },
   {
     "id": 34,
@@ -305,7 +527,13 @@
     "price": 180,
     "category": "Immunity",
     "description": "Natural vitamin C source.",
-    "icon": "Droplet"
+    "icon": "Droplet",
+    "salt": "Amla Juice Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 35,
@@ -313,7 +541,13 @@
     "price": 55,
     "category": "Immunity",
     "description": "Daily multivitamin.",
-    "icon": "ShieldPlus"
+    "icon": "ShieldPlus",
+    "salt": "11 Vitamins + 5 Minerals + Trace Elements",
+    "manufacturer": "Bayer Pharmaceuticals",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "15 Tablets",
+    "requiresPrescription": false
   },
   {
     "id": 36,
@@ -321,7 +555,13 @@
     "price": 40,
     "category": "Immunity",
     "description": "Vitamin C supplement.",
-    "icon": "ShieldPlus"
+    "icon": "ShieldPlus",
+    "salt": "Vitamin C (Ascorbic Acid) 500mg",
+    "manufacturer": "Koye Pharmaceuticals",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "25 Tablets",
+    "requiresPrescription": false
   },
   {
     "id": 37,
@@ -329,7 +569,13 @@
     "price": 45,
     "category": "Digestion",
     "description": "WHO based formula for instant hydration & energy.",
-    "icon": "HeartPulse"
+    "icon": "HeartPulse",
+    "salt": "Electral ORS Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 38,
@@ -337,7 +583,13 @@
     "price": 110,
     "category": "Digestion",
     "description": "Antacid liquid for acidity and gas relief. 200ml.",
-    "icon": "Activity"
+    "icon": "Activity",
+    "salt": "Gelusil Liquid Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 39,
@@ -345,7 +597,13 @@
     "price": 55,
     "category": "Digestion",
     "description": "Instant acidity relief.",
-    "icon": "Flame"
+    "icon": "Flame",
+    "salt": "Eno Fruit Salt Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 40,
@@ -353,7 +611,13 @@
     "price": 30,
     "category": "Digestion",
     "description": "Ayurvedic stomach ache relief.",
-    "icon": "Pill"
+    "icon": "Pill",
+    "salt": "Mentha Piperita (Peppermint Oil) 0.037ml",
+    "manufacturer": "Dabur India Ltd",
+    "isGeneric": false,
+    "dosageForm": "Pearls",
+    "packSize": "10 Pearls",
+    "requiresPrescription": false
   },
   {
     "id": 41,
@@ -361,7 +625,13 @@
     "price": 25,
     "category": "Digestion",
     "description": "Chewable antacid.",
-    "icon": "Pill"
+    "icon": "Pill",
+    "salt": "Digene Tablets Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 42,
@@ -369,7 +639,13 @@
     "price": 40,
     "category": "Digestion",
     "description": "Digestive tasty tablets.",
-    "icon": "Pill"
+    "icon": "Pill",
+    "salt": "Hajmola Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 43,
@@ -377,7 +653,13 @@
     "price": 120,
     "category": "Digestion",
     "description": "Psyllium husk for constipation.",
-    "icon": "Package"
+    "icon": "Package",
+    "salt": "Psyllium Husk 100% Natural",
+    "manufacturer": "Dabur India Ltd",
+    "isGeneric": false,
+    "dosageForm": "Powder",
+    "packSize": "100g",
+    "requiresPrescription": false
   },
   {
     "id": 44,
@@ -385,7 +667,13 @@
     "price": 60,
     "category": "Digestion",
     "description": "Acidity and ulcer capsule.",
-    "icon": "Pill"
+    "icon": "Pill",
+    "salt": "Omeprazole 20mg",
+    "manufacturer": "Dr. Reddy's Laboratories",
+    "isGeneric": false,
+    "dosageForm": "Capsule",
+    "packSize": "20 Capsules",
+    "requiresPrescription": true
   },
   {
     "id": 45,
@@ -393,7 +681,13 @@
     "price": 130,
     "category": "Digestion",
     "description": "GERD and acidity medicine.",
-    "icon": "Pill"
+    "icon": "Pill",
+    "salt": "Pantoprazole 40mg",
+    "manufacturer": "Sun Pharmaceutical",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "15 Tablets",
+    "requiresPrescription": true
   },
   {
     "id": 46,
@@ -401,7 +695,13 @@
     "price": 210,
     "category": "Digestion",
     "description": "Constipation relief syrup.",
-    "icon": "Droplet"
+    "icon": "Droplet",
+    "salt": "Liquid Paraffin 3.75ml + Milk of Magnesia 11.25ml",
+    "manufacturer": "Abbott India",
+    "isGeneric": false,
+    "dosageForm": "Syrup",
+    "packSize": "225ml",
+    "requiresPrescription": false
   },
   {
     "id": 47,
@@ -409,7 +709,13 @@
     "price": 160,
     "category": "First Aid",
     "description": "Antiseptic liquid.",
-    "icon": "PlusSquare"
+    "icon": "PlusSquare",
+    "salt": "Chloroxylenol (PCMX) 4.8% w/v",
+    "manufacturer": "Reckitt Benckiser",
+    "isGeneric": false,
+    "dosageForm": "Antiseptic Liquid",
+    "packSize": "250ml",
+    "requiresPrescription": false
   },
   {
     "id": 48,
@@ -417,7 +723,13 @@
     "price": 110,
     "category": "First Aid",
     "description": "Antiseptic and healing liquid.",
-    "icon": "PlusSquare"
+    "icon": "PlusSquare",
+    "salt": "Chlorhexidine Gluconate 0.3% + Cetrimide 3.0%",
+    "manufacturer": "ITC Ltd",
+    "isGeneric": false,
+    "dosageForm": "Antiseptic Liquid",
+    "packSize": "200ml",
+    "requiresPrescription": false
   },
   {
     "id": 49,
@@ -425,7 +737,13 @@
     "price": 95,
     "category": "First Aid",
     "description": "Povidone-iodine for cuts.",
-    "icon": "PlusSquare"
+    "icon": "PlusSquare",
+    "salt": "Betadine Ointment Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 50,
@@ -433,7 +751,13 @@
     "price": 50,
     "category": "First Aid",
     "description": "Pack of 20 waterproof plasters.",
-    "icon": "PlusSquare"
+    "icon": "PlusSquare",
+    "salt": "Band-Aid Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 51,
@@ -441,7 +765,13 @@
     "price": 40,
     "category": "First Aid",
     "description": "Surgical grade cotton.",
-    "icon": "Package"
+    "icon": "Package",
+    "salt": "Cotton Roll Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 52,
@@ -449,7 +779,13 @@
     "price": 120,
     "category": "First Aid",
     "description": "For sprains and strains.",
-    "icon": "Package"
+    "icon": "Package",
+    "salt": "Crepe Bandage Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 53,
@@ -457,7 +793,13 @@
     "price": 65,
     "category": "First Aid",
     "description": "Cream for minor burns.",
-    "icon": "Flame"
+    "icon": "Flame",
+    "salt": "Aminacrine HCl 0.1% + Cetrimide 0.5%",
+    "manufacturer": "Morepen Laboratories",
+    "isGeneric": false,
+    "dosageForm": "Cream",
+    "packSize": "20g",
+    "requiresPrescription": false
   },
   {
     "id": 54,
@@ -465,7 +807,13 @@
     "price": 55,
     "category": "First Aid",
     "description": "Antibacterial skin cream.",
-    "icon": "PlusSquare"
+    "icon": "PlusSquare",
+    "salt": "Framycetin Sulphate 1% w/w",
+    "manufacturer": "Sanofi India",
+    "isGeneric": false,
+    "dosageForm": "Ointment",
+    "packSize": "30g",
+    "requiresPrescription": true
   },
   {
     "id": 55,
@@ -473,7 +821,13 @@
     "price": 30,
     "category": "First Aid",
     "description": "Micropore medical tape.",
-    "icon": "Package"
+    "icon": "Package",
+    "salt": "Surgical Tape Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 56,
@@ -481,7 +835,13 @@
     "price": 250,
     "category": "First Aid",
     "description": "Digital thermometer.",
-    "icon": "Thermometer"
+    "icon": "Thermometer",
+    "salt": "Thermometer Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 57,
@@ -489,7 +849,13 @@
     "price": 250,
     "category": "Supplements",
     "description": "Ginseng and multivitamin capsule.",
-    "icon": "Zap"
+    "icon": "Zap",
+    "salt": "Ginseng Extract + 10 Vitamins + 9 Minerals",
+    "manufacturer": "Sun Pharmaceutical",
+    "isGeneric": false,
+    "dosageForm": "Capsule",
+    "packSize": "30 Capsules",
+    "requiresPrescription": false
   },
   {
     "id": 58,
@@ -497,7 +863,13 @@
     "price": 35,
     "category": "Supplements",
     "description": "Vitamin B complex.",
-    "icon": "Pill"
+    "icon": "Pill",
+    "salt": "Vitamin B1 10mg + B6 3mg + B12 15mcg + Nicotinamide 45mg",
+    "manufacturer": "Procter & Gamble",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "30 Tablets",
+    "requiresPrescription": false
   },
   {
     "id": 59,
@@ -505,7 +877,13 @@
     "price": 110,
     "category": "Supplements",
     "description": "Calcium and Vitamin D3.",
-    "icon": "Pill"
+    "icon": "Pill",
+    "salt": "Calcium Carbonate 500mg + Vitamin D3 250 IU",
+    "manufacturer": "Torrent Pharmaceuticals",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "15 Tablets",
+    "requiresPrescription": false
   },
   {
     "id": 60,
@@ -513,7 +891,13 @@
     "price": 40,
     "category": "Supplements",
     "description": "Vitamin E capsules for skin and hair.",
-    "icon": "Pill"
+    "icon": "Pill",
+    "salt": "Vitamin E (Tocopheryl Acetate) 400mg",
+    "manufacturer": "Procter & Gamble",
+    "isGeneric": false,
+    "dosageForm": "Capsule",
+    "packSize": "10 Capsules",
+    "requiresPrescription": false
   },
   {
     "id": 61,
@@ -521,7 +905,13 @@
     "price": 45,
     "category": "Supplements",
     "description": "B-Complex with Vitamin C.",
-    "icon": "Pill"
+    "icon": "Pill",
+    "salt": "Vitamin B-Complex (B1, B2, B6, B12) + Vitamin C + Calcium",
+    "manufacturer": "Pfizer Ltd",
+    "isGeneric": false,
+    "dosageForm": "Capsule",
+    "packSize": "20 Capsules",
+    "requiresPrescription": false
   },
   {
     "id": 62,
@@ -529,7 +919,13 @@
     "price": 599,
     "category": "Supplements",
     "description": "Heart and brain health.",
-    "icon": "Heart"
+    "icon": "Heart",
+    "salt": "Fish Oil Omega 3 Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 63,
@@ -537,7 +933,13 @@
     "price": 180,
     "category": "Supplements",
     "description": "Calcium for bones.",
-    "icon": "Pill"
+    "icon": "Pill",
+    "salt": "Calcium Sandoz Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 64,
@@ -545,7 +947,13 @@
     "price": 150,
     "category": "Supplements",
     "description": "Daily energy supplement.",
-    "icon": "Zap"
+    "icon": "Zap",
+    "salt": "Maxirich Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 65,
@@ -553,7 +961,13 @@
     "price": 220,
     "category": "Supplements",
     "description": "Folic acid supplement.",
-    "icon": "Pill"
+    "icon": "Pill",
+    "salt": "Macfolate Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 66,
@@ -561,7 +975,13 @@
     "price": 280,
     "category": "Supplements",
     "description": "Vitamin D3 weekly capsule.",
-    "icon": "Pill"
+    "icon": "Pill",
+    "salt": "Uprise D3 Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 67,
@@ -569,7 +989,13 @@
     "price": 45,
     "category": "Skin Care",
     "description": "Antiseptic ayurvedic cream.",
-    "icon": "Sparkles"
+    "icon": "Sparkles",
+    "salt": "Boric Acid + Zinc Oxide + Anhydrous Lanolin",
+    "manufacturer": "GD Pharmaceuticals",
+    "isGeneric": false,
+    "dosageForm": "Antiseptic Cream",
+    "packSize": "40g",
+    "requiresPrescription": false
   },
   {
     "id": 68,
@@ -577,7 +1003,13 @@
     "price": 60,
     "category": "Skin Care",
     "description": "Healthy skin cream.",
-    "icon": "Sparkles"
+    "icon": "Sparkles",
+    "salt": "BoroPlus Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 69,
@@ -585,7 +1017,13 @@
     "price": 120,
     "category": "Skin Care",
     "description": "Soothing skin gel.",
-    "icon": "Sparkles"
+    "icon": "Sparkles",
+    "salt": "Aloe Vera Gel Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 70,
@@ -593,7 +1031,13 @@
     "price": 140,
     "category": "Skin Care",
     "description": "Anti-fungal powder.",
-    "icon": "Sparkles"
+    "icon": "Sparkles",
+    "salt": "Candid Dusting Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 71,
@@ -601,7 +1045,13 @@
     "price": 85,
     "category": "Skin Care",
     "description": "Fungal infection relief.",
-    "icon": "Sparkles"
+    "icon": "Sparkles",
+    "salt": "Itch Guard Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 72,
@@ -609,7 +1059,13 @@
     "price": 75,
     "category": "Skin Care",
     "description": "Ringworm treatment.",
-    "icon": "Sparkles"
+    "icon": "Sparkles",
+    "salt": "Ring Guard Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 73,
@@ -617,7 +1073,13 @@
     "price": 150,
     "category": "Skin Care",
     "description": "Pimple clear face wash.",
-    "icon": "Sparkles"
+    "icon": "Sparkles",
+    "salt": "Himalaya Neem Wash Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 74,
@@ -625,7 +1087,13 @@
     "price": 450,
     "category": "Skin Care",
     "description": "Gentle skin cleanser.",
-    "icon": "Droplet"
+    "icon": "Droplet",
+    "salt": "Cetaphil Cleanser Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 75,
@@ -633,7 +1101,13 @@
     "price": 300,
     "category": "Skin Care",
     "description": "Acne treatment serum.",
-    "icon": "Droplet"
+    "icon": "Droplet",
+    "salt": "Salicylic Acid Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 76,
@@ -641,7 +1115,13 @@
     "price": 180,
     "category": "Skin Care",
     "description": "Oil balance lotion.",
-    "icon": "Sparkles"
+    "icon": "Sparkles",
+    "salt": "Lacto Calamine Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 77,
@@ -649,7 +1129,13 @@
     "price": 150,
     "category": "Eye & Ear Care",
     "description": "Lubricating eye drops.",
-    "icon": "Eye"
+    "icon": "Eye",
+    "salt": "Refresh Tears Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 78,
@@ -657,7 +1143,13 @@
     "price": 20,
     "category": "Eye & Ear Care",
     "description": "Antibiotic drops.",
-    "icon": "Eye"
+    "icon": "Eye",
+    "salt": "Ciplox Eye/Ear Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 79,
@@ -665,7 +1157,13 @@
     "price": 65,
     "category": "Eye & Ear Care",
     "description": "Redness relief eye drop.",
-    "icon": "Eye"
+    "icon": "Eye",
+    "salt": "Clearine Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 80,
@@ -673,7 +1171,13 @@
     "price": 55,
     "category": "Eye & Ear Care",
     "description": "Ayurvedic eye drops.",
-    "icon": "Eye"
+    "icon": "Eye",
+    "salt": "Itone Eye Drops Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 81,
@@ -681,7 +1185,13 @@
     "price": 85,
     "category": "Eye & Ear Care",
     "description": "Ear wax solvent.",
-    "icon": "Droplet"
+    "icon": "Droplet",
+    "salt": "Waxolve Ear Drop Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 82,
@@ -689,7 +1199,13 @@
     "price": 110,
     "category": "Eye & Ear Care",
     "description": "Ear pain and infection relief.",
-    "icon": "Droplet"
+    "icon": "Droplet",
+    "salt": "Otek AC Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 83,
@@ -697,7 +1213,13 @@
     "price": 45,
     "category": "Eye & Ear Care",
     "description": "Patanjali vision drop.",
-    "icon": "Eye"
+    "icon": "Eye",
+    "salt": "Drishti Eye Drop Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 84,
@@ -705,7 +1227,13 @@
     "price": 150,
     "category": "Diabetes",
     "description": "Artificial sweetener pellets.",
-    "icon": "Activity"
+    "icon": "Activity",
+    "salt": "Sugar Free Gold Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": true
   },
   {
     "id": 85,
@@ -713,7 +1241,13 @@
     "price": 950,
     "category": "Diabetes",
     "description": "Test strips pack of 50.",
-    "icon": "Activity"
+    "icon": "Activity",
+    "salt": "Accu-Chek Strips Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": true
   },
   {
     "id": 86,
@@ -721,7 +1255,13 @@
     "price": 250,
     "category": "Diabetes",
     "description": "Ayurvedic sugar control.",
-    "icon": "Droplet"
+    "icon": "Droplet",
+    "salt": "Karela Jamun Juice Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": true
   },
   {
     "id": 87,
@@ -729,7 +1269,13 @@
     "price": 220,
     "category": "Diabetes",
     "description": "Patanjali diabetes control.",
-    "icon": "Pill"
+    "icon": "Pill",
+    "salt": "Madhunashini Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": true
   },
   {
     "id": 88,
@@ -737,7 +1283,13 @@
     "price": 350,
     "category": "Diabetes",
     "description": "Prescription diabetes care.",
-    "icon": "Pill"
+    "icon": "Pill",
+    "salt": "Vildagliptin 50mg + Metformin 500mg",
+    "manufacturer": "Novartis Healthcare",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "15 Tablets",
+    "requiresPrescription": true
   },
   {
     "id": 89,
@@ -745,7 +1297,13 @@
     "price": 120,
     "category": "Heart Care",
     "description": "Ayurvedic heart tonic.",
-    "icon": "Heart"
+    "icon": "Heart",
+    "salt": "Arjuna Bark Powder Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": true
   },
   {
     "id": 90,
@@ -753,7 +1311,13 @@
     "price": 1500,
     "category": "Heart Care",
     "description": "Digital blood pressure machine.",
-    "icon": "HeartPulse"
+    "icon": "HeartPulse",
+    "salt": "BP Monitor Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": true
   },
   {
     "id": 91,
@@ -761,7 +1325,13 @@
     "price": 140,
     "category": "Heart Care",
     "description": "Cholesterol control capsules.",
-    "icon": "Heart"
+    "icon": "Heart",
+    "salt": "Garlic Pearls Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": true
   },
   {
     "id": 92,
@@ -769,7 +1339,13 @@
     "price": 10,
     "category": "Heart Care",
     "description": "Blood thinner.",
-    "icon": "Heart"
+    "icon": "Heart",
+    "salt": "Aspirin (Enteric Coated) 75mg",
+    "manufacturer": "USV Ltd",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "14 Tablets",
+    "requiresPrescription": true
   },
   {
     "id": 93,
@@ -777,7 +1353,13 @@
     "price": 180,
     "category": "Heart Care",
     "description": "Cholesterol reducer.",
-    "icon": "Heart"
+    "icon": "Heart",
+    "salt": "Rosuvas 10 Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": true
   },
   {
     "id": 94,
@@ -785,7 +1367,13 @@
     "price": 85,
     "category": "Women Care",
     "description": "Sanitary pads pack of 6.",
-    "icon": "Sparkles"
+    "icon": "Sparkles",
+    "salt": "Whisper Choice Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 95,
@@ -793,7 +1381,13 @@
     "price": 180,
     "category": "Women Care",
     "description": "Intimate hygiene wash.",
-    "icon": "Droplet"
+    "icon": "Droplet",
+    "salt": "V Wash Plus Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 96,
@@ -801,7 +1395,13 @@
     "price": 140,
     "category": "Women Care",
     "description": "Iron and folic acid syrup.",
-    "icon": "Droplet"
+    "icon": "Droplet",
+    "salt": "Dexorange Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 97,
@@ -809,7 +1409,13 @@
     "price": 55,
     "category": "Women Care",
     "description": "Pregnancy detection kit.",
-    "icon": "PlusSquare"
+    "icon": "PlusSquare",
+    "salt": "Pregakem Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 98,
@@ -817,7 +1423,13 @@
     "price": 45,
     "category": "Women Care",
     "description": "Period pain relief.",
-    "icon": "Pill"
+    "icon": "Pill",
+    "salt": "Meftal Spas Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 99,
@@ -825,7 +1437,13 @@
     "price": 399,
     "category": "Baby Care",
     "description": "Medium size, 30 count.",
-    "icon": "Baby"
+    "icon": "Baby",
+    "salt": "Pampers Diapers Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 100,
@@ -833,7 +1451,13 @@
     "price": 120,
     "category": "Baby Care",
     "description": "Gentle talc for babies.",
-    "icon": "Baby"
+    "icon": "Baby",
+    "salt": "Himalaya Baby Powder Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 101,
@@ -841,7 +1465,13 @@
     "price": 70,
     "category": "Baby Care",
     "description": "Colic and digestion relief.",
-    "icon": "Baby"
+    "icon": "Baby",
+    "salt": "Woodwards Gripe Water Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 102,
@@ -849,7 +1479,13 @@
     "price": 450,
     "category": "Baby Care",
     "description": "pH 5.5 extra soft wash.",
-    "icon": "Baby"
+    "icon": "Baby",
+    "salt": "Sebamed Baby Wash Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 103,
@@ -857,7 +1493,13 @@
     "price": 180,
     "category": "Baby Care",
     "description": "Dabur Lal Tail.",
-    "icon": "Baby"
+    "icon": "Baby",
+    "salt": "Baby Massage Oil Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 104,
@@ -865,7 +1507,13 @@
     "price": 160,
     "category": "Personal Care",
     "description": "For sensitive teeth.",
-    "icon": "Sparkles"
+    "icon": "Sparkles",
+    "salt": "Sensodyne Paste Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 105,
@@ -873,7 +1521,13 @@
     "price": 150,
     "category": "Personal Care",
     "description": "Cool mint, 250ml.",
-    "icon": "Droplet"
+    "icon": "Droplet",
+    "salt": "Listerine Mouthwash Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 106,
@@ -881,7 +1535,13 @@
     "price": 110,
     "category": "Personal Care",
     "description": "Twin blade razor.",
-    "icon": "Sparkles"
+    "icon": "Sparkles",
+    "salt": "Gillete Vector Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 107,
@@ -889,7 +1549,13 @@
     "price": 199,
     "category": "Personal Care",
     "description": "Underarm deodorant.",
-    "icon": "Sparkles"
+    "icon": "Sparkles",
+    "salt": "Nivea Roll On Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
   },
   {
     "id": 108,
@@ -897,6 +1563,252 @@
     "price": 120,
     "category": "Personal Care",
     "description": "Pack of 3 antibacterial soaps.",
-    "icon": "PlusSquare"
+    "icon": "PlusSquare",
+    "salt": "Dettol Soap Formulation",
+    "manufacturer": "Standard Pharma Labs",
+    "isGeneric": false,
+    "dosageForm": "Tablet",
+    "packSize": "Standard Pack",
+    "requiresPrescription": false
+  },
+  {
+    "id": 1001,
+    "name": "Jan Aushadhi Paracetamol 650",
+    "price": 9,
+    "category": "Fever",
+    "description": "Bioequivalent generic Paracetamol 650mg for high fever and pain relief. Exact therapeutic efficacy at 70% lower price.",
+    "icon": "Thermometer",
+    "salt": "Paracetamol 650mg",
+    "manufacturer": "PM Jan Aushadhi / Generic Lab",
+    "isGeneric": true,
+    "dosageForm": "Tablet",
+    "packSize": "10 Tablets",
+    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&auto=format&fit=crop&q=60",
+    "requiresPrescription": false
+  },
+  {
+    "id": 1002,
+    "name": "Generic Paracetamol 500mg",
+    "price": 6,
+    "category": "Fever",
+    "description": "Pure generic Paracetamol 500mg for mild fever and headache relief.",
+    "icon": "Thermometer",
+    "salt": "Paracetamol 500mg",
+    "manufacturer": "Jan Aushadhi Kendra",
+    "isGeneric": true,
+    "dosageForm": "Tablet",
+    "packSize": "10 Tablets",
+    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&auto=format&fit=crop&q=60",
+    "requiresPrescription": false
+  },
+  {
+    "id": 1003,
+    "name": "Generic Ibuprofen + Paracetamol",
+    "price": 14,
+    "category": "Pain Relief",
+    "description": "Generic dual-action pain reliever with identical salt composition to Combiflam.",
+    "icon": "Pill",
+    "salt": "Ibuprofen 400mg + Paracetamol 325mg",
+    "manufacturer": "Cipla Generic Care",
+    "isGeneric": true,
+    "dosageForm": "Tablet",
+    "packSize": "15 Tablets",
+    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&auto=format&fit=crop&q=60",
+    "requiresPrescription": false
+  },
+  {
+    "id": 1004,
+    "name": "Aceclofenac + Paracetamol + Sero Generic",
+    "price": 36,
+    "category": "Pain Relief",
+    "description": "Triple-action anti-inflammatory pain reliever matching Zerodol SP at over 60% savings.",
+    "icon": "Pill",
+    "salt": "Aceclofenac 100mg + Paracetamol 325mg + Serratiopeptidase 15mg",
+    "manufacturer": "Mankind Generic Care",
+    "isGeneric": true,
+    "dosageForm": "Tablet",
+    "packSize": "10 Tablets",
+    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&auto=format&fit=crop&q=60",
+    "requiresPrescription": true
+  },
+  {
+    "id": 1005,
+    "name": "Pantoprazole 40mg Generic",
+    "price": 22,
+    "category": "Digestion",
+    "description": "Generic proton pump inhibitor matching Pantocid 40 for severe acidity and GERD.",
+    "icon": "Activity",
+    "salt": "Pantoprazole 40mg",
+    "manufacturer": "Jan Aushadhi Kendra",
+    "isGeneric": true,
+    "dosageForm": "Tablet",
+    "packSize": "10 Tablets",
+    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&auto=format&fit=crop&q=60",
+    "requiresPrescription": true
+  },
+  {
+    "id": 1006,
+    "name": "Omeprazole 20mg Generic",
+    "price": 15,
+    "category": "Digestion",
+    "description": "Fast-acting generic antacid capsule for heartburn and gastric ulcers matching Omez 20.",
+    "icon": "Activity",
+    "salt": "Omeprazole 20mg",
+    "manufacturer": "Alkem Generic Care",
+    "isGeneric": true,
+    "dosageForm": "Capsule",
+    "packSize": "15 Capsules",
+    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&auto=format&fit=crop&q=60",
+    "requiresPrescription": true
+  },
+  {
+    "id": 1007,
+    "name": "Metformin 500mg SR Generic",
+    "price": 11,
+    "category": "Diabetes",
+    "description": "Standard generic sustained release Metformin 500mg for daily glycemic control matching Glycomet.",
+    "icon": "Activity",
+    "salt": "Metformin HCl 500mg",
+    "manufacturer": "Jan Aushadhi Kendra",
+    "isGeneric": true,
+    "dosageForm": "Tablet",
+    "packSize": "20 Tablets",
+    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&auto=format&fit=crop&q=60",
+    "requiresPrescription": true
+  },
+  {
+    "id": 1008,
+    "name": "Generic Vitamin C 500mg Chewable",
+    "price": 12,
+    "category": "Supplements",
+    "description": "Chewable pure Vitamin C 500mg for immunity boost matching Limcee & Celin.",
+    "icon": "Zap",
+    "salt": "Ascorbic Acid (Vitamin C) 500mg Chewable",
+    "manufacturer": "Generic Health Labs",
+    "isGeneric": true,
+    "dosageForm": "Chewable Tablet",
+    "packSize": "20 Tablets",
+    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&auto=format&fit=crop&q=60",
+    "requiresPrescription": false
+  },
+  {
+    "id": 1009,
+    "name": "Generic Calcium 500 + D3",
+    "price": 38,
+    "category": "Supplements",
+    "description": "High absorption generic Calcium and Vitamin D3 supplement for bone health matching Shelcal 500.",
+    "icon": "ShieldPlus",
+    "salt": "Calcium Carbonate 500mg + Vitamin D3 250 IU",
+    "manufacturer": "Torrent Generic Care",
+    "isGeneric": true,
+    "dosageForm": "Tablet",
+    "packSize": "15 Tablets",
+    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&auto=format&fit=crop&q=60",
+    "requiresPrescription": false
+  },
+  {
+    "id": 1010,
+    "name": "Generic Pain Relief Spray (Diclofenac)",
+    "price": 55,
+    "category": "Pain Relief",
+    "description": "Fast acting micro-spray with Diclofenac Diethylamine matching Volini and Relispray.",
+    "icon": "Zap",
+    "salt": "Diclofenac Diethylamine 1.16% + Linseed Oil",
+    "manufacturer": "HealthCare Generic Solutions",
+    "isGeneric": true,
+    "dosageForm": "Spray",
+    "packSize": "55g",
+    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&auto=format&fit=crop&q=60",
+    "requiresPrescription": false
+  },
+  {
+    "id": 1011,
+    "name": "Generic B-Complex Forte with Vitamin C",
+    "price": 16,
+    "category": "Supplements",
+    "description": "High potency Vitamin B-Complex with Vitamin C capsules matching Becosules.",
+    "icon": "Zap",
+    "salt": "Vitamin B-Complex (B1, B2, B6, B12) + Vitamin C + Calcium",
+    "manufacturer": "Jan Aushadhi Kendra",
+    "isGeneric": true,
+    "dosageForm": "Capsule",
+    "packSize": "20 Capsules",
+    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&auto=format&fit=crop&q=60",
+    "requiresPrescription": false
+  },
+  {
+    "id": 1012,
+    "name": "Generic Vitamin E 400mg",
+    "price": 14,
+    "category": "Supplements",
+    "description": "Pure Tocopheryl Acetate 400mg softgel capsules for skin and hair health matching Evion 400.",
+    "icon": "Sparkles",
+    "salt": "Vitamin E (Tocopheryl Acetate) 400mg",
+    "manufacturer": "Generic Care Labs",
+    "isGeneric": true,
+    "dosageForm": "Capsule",
+    "packSize": "10 Capsules",
+    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&auto=format&fit=crop&q=60",
+    "requiresPrescription": false
+  },
+  {
+    "id": 1013,
+    "name": "Generic Cough Expectorant Syrup",
+    "price": 42,
+    "category": "Cold & Cough",
+    "description": "Effective triple action bronchodilator and mucolytic syrup matching Ascoril LS.",
+    "icon": "Activity",
+    "salt": "Levosalbutamol 1mg + Ambroxol 30mg + Guaifenesin 50mg",
+    "manufacturer": "Cipla Generic",
+    "isGeneric": true,
+    "dosageForm": "Syrup",
+    "packSize": "100ml",
+    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&auto=format&fit=crop&q=60",
+    "requiresPrescription": true
+  },
+  {
+    "id": 1014,
+    "name": "Generic Antiseptic Povidone 5% Ointment",
+    "price": 18,
+    "category": "First Aid",
+    "description": "Broad-spectrum antiseptic germicidal ointment for cuts and burns matching Cipladine and Betadine.",
+    "icon": "ShieldPlus",
+    "salt": "Povidone Iodine 5% w/w",
+    "manufacturer": "Jan Aushadhi Kendra",
+    "isGeneric": true,
+    "dosageForm": "Ointment",
+    "packSize": "20g",
+    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&auto=format&fit=crop&q=60",
+    "requiresPrescription": false
+  },
+  {
+    "id": 1015,
+    "name": "Generic Atorvastatin 10mg",
+    "price": 25,
+    "category": "Heart Care",
+    "description": "Lipid-lowering HMG-CoA reductase inhibitor tablet for cholesterol control matching Atorva 10.",
+    "icon": "HeartPulse",
+    "salt": "Atorvastatin 10mg",
+    "manufacturer": "Jan Aushadhi Kendra",
+    "isGeneric": true,
+    "dosageForm": "Tablet",
+    "packSize": "15 Tablets",
+    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&auto=format&fit=crop&q=60",
+    "requiresPrescription": true
+  },
+  {
+    "id": 1016,
+    "name": "Generic Telmisartan 40mg",
+    "price": 28,
+    "category": "Heart Care",
+    "description": "Angiotensin II receptor antagonist for blood pressure management matching Telma 40.",
+    "icon": "HeartPulse",
+    "salt": "Telmisartan 40mg",
+    "manufacturer": "Jan Aushadhi Kendra",
+    "isGeneric": true,
+    "dosageForm": "Tablet",
+    "packSize": "15 Tablets",
+    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&auto=format&fit=crop&q=60",
+    "requiresPrescription": true
   }
 ]

@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 export default function LoginView({
   authMode, setAuthMode, authForm, setAuthForm, authError, setAuthError,
@@ -9,6 +9,7 @@ export default function LoginView({
   handleSendResetOtp, handleVerifyResetOtp, handleResetPassword,
   handleGoogleLogin, handleSendLoginOtp, handleVerifyLoginOtp,
 }) {
+  const [showPassword, setShowPassword] = useState(false);
   const googleBtnRef = useRef(null);
 
   // Initialize Google Sign-In button
@@ -241,10 +242,21 @@ export default function LoginView({
               <form onSubmit={handleResetPassword} className="space-y-5 animate-fade-in">
                 <div className="relative group">
                   <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-outline-variant)] group-focus-within:text-[var(--color-primary)] transition-colors">lock</span>
-                  <input type="password" required placeholder="New Password" value={authForm.password}
+                  <input type={showPassword ? "text" : "password"} required placeholder="New Password" value={authForm.password}
                     onChange={(e) => setAuthForm({ ...authForm, password: e.target.value })}
-                    className="w-full pl-14 pr-4 py-4 bg-[var(--color-surface-container-low)] border border-[var(--color-outline-variant)] rounded-xl focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:border-[var(--color-primary)] transition-all outline-none font-body text-[var(--color-on-surface)] placeholder:text-[var(--color-outline)]" autoFocus
+                    className="w-full pl-14 pr-14 py-4 bg-[var(--color-surface-container-low)] border border-[var(--color-outline-variant)] rounded-xl focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:border-[var(--color-primary)] transition-all outline-none font-body text-[var(--color-on-surface)] placeholder:text-[var(--color-outline)]" autoFocus
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface)] focus:text-[var(--color-primary)] transition-colors p-1 flex items-center justify-center rounded-lg"
+                    title={showPassword ? "Hide password" : "Show password"}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    <span className="material-symbols-outlined text-xl">
+                      {showPassword ? 'visibility_off' : 'visibility'}
+                    </span>
+                  </button>
                 </div>
                 <button type="submit" className="w-full py-4 bg-[var(--color-primary-container)] hover:bg-[var(--color-primary)] text-[var(--color-on-primary)] font-heading font-semibold text-sm rounded-xl transition-all duration-300 shadow-lg primary-glow hover:scale-[1.02] active:scale-[0.98] mt-4">
                   Save New Password
@@ -335,10 +347,21 @@ export default function LoginView({
                     </div>
                     <div className="relative group">
                       <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-outline-variant)] group-focus-within:text-[var(--color-primary)] transition-colors">lock</span>
-                      <input id="login-password" type="password" required placeholder="••••••••" value={authForm.password}
+                      <input id="login-password" type={showPassword ? "text" : "password"} required placeholder="••••••••" value={authForm.password}
                         onChange={(e) => setAuthForm({ ...authForm, password: e.target.value })}
                         className="w-full pl-14 pr-14 py-4 bg-[var(--color-surface-container-low)] border border-[var(--color-outline-variant)] rounded-xl focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:border-[var(--color-primary)] transition-all outline-none font-body text-[var(--color-on-surface)] placeholder:text-[var(--color-outline)]"
                       />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface)] focus:text-[var(--color-primary)] transition-colors p-1 flex items-center justify-center rounded-lg"
+                        title={showPassword ? "Hide password" : "Show password"}
+                        aria-label={showPassword ? "Hide password" : "Show password"}
+                      >
+                        <span className="material-symbols-outlined text-xl">
+                          {showPassword ? 'visibility_off' : 'visibility'}
+                        </span>
+                      </button>
                     </div>
                   </div>
 

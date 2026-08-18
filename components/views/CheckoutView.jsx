@@ -1,6 +1,9 @@
 'use client';
-import React from 'react';
-import { CreditCard, Truck, ShoppingCart } from 'lucide-react';
+import React, { useState } from 'react';
+import { 
+  CreditCard, Truck, ShoppingCart, FileText, UploadCloud, 
+  CheckCircle2, AlertCircle, ShieldCheck, PhoneCall, Trash2, Edit3 
+} from 'lucide-react';
 
 export default function CheckoutView({
   cart, cartCount, cartTotal, checkoutStep, setCheckoutStep,
@@ -8,9 +11,26 @@ export default function CheckoutView({
   paymentMethod, setPaymentMethod, handlePaymentSubmit,
   pincodeLoading, pincodeError, setCurrentView,
   savedAddresses, selectSavedAddress,
+  prescription, onOpenPrescriptionModal, onRemovePrescription,
+  selectedPickupStore,
 }) {
+  const [fulfillmentType, setFulfillmentType] = useState('delivery'); // 'delivery' | 'pickup'
+  const [rxError, setRxError] = useState('');
+  const hasRxItems = cart.some(item => item.requiresPrescription);
+  const rxItemNames = cart.filter(item => item.requiresPrescription).map(i => i.name).join(', ');
+
+  const handleProceedToPayment = (e) => {
+    e.preventDefault();
+    if (hasRxItems && !prescription) {
+      setRxError('Please attach a doctor’s prescription or request a free doctor call before proceeding.');
+      return;
+    }
+    setRxError('');
+    handleAddressSubmit(e);
+  };
+
   return (
-    <div className="flex-1 overflow-y-auto bg-[var(--color-background)] p-6 lg:p-12 pb-28 md:pb-6 scrollbar-hide">
+    <div className="flex-1 overflow-y-auto bg-[var(--color-background)] p-6 lg:p-12 pb-28 md:pb-6 scrollbar-hide animate-fade-in">
       <div className="max-w-[1280px] mx-auto">
         <button onClick={() => setCurrentView('cart')}
           className="flex items-center gap-2 text-sm text-[var(--color-on-surface-variant)] hover:text-[var(--color-on-surface)] font-medium mb-8 transition-colors w-fit bg-[var(--color-surface-container-lowest)] px-4 py-2 rounded-full border border-[var(--color-outline-variant)] atmospheric-shadow cursor-pointer">
@@ -21,12 +41,61 @@ export default function CheckoutView({
         
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="flex-1 space-y-6">
-            {/* Step 1: Delivery Details */}
+            {/* Step 1: Delivery / Pickup Details */}
             <div className={`bg-[var(--color-surface-container-lowest)] border ${checkoutStep === 1 ? 'border-[var(--color-primary)] atmospheric-shadow' : 'border-[var(--color-outline-variant)] opacity-60 pointer-events-none'} rounded-xl p-6 lg:p-8 transition-all duration-300`}>
-              <h3 className="text-lg font-heading font-bold text-[var(--color-on-surface)] mb-6 flex items-center gap-3">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${checkoutStep === 1 ? 'bg-[var(--color-primary)] text-[var(--color-on-primary)]' : 'bg-[var(--color-surface-container-highest)] text-[var(--color-outline)]'}`}>1</div>
-                Delivery Details
-              </h3>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                <h3 className="text-lg font-heading font-bold text-[var(--color-on-surface)] flex items-center gap-3">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${checkoutStep === 1 ? 'bg-[var(--color-primary)] text-[var(--color-on-primary)]' : 'bg-[var(--color-surface-container-highest)] text-[var(--color-outline)]'}`}>1</div>
+                  Fulfillment & Address Details
+                </h3>
+
+                {/* Delivery vs Pickup Switcher */}
+                <div className="flex bg-[var(--color-surface-container-low)] p-1 rounded-xl border border-[var(--color-outline-variant)] w-fit">
+                  <button
+                    type="button"
+                    onClick={() => setFulfillmentType('delivery')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                      fulfillmentType === 'delivery'
+                        ? 'bg-[var(--color-primary)] text-[var(--color-on-primary)] shadow-sm'
+                        : 'text-[var(--color-on-surface-variant)] hover:text-[var(--color-on-surface)]'
+                    }`}
+                  >
+                    🚚 Doorstep Delivery
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFulfillmentType('pickup')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                      fulfillmentType === 'pickup'
+                        ? 'bg-[var(--color-primary)] text-[var(--color-on-primary)] shadow-sm'
+                        : 'text-[var(--color-on-surface-variant)] hover:text-[var(--color-on-surface)]'
+                    }`}
+                  >
+                    🏬 30-Min Store Pickup
+                  </button>
+                </div>
+              </div>
+
+              {fulfillmentType === 'pickup' && (
+                <div className="mb-6 p-4 rounded-2xl bg-teal-50/70 dark:bg-teal-950/30 border border-teal-200 dark:border-teal-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-teal-700 dark:text-teal-300">Selected Pickup Pharmacy:</span>
+                    <h4 className="font-heading font-bold text-sm text-[var(--color-on-surface)] mt-0.5">
+                      {selectedPickupStore ? selectedPickupStore.name : 'Med Z 24/7 Super Pharmacy - BKC'}
+                    </h4>
+                    <p className="text-[11px] text-[var(--color-outline)] mt-0.5">
+                      {selectedPickupStore ? selectedPickupStore.address : 'Ground Floor, G-Block, BKC, Mumbai 400051 (Open 24/7)'}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setCurrentView('pharmacies')}
+                    className="px-3 py-1.5 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl shadow-sm cursor-pointer whitespace-nowrap"
+                  >
+                    Change Store on Map
+                  </button>
+                </div>
+              )}
 
               {savedAddresses && savedAddresses.length > 0 && checkoutStep === 1 && (
                 <div className="mb-6">
@@ -43,7 +112,7 @@ export default function CheckoutView({
                 </div>
               )}
 
-              <form onSubmit={handleAddressSubmit} className="space-y-5">
+              <form onSubmit={handleProceedToPayment} className="space-y-5">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div className="space-y-1.5">
                     <label className="text-xs font-heading font-bold text-[var(--color-outline)] uppercase tracking-wider">Full Name</label>
@@ -80,6 +149,100 @@ export default function CheckoutView({
                     )}
                   </div>
                 </div>
+
+                {/* Prescription Verification Section */}
+                {hasRxItems && (
+                  <div className="pt-4 border-t border-[var(--color-outline-variant)]">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-950/80 px-2 py-0.5 rounded-full">
+                          Mandatory Rx Step
+                        </span>
+                        <span className="text-xs font-bold text-[var(--color-on-surface)]">
+                          Doctor's Prescription Required
+                        </span>
+                      </div>
+                      <span className="text-[11px] text-[var(--color-outline)]">
+                        Items: {rxItemNames}
+                      </span>
+                    </div>
+
+                    {rxError && (
+                      <div className="mb-3 p-3 rounded-xl bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300 text-xs font-medium flex items-center gap-2 border border-red-200 dark:border-red-900/50">
+                        <AlertCircle size={15} className="shrink-0" />
+                        <span>{rxError}</span>
+                      </div>
+                    )}
+
+                    {prescription ? (
+                      <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-12 h-12 rounded-lg bg-emerald-600/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
+                            {prescription.type === 'doctor_call' ? (
+                              <PhoneCall size={20} />
+                            ) : (
+                              <FileText size={20} />
+                            )}
+                          </div>
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-1.5">
+                              <p className="font-heading font-bold text-xs text-[var(--color-on-surface)] truncate">
+                                {prescription.fileName || 'Prescription Attached'}
+                              </p>
+                              <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950 px-1.5 py-0.5 rounded">
+                                Attached
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-[var(--color-outline)] mt-0.5">
+                              {prescription.type === 'doctor_call' 
+                                ? 'Free Tele-Doctor consultation scheduled' 
+                                : `Patient: ${prescription.patientName || 'Self'} • Dr. ${prescription.doctorName || 'Physician'}`}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 shrink-0">
+                          <button
+                            type="button"
+                            onClick={onOpenPrescriptionModal}
+                            className="text-xs font-semibold text-[var(--color-primary)] hover:underline flex items-center gap-1 cursor-pointer"
+                          >
+                            <Edit3 size={13} /> Change
+                          </button>
+                          {onRemovePrescription && (
+                            <button
+                              type="button"
+                              onClick={onRemovePrescription}
+                              className="p-1.5 text-[var(--color-error)] hover:bg-[var(--color-error-container)]/20 rounded-lg transition-colors cursor-pointer"
+                              title="Remove"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="p-4 rounded-xl bg-blue-50/60 dark:bg-blue-950/20 border border-blue-200/80 dark:border-blue-800/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                        <div className="flex items-start gap-2.5">
+                          <AlertCircle size={18} className="text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
+                          <div className="text-xs text-blue-950 dark:text-blue-200">
+                            <span className="font-bold">Prescription Required:</span> Your order contains regulated medicines. Please upload your doctor's slip or request a free consultation call.
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={onOpenPrescriptionModal}
+                          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-heading text-xs font-bold rounded-xl shadow-sm transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer shrink-0"
+                        >
+                          <UploadCloud size={14} />
+                          <span>Attach Prescription</span>
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 <div className="pt-4 flex justify-end">
                   <button type="submit" className="bg-[var(--color-primary)] hover:bg-[var(--color-primary-container)] text-[var(--color-on-primary)] px-8 py-3.5 rounded-lg font-heading font-semibold text-sm transition-all atmospheric-shadow active:scale-95 cursor-pointer">
                     Continue to Payment
@@ -143,10 +306,15 @@ export default function CheckoutView({
               <div className="space-y-4 mb-6 max-h-64 overflow-y-auto pr-2 scrollbar-hide">
                 {cart.map(item => (
                   <div key={item.id} className="flex justify-between items-start text-sm border-b border-[var(--color-outline-variant)]/50 pb-3">
-                    <span className="text-[var(--color-on-surface-variant)] pr-2 leading-relaxed">
-                      <span className="font-semibold text-[var(--color-on-surface)] bg-[var(--color-surface-container-high)] px-1.5 py-0.5 rounded text-xs mr-2">{item.quantity}x</span>
-                      {item.name}
-                    </span>
+                    <div className="text-[var(--color-on-surface-variant)] pr-2 leading-relaxed">
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-semibold text-[var(--color-on-surface)] bg-[var(--color-surface-container-high)] px-1.5 py-0.5 rounded text-xs">{item.quantity}x</span>
+                        <span className="font-medium text-[var(--color-on-surface)]">{item.name}</span>
+                        {item.requiresPrescription && (
+                          <span className="text-[9px] font-bold text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-950 px-1.5 py-0.2 rounded">Rx</span>
+                        )}
+                      </div>
+                    </div>
                     <span className="font-medium text-[var(--color-on-surface)] whitespace-nowrap mt-0.5">₹{item.price * item.quantity}</span>
                   </div>
                 ))}
@@ -160,6 +328,12 @@ export default function CheckoutView({
                   <span>Delivery Fee</span>
                   <span className="text-[var(--color-secondary)] font-semibold">Free</span>
                 </div>
+                {hasRxItems && (
+                  <div className="flex justify-between text-xs text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/40 p-2 rounded-lg border border-blue-200 dark:border-blue-900">
+                    <span>Prescription Verification</span>
+                    <span className="font-semibold">{prescription ? 'Attached (Free)' : 'Required'}</span>
+                  </div>
+                )}
                 <div className="border-t border-[var(--color-outline-variant)] pt-4 mt-2 flex justify-between items-center">
                   <span className="text-sm font-heading font-bold text-[var(--color-on-surface)] uppercase tracking-wider">To Pay</span>
                   <span className="text-xl font-heading font-bold tracking-tight text-[var(--color-on-surface)]">₹{cartTotal}</span>
