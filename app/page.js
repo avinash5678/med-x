@@ -1,6 +1,5 @@
 "use client"
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import Image from 'next/image';
 import { 
   ShoppingCart, 
   Plus, 
@@ -49,6 +48,7 @@ import {
   Moon,
   RefreshCw,
   TestTube2,
+  FileText,
 } from 'lucide-react';
 
 // View components imports
@@ -142,7 +142,6 @@ export default function App() {
     }
   };
   const [activeCategory, setActiveCategory] = useState('All');
-  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [showOrderModal, setShowOrderModal] = useState(false);
   
@@ -789,7 +788,6 @@ export default function App() {
     if (cart.length === 0) return;
     setCurrentView('checkout');
     setCheckoutStep(1);
-    setIsMobileSidebarOpen(false);
   };
 
   const handleAddressSubmit = (e) => {
@@ -1091,12 +1089,6 @@ const placeOrder = async () => {
   // --- Main App Views ---
   return (
     <div className="h-screen overflow-hidden bg-[#F8FAFC] dark:bg-[#090d16] text-slate-900 dark:text-slate-100 font-sans flex flex-col relative">
-      <div className="fixed inset-0 pointer-events-none flex items-center justify-center overflow-hidden z-0 opacity-[0.02]">
-        <div className="flex flex-col items-center transform -rotate-6 opacity-30">
-          <Image src="/logo.png" alt="Med Z Logo Watermark" width={300} height={300} priority />
-          <span className="text-[12rem] font-bold leading-none tracking-tighter mt-6">Med Z</span>
-        </div>
-      </div>
 
       <header className="bg-white/70 dark:bg-slate-950/70 backdrop-blur-md border-b border-slate-200/20 dark:border-slate-800/40 shadow-sm px-6 md:px-12 py-4 flex justify-between items-center sticky top-0 z-40">
         <div className="flex items-center gap-3 md:gap-12 cursor-pointer group">
@@ -1706,13 +1698,10 @@ const placeOrder = async () => {
             <span className="text-[10px] font-semibold">Home</span>
           </button>
           <button 
-            onClick={() => {
-              setCurrentView('medicines');
-              setIsMobileSidebarOpen(true);
-            }} 
-            className="flex flex-col items-center justify-center w-full h-full space-y-1 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-350"
+            onClick={() => setCurrentView('medicines')} 
+            className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${currentView === 'medicines' ? 'text-slate-900 dark:text-slate-100' : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-350'}`}
           >
-            <Search size={20} />
+            <Search size={20} className={currentView === 'medicines' ? 'stroke-[2.5px]' : ''} />
             <span className="text-[10px] font-semibold">Search</span>
           </button>
           <button 
@@ -1730,27 +1719,15 @@ const placeOrder = async () => {
             <span className="text-[10px] font-semibold">Cart</span>
           </button>
           <button 
-            onClick={() => {
-              setCurrentView('medicines');
-              setIsMobileSidebarOpen(true);
-            }} 
-            className="flex flex-col items-center justify-center w-full h-full space-y-1 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-350"
+            onClick={() => setIsProfileMenuOpen(prev => !prev)} 
+            className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${isProfileMenuOpen ? 'text-slate-900 dark:text-slate-100' : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-350'}`}
           >
-            <User size={20} />
+            <User size={20} className={isProfileMenuOpen ? 'stroke-[2.5px]' : ''} />
             <span className="text-[10px] font-semibold">Account</span>
           </button>
         </div>
       </div>
 
-      <style dangerouslySetInnerHTML={{__html: `
-        .scrollbar-hide::-webkit-scrollbar {
-            display: none;
-        }
-        .scrollbar-hide {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-      `}} />
     </div>
   );
 }

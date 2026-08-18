@@ -47,3 +47,6 @@ backend/*.json
 backend/__pycache__/
 backend/venv/
 backend/get_gmail_token.py
+
+# Stitch design reference screens (not production code)
+stitch_screens/

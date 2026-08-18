@@ -6,25 +6,7 @@ let cachedMedicines = null;
 async function loadMedicines() {
   if (cachedMedicines) return cachedMedicines;
 
-  // Try MongoDB first
-  try {
-    const { MongoClient } = await import('mongodb');
-    const MONGO_URI = process.env.MONGO_URI;
-    if (MONGO_URI) {
-      const client = new MongoClient(MONGO_URI);
-      await client.connect();
-      const db = client.db('medz_db');
-      const medicines = await db.collection('medicines').find({}).toArray();
-      if (medicines.length > 0) {
-        cachedMedicines = medicines.map(m => ({ ...m, _id: m._id.toString() }));
-        return cachedMedicines;
-      }
-    }
-  } catch (err) {
-    console.warn('MongoDB not available, falling back to local JSON:', err.message);
-  }
-
-  // Fallback: load from medicines.json
+  // Load from medicines.json (MongoDB catalog served separately via lib/mongodb.js)
   try {
     const filePath = path.join(process.cwd(), 'medicines.json');
     const raw = await fs.readFile(filePath, 'utf-8');
